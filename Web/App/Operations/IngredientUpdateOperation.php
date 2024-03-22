@@ -63,7 +63,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
     $conn = $model->DB_CONNECTION;
 
     if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
 
     

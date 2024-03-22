@@ -480,6 +480,33 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
+  static public function getNutritionType(){
+    try {
+      $dbcon = new parent();
+      $conn = $dbcon->DB_CONNECTION;
+      if($conn == false){
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+      }
+      
+      $sql = "SELECT id FROM nutrition_types";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute();
+
+      $nutritionType = [];
+      $nutritionType = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      return $nutritionType;
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+  
   static public function getMeasurementUnit(){
     try {
       $dbcon = new parent();
@@ -506,5 +533,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
     return null;
   }
+
 }
       

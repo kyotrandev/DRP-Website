@@ -4,8 +4,11 @@ namespace App\Operations;
 
 use App\Utils\Dialog;
 
-class IngredientCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
-{
+class IngredientCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation 
+{ 
+  const MSG_UNABLE_TO_VALIDATE_DATA = "Error: something went wrong during validate data - ";
+
+
   public function __construct() {
     parent::__construct();
   }
@@ -23,8 +26,11 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @return void
    * @throws \InvalidArgumentException If the data is invalid.
    */
-  static public function validateData(array $data): void
-  {
+  static public function validateData(array $data): void  {
+    $validateData = ValidateIngredientDataHolder::getInstance();
+    $validCategories = $validateData->validCategories;
+    $validMeasurements = $validateData->validMeasurements;
+    
     /**
      * Validate the data with specific rules
      * name: required, only letters and numbers
@@ -36,8 +42,9 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
 
     if ($data == null)
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. ');
-    $validCategories = array('EMMP', 'FAO', 'FRU', 'GNBK', 'HRBS', 'MSF', 'OTHR', 'PRP', 'VEGI');
-    $validMeasurements = array('tsp', 'cup', 'tbsp', 'g', 'lb', 'can', 'oz', 'unit');
+
+    if ($validCategories == null || $validMeasurements == null)
+      throw new \PDOException(self::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". ");
 
     $requiredFields = ['name', 'category', 'measurement_unit'];
     $numericFields = [
