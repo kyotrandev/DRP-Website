@@ -48,28 +48,28 @@
     <div class="input-group mb-2">
 
       <div class="form-floating">
-        <input type="number" class="form-control" id="preparation_time_min" name="preparation_time_min" placeholder="How long to make?">
-        <label for="preparation_time_min">Preparation time</label>
+        <input type="number" class="form-control" id="preparation_time" name="preparation_time" placeholder="How long to make?">
+        <label for="preparation_time">Preparation time</label>
       </div>
 
       <span class="input-group-text">minutes</span>
       <div class="form-floating">
-        <input type="number" class="form-control" id="cooking_time_min" name="cooking_time_min" placeholder="How long to make?">
-        <label for="cooking_time_min">Cooking time</label>
+        <input type="number" class="form-control" id="cooking_time" name="cooking_time" placeholder="How long to make?">
+        <label for="cooking_time">Cooking time</label>
       </div>
       <span class="input-group-text">minutes</span>
     </div>
 
     <div class="input-group mb-2">
 
-      <select class="form-select" id="meal_type_1" name="meal_type_1" aria-label="Select meal type">
+      <select class="form-select" id="course" name="course" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal recipe for</option>
         <option value="Breakfast">Breakfast</option>
         <option value="Lunch">Lunch</option>
         <option value="Dinner">Dinner</option>
       </select>
 
-      <select class="form-select" id="meal_type_2" name="meal_type_2" aria-label="Select meal type">
+      <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal type</option>
         <option value="Appetizer">Appetizer</option>
         <option value="Main Dish">Main Dish</option>
@@ -77,7 +77,7 @@
         <option value="Dessert">Dessert</option>
       </select>
 
-      <select class="form-select" id="meal_type_3" name="meal_type_3" aria-label="Select meal type">
+      <select class="form-select" id="method" name="method" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal category</option>
         <option value="Baked">Baked</option>
         <option value="Beverage">Beverage</option>

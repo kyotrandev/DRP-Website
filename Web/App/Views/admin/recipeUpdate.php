@@ -30,15 +30,15 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="preparation_time_min" class="col-sm-5 col-form-label">Preparation Time Min</label>
+                    <label for="preparation_time" class="col-sm-5 col-form-label">Preparation Time Min</label>
                     <div class="col-sm-15">
-                        <input type="number" class="form-control" id="preparation_time_min" name="preparation_time_min" value="<?= $recipe->getPreparationTime() ?>">
+                        <input type="number" class="form-control" id="preparation_time" name="preparation_time" value="<?= $recipe->getPreparationTime() ?>">
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="cooking_time_min" class="col-sm-5 col-form-label">Cooking Time Min</label>
+                    <label for="cooking_time" class="col-sm-5 col-form-label">Cooking Time Min</label>
                     <div class="col-sm-15">
-                        <input type="number" class="form-control" id="cooking_time_min" name="cooking_time_min" value="<?= $recipe->getCookingTime() ?>">
+                        <input type="number" class="form-control" id="cooking_time" name="cooking_time" value="<?= $recipe->getCookingTime() ?>">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -48,9 +48,9 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="meal_type_1" class="col-sm-5 col-form-label">Meal Type 1 (Last: <?= $recipe->getMealType1() ?>)</label>
+                    <label for="course" class="col-sm-5 col-form-label">Meal Type 1 (Last: <?= $recipe->getcourse() ?>)</label>
                     <div class="col-sm-15">
-                        <select class="form-select" id="meal_type_1" name="meal_type_1">
+                        <select class="form-select" id="course" name="course">
                             <option value="" selected disabled hidden>Select meal recipe for</option>
                             <option value="Breakfast">Breakfast</option>
                             <option value="Lunch">Lunch</option>
@@ -58,7 +58,7 @@
                             <?php
                             $categories1 = ['Breakfast', 'Lunch', 'Dinner'];
                             foreach ($categories1 as $category) {
-                                $selected = ($recipe->getMealType1() == $category) ? 'selected' : '';
+                                $selected = ($recipe->getcourse() == $category) ? 'selected' : '';
                                 echo "<option value=\"$category\" $selected>$category</option>";
                             }
                             ?>
@@ -66,13 +66,13 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="meal_type_2" class="col-sm-5 col-form-label">Meal Type 2 (Last: <?= $recipe->getMealType2() ?>)</label>
+                    <label for="meal" class="col-sm-5 col-form-label">Meal Type 2 (Last: <?= $recipe->getmeal() ?>)</label>
                     <div class="col-sm-15">
-                        <select class="form-select" id="meal_type_2" name="meal_type_2" aria-label="Select meal type">
+                        <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
                             <?php
                             $categories2 = ['Appetizer', 'Main Dish', 'Side Dish', 'Dessert'];
                             foreach ($categories2 as $category) {
-                                $selected = ($recipe->getMealType2() == $category) ? 'selected' : '';
+                                $selected = ($recipe->getmeal() == $category) ? 'selected' : '';
                                 echo "<option value=\"$category\" $selected>$category</option>";
                             }
                             ?>
@@ -80,13 +80,13 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="meal_type_3" class="col-sm-5 col-form-label">Meal Type 3 (Last: <?= $recipe->getMealType3() ?>)</label>
+                    <label for="method" class="col-sm-5 col-form-label">Meal Type 3 (Last: <?= $recipe->getmethod() ?>)</label>
                     <div class="col-sm-15">
-                        <select class="form-select" id="meal_type_3" name="meal_type_3" aria-label="Select meal type">
+                        <select class="form-select" id="method" name="method" aria-label="Select meal type">
                             <?php
                             $categories3 = ['Baked', 'Beverage', 'Salad and Salad Dressing', 'Soup', 'Sauce and Condiment', 'Snack', 'Other'];
                             foreach ($categories3 as $category) {
-                                $selected = ($recipe->getMealType3() == $category) ? 'selected' : '';
+                                $selected = ($recipe->getmethod() == $category) ? 'selected' : '';
                                 echo "<option value=\"$category\" $selected>$category</option>";
                             }
                             ?>

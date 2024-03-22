@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: db-mysql:3306
--- Generation Time: Mar 21, 2024 at 10:25 AM
+-- Host: mysql-db:3306
+-- Generation Time: Mar 22, 2024 at 01:59 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.16
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `ct07_db`
 --
-CREATE DATABASE IF NOT EXISTS `ct07_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `ct07_db`;
 
 DELIMITER $$
 --
@@ -65,17 +63,17 @@ CREATE TABLE IF NOT EXISTS `ingredients` (
   `id` int NOT NULL AUTO_INCREMENT,
   `isActive` tinyint(1) DEFAULT '1',
   `category` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `measurement_description` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `measurement_unit` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_ingre_cat` (`category`),
-  KEY `FK_ingre_unit` (`measurement_description`)
+  KEY `FK_ingre_unit` (`measurement_unit`)
 ) ENGINE=InnoDB AUTO_INCREMENT=325 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `ingredients`
 --
 
-INSERT INTO `ingredients` (`id`, `isActive`, `category`, `measurement_description`) VALUES
+INSERT INTO `ingredients` (`id`, `isActive`, `category`, `measurement_unit`) VALUES
 (1, 1, 'MSF', 'g'),
 (2, 1, 'VEGI', 'g'),
 (3, 1, 'OTHR', 'tbsp'),
@@ -754,8 +752,8 @@ CREATE TABLE IF NOT EXISTS `recipes` (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `preparation_time_min` int DEFAULT NULL,
-  `cooking_time_min` int DEFAULT NULL,
+  `preparation_time` int DEFAULT NULL,
+  `cooking_time` int DEFAULT NULL,
   `directions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `course` int NOT NULL,
   `meal` int NOT NULL,
@@ -772,7 +770,7 @@ CREATE TABLE IF NOT EXISTS `recipes` (
 -- Dumping data for table `recipes`
 --
 
-INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`, `image_url`, `preparation_time_min`, `cooking_time_min`, `directions`, `course`, `meal`, `method`, `timestamp`) VALUES
+INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`, `image_url`, `preparation_time`, `cooking_time`, `directions`, `course`, `meal`, `method`, `timestamp`) VALUES
 (1, 1, 1, 'Chicken Stir Fry', 'Delicious chicken stir fry with mixed vegetab', 'huyzh3gb.png', 15, 20, '1. Marinate chicken with soy sauce and cornstarch.\n2. Stir fry chicken until cooked.\n3. Add mixed vegetables and stir fry until tender.\n4. Serve hot with rice.', 1, 1, 1, '2024-03-21 09:16:24'),
 (1, 2, 1, 'Cucumber and Shrimp Aguachile', ' Delicious chicken stir fry with mixed vegetabw', '07thgnst.jpg', 15, 10, '1. Clean and devein shrimp.\r\n2. Slice cucumbers thinly.\r\n3. Mix shrimp, cucumber slices, lime juice, and chili peppers in a bowl.\r\n4. Let marinate in the refrigerator for 15 minutes.\r\n5. Serve chilled.', 2, 2, 3, '2024-03-21 09:16:24'),
 (3, 3, 1, 'chieck', 'taodeptrai', '07thgnst.jpg', 43, 24, '1. Clean and devein shrimp.\n2. Slice cucumbers thinly.\n3. Mix shrimp, cucumber slices, lime juice, and chili peppers in a bowl.\n4. Let marinate in the refrigerator for 15 minutes.\n5. Serve chilled.', 2, 1, 6, '2024-03-21 10:07:19'),
@@ -848,7 +846,7 @@ DROP TABLE IF EXISTS `recipe_ingredient`;
 CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
   `ingredient_id` int NOT NULL,
   `recipe_id` int NOT NULL,
-  `number_of_unit` int DEFAULT NULL,
+  `quanity` int DEFAULT NULL,
   KEY `ingredient_id` (`ingredient_id`),
   KEY `recipe_id` (`recipe_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -857,7 +855,7 @@ CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
 -- Dumping data for table `recipe_ingredient`
 --
 
-INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `number_of_unit`) VALUES
+INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `quanity`) VALUES
 (1, 1, 300),
 (2, 1, 200),
 (3, 1, 2),
@@ -1333,7 +1331,7 @@ INSERT INTO `users` (`id`, `username`, `password`, `first_Name`, `last_Name`, `d
 --
 ALTER TABLE `ingredients`
   ADD CONSTRAINT `FK_ingre_cat` FOREIGN KEY (`category`) REFERENCES `ingredient_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_ingre_unit` FOREIGN KEY (`measurement_description`) REFERENCES `ingredient_measurement_unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_ingre_unit` FOREIGN KEY (`measurement_unit`) REFERENCES `ingredient_measurement_unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `ingredient_nutritions`
