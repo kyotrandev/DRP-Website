@@ -49,6 +49,7 @@ class UserOperation extends DatabaseRelatedOperation {
         // Return user to get id
         $data['id'] = $result->getId();
         $_SESSION['level'] = $result->getLevel();
+        $_SESSION['userId'] = $result->getId();
         return $result;
       }
     }
