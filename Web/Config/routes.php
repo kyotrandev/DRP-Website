@@ -2,8 +2,6 @@
 
 // homepage router
 
-use App\Controllers\AdminController;
-
 $router->get('/', 'HomeController@homePage');
 $router->get('/index', 'HomeController@index');
 $router->get('/homepage', 'HomeController@homePage');

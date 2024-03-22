@@ -26,15 +26,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     'vitamin_c'
   ];
 
-  const BASE_READ_SQL = "SELECT ingredients.id, ingredient_categories.detail AS category , ingredient_measurement_unit.detail AS unit
-                        FROM ingredients 
-                        INNER JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
-                        INNER JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
-                        INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id";
-  const getSingleObjectById = self::BASE_READ_SQL . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
-  const getAllObjectsByFieldAndValue = self::BASE_READ_SQL . " WHERE :name = :value";
-  const getObjectsWithOffset = self::BASE_READ_SQL . " limit :limit offset :offset";
-  const getObjectWithOffsetByFielAndValue = self::BASE_READ_SQL . " WHERE :name = :value limit :limit offset :offset";
+  const BASE_SQL_QUERY = "SELECT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS unit
+                          FROM ingredients 
+                          INNER JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
+                          INNER JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
+                          INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id ";
+  const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
+  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ORDER BY ingredients.id";
+  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset ORDER BY ingredients.id";
+  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ORDER BY ingredients.id limit :limit offset :offset";
   
   public function __construct() {
     parent::__construct();
@@ -100,7 +100,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \Exception If there is an error executing the SQL query.
    */
 
-  static public function getSingleObject($sql, bool $getNutriOrNot = 1, $params = []){
+  static public function getSingleObject($sql, bool $getNutriOrNot = true, $params = []){
     $model = new parent();
     $conn = $model->DB_CONNECTION;
 
@@ -119,7 +119,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
     
     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-    if ($getNutriOrNot == 1)
+    if ($getNutriOrNot == true)
       $row['nutritionComponents'] = self::getNutrition($row['id']);
     return IngredientModel::createObjectByRawArray($row);
   }
@@ -134,7 +134,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getSingleObjectById(int $id) : ?IngredientModel{
     try {
-      return self::getSingleObject(self::getSingleObjectById, 1, [':id' => $id]);
+      return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -155,7 +155,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getSingleObjectByIdWithoutNutri(int $id) :?IngredientModel{
     try {
-      return self::getSingleObject(self::getSingleObjectById, 0, [':id' => $id]);
+      return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -178,7 +178,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \PDOException If there is an error connecting to the database.
    * @throws \Exception If there is an error executing the SQL query.
    */
-  static public function getMultipleObject($sql, bool $getNutriOrNot = 1, $params = []) {
+  static public function getMultipleObject($sql, bool $getNutriOrNot = true, $params = []) {
     $model = new parent();
     $conn = $model->DB_CONNECTION;
 
@@ -197,15 +197,17 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     
     $ingredients = [];
     while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      if ($getNutriOrNot == 1)
+      echo "<pre>";
+      var_dump($row);
+      echo "</pre>";
+      die();
+      if ($getNutriOrNot == true)
         $row['nutritionComponents'] = self::getNutrition($row['id']);
       $ingredient = IngredientModel::createObjectByRawArray($row);
       $ingredients[] = $ingredient;
     }
     return $ingredients;
   }
-
-
 
 
   /**
@@ -215,7 +217,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getAllObjects() : ?array {
     try {
-      return self::getMultipleObject(self::BASE_READ_SQL, 1);
+      return self::getMultipleObject(self::BASE_SQL_QUERY);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -238,7 +240,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
 
   static public function getAllObjectsWithoutNutri() : ?array {
     try {
-      return self::getMultipleObject(self::BASE_READ_SQL, 0);
+      return self::getMultipleObject(self::BASE_SQL_QUERY, false);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -266,7 +268,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectsWithOffset, 1, [':offset' => $offset, ':limit' => $limit]);
+      return self::getMultipleObject(self::getObjectsWithOffset, true, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -294,7 +296,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectsWithOffset, 0, [':offset' => $offset, ':limit' => $limit]);
+      return self::getMultipleObject(self::getObjectsWithOffset, false, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -318,7 +320,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getAllObjectsByFieldAndValue(string $columnName, $value) : ?array {
     try {
-      self::getMultipleObject(self::getAllObjectsByFieldAndValue, 1, [':name' => $columnName, ':value' => $value]);
+      self::getMultipleObject(self::getAllObjectsByFieldAndValue, true, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -340,7 +342,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getAllObjectsByFieldAndValueWithoutNutri(string $columnName, $value) : ?array {
     try {
-      self::getMultipleObject(self::getAllObjectsByFieldAndValue, 0, [':name' => $columnName, ':value' => $value]);
+      self::getMultipleObject(self::getAllObjectsByFieldAndValue, false, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -369,7 +371,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, 1, 
+      return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, true, 
             [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
@@ -398,7 +400,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
        if ($limit === null) {
          $limit = $offset + 5;
        }
-       return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, 0, 
+       return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
              [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
      } catch (\PDOException $exception) {
        handleException($exception);
@@ -411,6 +413,40 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
      return null;
   }
  
+
+  static public function getIdAndNameAllObject() : ?array {
+    try {
+      $model = new parent();
+      $conn = $model->DB_CONNECTION;
+      if ($conn == false)
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    }
+
+    $sql = "select id, name from ingredients";
+    $stmt = $conn->prepare($sql);
+    try {
+      if ($stmt->execute()) {
+        $pairs = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+          $pairs[] = [
+            'id' => $row['id'],
+            'name' => $row['name']
+          ];
+        }
+        return $pairs;
+      } else throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    echo \App\Views\ViewRender::errorViewRender('500');
+    return null;
+  }
 
   /**
    * Retrieves the ID and name of all ingredients from the database with pagination.

@@ -9,7 +9,7 @@ class IngredientModel extends BaseModel {
   private $name;
   private $category;
   private $measurementUnit;
-  private $nutritionComponents;
+  private $nutritionComponents ;
 
   const MSG_EXECUTE_PDO_LOG = "Error in executing prepare statement - ";
   const MSG_INPUT_DATA_EMPTY = "Error: input data cannot be empty - ";
@@ -81,25 +81,8 @@ class IngredientModel extends BaseModel {
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
     $ingredient->setMeasurementUnit($data['unit']);
-    $nutritionComponents = [
-      'calcium' => $data['calcium'],
-      'calories' => $data['calories'],
-      'carbohydrate' => $data['carbohydrate'],
-      'cholesterol' => $data['cholesterol'],
-      'fiber' => $data['fiber'],
-      'iron' => $data['iron'],
-      'fat' => $data['fat'],
-      'monounsaturated_fat' => $data['monounsaturated_fat'],
-      'polyunsaturated_fat' => $data['polyunsaturated_fat'],
-      'saturated_fat' => $data['saturated_fat'],
-      'potassium' => $data['potassium'],
-      'protein' => $data['protein'],
-      'sodium' => $data['sodium'],
-      'sugar' => $data['sugar'],
-      'vitamin_a' => $data['vitamin_a'],
-      'vitamin_c' => $data['vitamin_c'],
-    ];
-    $ingredient->setNutritionComponents($nutritionComponents);
+    if(isset($data['$nutritionComponents']));
+      $ingredient->setNutritionComponents($data['$nutritionComponents']);
     return $ingredient;
   }
 }
