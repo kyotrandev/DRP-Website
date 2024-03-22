@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\RecipeModel;
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientUpdateOperation;
 use App\Operations\UserOperation;

@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-
-
 class BmiController extends BaseController
 {
     public function index()

@@ -4,9 +4,6 @@ use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientCreateOperation;
 use App\Operations\IngredientUpdateOperation;
 
-// use autoload from composer
-require_once($_SERVER['DOCUMENT_ROOT'] . '/App/Core/init.php');
-
 class IngredientController extends BaseController
 {
     public function index() {

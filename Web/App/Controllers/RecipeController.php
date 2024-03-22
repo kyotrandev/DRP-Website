@@ -8,9 +8,6 @@ use App\Operations\IngredientReadOperation;
 use App\Operations\UploadImageOperation;
 
 
-// use autoload from composer
-require($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php');
-
 class RecipeController extends BaseController
 {
 

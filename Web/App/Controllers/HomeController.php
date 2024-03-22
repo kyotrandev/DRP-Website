@@ -2,7 +2,6 @@
 namespace App\Controllers;
 use App\Operations\RecipeReadOperation;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/App/Core/init.php');
 class HomeController extends BaseController
 {
     public function index()

@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Controllers;
-
-use App\Core\Database;
-use App\Models\NutritionCalculator;
+use App\Operations\NutritionCalculatorOperation;
 
 class NutritionCalculatorController
 {
@@ -11,11 +9,7 @@ class NutritionCalculatorController
     {
         $recipeId = $_GET('id');
 
-        $DB = new Database();
-
-        $nutritionCalculator = new NutritionCalculator($DB);
-
-        $nutrition = $nutritionCalculator->calculateNutritionForRecipe($recipeId);
+        $nutrition = NutritionCalculatorOperation::calculateNutritionForRecipe($recipeId);
 
         if ($nutrition !== null) {
             return $nutrition;

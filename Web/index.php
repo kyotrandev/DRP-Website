@@ -1,7 +1,5 @@
 <?php namespace App;
 
-
-
 require_once($_SERVER['DOCUMENT_ROOT'] . '/Config/general_config.php');
 require_once(ROOT_PATH . '/App/Core/init.php');
 
