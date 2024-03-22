@@ -197,10 +197,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     
     $ingredients = [];
     while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      echo "<pre>";
-      var_dump($row);
-      echo "</pre>";
-      die();
       if ($getNutriOrNot == true)
         $row['nutritionComponents'] = self::getNutrition($row['id']);
       $ingredient = IngredientModel::createObjectByRawArray($row);

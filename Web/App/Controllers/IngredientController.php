@@ -8,10 +8,6 @@ class IngredientController extends BaseController
 {
     public function index() {
         $ingredients = IngredientReadOperation::getAllObjects();
-        echo "<pre>";
-        var_dump($ingredients);
-        echo "</pre>";
-        die();
         return $this->loadView('ingredient.list_all', $ingredients);
     }
     public function listByCategory() {
