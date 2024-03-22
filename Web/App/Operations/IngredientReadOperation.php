@@ -3,38 +3,18 @@
 namespace App\Operations;
 
 use App\Models\IngredientModel;
-use App\Models\IngredientNutritionModels;
 
 class IngredientReadOperation extends DatabaseRelatedOperation implements I_ReadOperation {
 
-  const NUTRITION_COMPONENTS = [
-    'calcium',
-    'calories',
-    'carbohydrate',
-    'cholesterol',
-    'fiber',
-    'iron',
-    'fat',
-    'monounsaturated_fat',
-    'polyunsaturated_fat',
-    'saturated_fat',
-    'potassium',
-    'protein',
-    'sodium',
-    'sugar',
-    'vitamin_a',
-    'vitamin_c'
-  ];
-
-  const BASE_SQL_QUERY = "SELECT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS unit
+  const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS unit
                           FROM ingredients 
-                          INNER JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
-                          INNER JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
-                          INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id ";
+                          LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
+                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
+                          LEFT JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.ingredient_id ";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
-  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ORDER BY ingredients.id";
-  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset ORDER BY ingredients.id";
-  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ORDER BY ingredients.id limit :limit offset :offset";
+  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id";
+  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset ingredients.id";
+  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id limit :limit offset :offset";
   
   public function __construct() {
     parent::__construct();
@@ -45,11 +25,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * Retrieves the nutrition information for a specific ingredient.
    *
    * @param int $id The ID of the ingredient.
-   * @return IngredientNutritionModels|null The nutrition information for the ingredient, or null if not found.
    * @throws \PDOException If there is an error connecting to the database.
    * @throws \Exception If there is an error executing the SQL statement.
    */
-  static public function getNutrition($id) : ?IngredientNutritionModels{
+  static public function getNutrition($id) :?array {
     $model = new parent();
     $conn = $model->DB_CONNECTION;
 
@@ -61,23 +40,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
      * Prepare the SQL statement to get nutrition information base on 
      * @param self::NUTRITION_COMPONENTS
      */
-    $sql = "SELECT ";
-    foreach (self::NUTRITION_COMPONENTS as $nutritionName) {
-      $sql .= "`{$nutritionName}`,";
-    }
-    $sql = rtrim($sql, ',');
-    $sql .= "FROM ingredients 
-            INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id
-            WHERE ingredients.id = :id AND ingredients.isActive = 1";
-
-            
+    $sql = "SELECT nutrition_types.detail AS nutrition_name, ingredient_nutritions.quantity AS nutrition_quantity
+            FROM ingredient_nutritions INNER JOIN nutrition_types ON ingredient_nutritions.nutrition_id = nutrition_types.id
+            WHERE ingredient_nutritions.ingredient_id = :id";            
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
 
     try {
       if ($stmt->execute()) {
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return IngredientNutritionModels::createObjectByRawArray($row);
+        $nutritionComponents = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return $nutritionComponents;
       } else throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
     } catch (\Exception $exception) {
       handleException($exception);
@@ -125,7 +97,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
   /**
    * Retrieves a single IngredientModel object by its ID.
    *
@@ -146,7 +117,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
   /**
    * Retrieves a single IngredientModel object by its ID without including nutritional information.
    *
@@ -165,7 +135,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       return null;
     }
   }
-
 
 
   /**
@@ -227,13 +196,11 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
   /**
    * Retrieves all objects without nutritional information from the database.
    *
    * @return array|null An array of objects without nutritional information, or null if an error occurs.
    */
-
   static public function getAllObjectsWithoutNutri() : ?array {
     try {
       return self::getMultipleObject(self::BASE_SQL_QUERY, false);
@@ -248,7 +215,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
     return null;
   }
-
 
 
   /**
@@ -278,8 +244,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
-
   /**
    * Retrieves an array of objects with offset without including nutritional information.
    *
@@ -306,7 +270,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
   /**
    * Retrieves all objects from the database table based on a specified column name and value.
    *
@@ -329,6 +292,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     return null;
   }
 
+
   /**
    * Retrieves all ingredients without nutri info from the database table based on a specified column name and value.
    *
@@ -350,7 +314,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
     return null;
   }
-
 
 
   /**
@@ -381,7 +344,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
-
   /**
    * Retrieves an array of ingredient without nutri info with a specified offset, field, and value.
    *
@@ -410,6 +372,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
  
 
+  /**
+   * Retrieves the ID and name of all ingredients from the database.
+   *
+   * @return array|null An array of associative arrays containing the ID and name of each ingredient,
+   *                   or null if an error occurred.
+   */
   static public function getIdAndNameAllObject() : ?array {
     try {
       $model = new parent();
@@ -444,6 +412,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     return null;
   }
 
+
   /**
    * Retrieves the ID and name of all ingredients from the database with pagination.
    *
@@ -477,4 +446,65 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       return json_encode(["error" => "Internal server error: " . $exception->getMessage()]);
     }
   }
+
+  /**
+   * Retrieves the IDs of all ingredient categories from the database.
+   *
+   * @return array|null An array of category IDs, or null if an error occurred.
+   */
+  static public function getCategoryID(){
+    try {
+      $dbcon = new parent();
+      $conn = $dbcon->DB_CONNECTION;
+      if($conn == false){
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+      }
+      
+      $sql = "SELECT id FROM ingredient_categories";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute();
+
+      $categoryIDs = [];
+      $categoryIDs = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      return $categoryIDs;
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+
+  static public function getMeasurementUnit(){
+    try {
+      $dbcon = new parent();
+      $conn = $dbcon->DB_CONNECTION;
+      if($conn == false){
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+      }
+      
+      $sql = "SELECT id FROM ingredient_measuremenet_unit";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute();
+
+      $measurementUnit = [];
+      $measurementUnit = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      return $measurementUnit;
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
 }
+      
