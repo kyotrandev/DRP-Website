@@ -26,12 +26,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
 
-    $sql = "SELECT  ingredients.id, ingredient_categories.detail, ingredient_measurement_unit.detail
+    $sql = "SELECT  ingredients.id, ingredient_categories.detail AS category , ingredient_measurement_unit.detail AS unit
               ,`calories`,`calcium`,`carbohydrate`,`cholesterol`,`fiber`,`iron`,`fat`,`monounsaturated_fat`
               ,`polyunsaturated_fat`,`saturated_fat`,`potassium`,`protein`,`sodium`,`sugar`,`vitamin_a`,`vitamin_c` 
             FROM ingredients 
             INNER JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
-            INNER JOIN ingredient_measurement_unit ON ingredients.id = ingredient_measurement_unit.id 
+            INNER JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
             INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id
             WHERE ingredients.id = :id AND ingredients.isActive = 1";
 
