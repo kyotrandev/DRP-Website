@@ -30,7 +30,7 @@ function viewRecipes(data) {
         '<div class="card-footer d-flex align-items-center" style="border: none; background-color: white; padding: 0;">' +
         '<i class="fa-solid fa-clock-rotate-left"></i>' +
         '<p style="margin: 0;padding-left: 8px;">' +
-        recipe.preparation_time +
+        recipe.preparation_time_min +
         '"mins"</p>' +
         '</div>' +
         '<div class="rating"></div>' + // Thẻ div để chứa rating
@@ -63,7 +63,7 @@ function viewRecipes(data) {
       } else {
         // Thêm sao trống cho các rating còn lại
         recipeDiv
-           .find(".rating")
+          .find(".rating")
           .append('<i class="fa-regular fa-star" style="color: gold;"></i>');
       }
     }
@@ -82,7 +82,7 @@ $("#show").click(function () {
 });
 
 function getRecipes(page = 1) {
-  $("#show").text("Next...");
+  $("#show").text("Next");
   $.ajax({
     type: "GET",
     url: "/recipes/?page=" + page,
@@ -94,7 +94,7 @@ function getRecipes(page = 1) {
 
       // Trong hàm getRecipes:
       if (recipes.length < recipesPerPage) {
-        $("#show").fadeOut(1000);
+        $("#show").fadeOut(0);
       }
     },
   });
