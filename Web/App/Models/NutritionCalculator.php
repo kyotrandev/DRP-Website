@@ -1,16 +1,21 @@
 <?php
-namespace App\Operations;
-class NutritionCalculator extends DatabaseRelatedOperation{
-  public static function calculateNutritionForRecipe($recipeId)
+namespace App\Models;
+use App\Core\Database;
+class NutritionCalculator
+{
+  private $DB;
+  public function __construct(Database $DB)
   {
-    $dbcon = new parent();
-    $conn = $dbcon->DB_CONNECTION;
+    $this->DB = $DB;
+  }
+  public function calculateNutritionForRecipe($recipeId)
+  {
     try {
       $sql = "SELECT ir.ingredient_id, ir.number_of_unit,ir.measurement_description
                 FROM ingredient_recipe ir
                 WHERE ir.recipe_id = :recipeId";
 
-      $stmt = $conn->prepare($sql);
+      $stmt = $this->DB->getConnection()->prepare($sql);
       $stmt->bindParam(':recipeId', $recipeId, \PDO::PARAM_INT);
       $stmt->execute();
 
@@ -38,7 +43,7 @@ class NutritionCalculator extends DatabaseRelatedOperation{
                           FROM ingredients
                           WHERE id = :ingredientId";
 
-        $stmtIngredient = $conn->prepare($sqlIngredient);
+        $stmtIngredient = $this->DB->getConnection()->prepare($sqlIngredient);
         $stmtIngredient->bindParam(':ingredientId', $row['ingredient_id'], \PDO::PARAM_INT);
         $stmtIngredient->execute();
 
@@ -47,6 +52,8 @@ class NutritionCalculator extends DatabaseRelatedOperation{
         if ($ingredient === false) {
           throw new \Exception("Thành phần không tồn tại");
         }
+
+        
 
         foreach ($totalNutrition as $key => $value) {
           if ($ingredient[$key] !== null && $row['number_of_unit'] !== null) {

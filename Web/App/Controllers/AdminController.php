@@ -124,12 +124,12 @@ class AdminController extends BaseController
             $recipes = RecipeReadOperation::getSingleObjectByIdForAdmin($_GET['id']);
         } else if ($_GET['name'] != '') {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['name']);
-        } else if ($_GET['course'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $_GET['course']);
-        } else if ($_GET['meal'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal', $_GET['meal']);
-        } else if ($_GET['method'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('method', $_GET['method']);
+        } else if ($_GET['meal_type_1'] != '') {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal_type_1', $_GET['meal_type_1']);
+        } else if ($_GET['meal_type_2'] != '') {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal_type_2', $_GET['meal_type_2']);
+        } else if ($_GET['meal_type_3'] != '') {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal_type_3', $_GET['meal_type_3']);
         }
 
         if (!$recipes) {

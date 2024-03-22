@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql-db:3306
--- Generation Time: Mar 22, 2024 at 01:59 AM
+-- Generation Time: Mar 22, 2024 at 02:12 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.16
 
@@ -25,7 +25,6 @@ DELIMITER $$
 --
 -- Procedures
 --
-DROP PROCEDURE IF EXISTS `GenerateRandomRatings`$$
 CREATE DEFINER=`ad_db_ct07`@`%` PROCEDURE `GenerateRandomRatings` ()   BEGIN
     DECLARE i INT DEFAULT 1;
     DECLARE rand_user_id INT;
@@ -58,7 +57,6 @@ DELIMITER ;
 -- Table structure for table `ingredients`
 --
 
-DROP TABLE IF EXISTS `ingredients`;
 CREATE TABLE IF NOT EXISTS `ingredients` (
   `id` int NOT NULL AUTO_INCREMENT,
   `isActive` tinyint(1) DEFAULT '1',
@@ -368,7 +366,6 @@ INSERT INTO `ingredients` (`id`, `isActive`, `category`, `measurement_unit`) VAL
 -- Table structure for table `ingredient_categories`
 --
 
-DROP TABLE IF EXISTS `ingredient_categories`;
 CREATE TABLE IF NOT EXISTS `ingredient_categories` (
   `id` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -396,7 +393,6 @@ INSERT INTO `ingredient_categories` (`id`, `detail`) VALUES
 -- Table structure for table `ingredient_measurement_unit`
 --
 
-DROP TABLE IF EXISTS `ingredient_measurement_unit`;
 CREATE TABLE IF NOT EXISTS `ingredient_measurement_unit` (
   `id` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -423,7 +419,6 @@ INSERT INTO `ingredient_measurement_unit` (`id`, `detail`) VALUES
 -- Table structure for table `ingredient_nutritions`
 --
 
-DROP TABLE IF EXISTS `ingredient_nutritions`;
 CREATE TABLE IF NOT EXISTS `ingredient_nutritions` (
   `id` int NOT NULL,
   `calories` int DEFAULT '0',
@@ -744,7 +739,6 @@ INSERT INTO `ingredient_nutritions` (`id`, `calories`, `calcium`, `carbohydrate`
 -- Table structure for table `recipes`
 --
 
-DROP TABLE IF EXISTS `recipes`;
 CREATE TABLE IF NOT EXISTS `recipes` (
   `user_id` int NOT NULL,
   `recipe_id` int NOT NULL AUTO_INCREMENT,
@@ -820,7 +814,6 @@ INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`
 -- Table structure for table `recipe_course_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_course_categories`;
 CREATE TABLE IF NOT EXISTS `recipe_course_categories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type_name` varchar(255) NOT NULL,
@@ -842,7 +835,6 @@ INSERT INTO `recipe_course_categories` (`id`, `type_name`) VALUES
 -- Table structure for table `recipe_ingredient`
 --
 
-DROP TABLE IF EXISTS `recipe_ingredient`;
 CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
   `ingredient_id` int NOT NULL,
   `recipe_id` int NOT NULL,
@@ -1146,7 +1138,6 @@ INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `quanity`) VALUES
 -- Table structure for table `recipe_meal_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_meal_categories`;
 CREATE TABLE IF NOT EXISTS `recipe_meal_categories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type_name` varchar(255) NOT NULL,
@@ -1169,7 +1160,6 @@ INSERT INTO `recipe_meal_categories` (`id`, `type_name`) VALUES
 -- Table structure for table `recipe_method_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_method_categories`;
 CREATE TABLE IF NOT EXISTS `recipe_method_categories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `method_name` varchar(255) NOT NULL,
@@ -1195,7 +1185,6 @@ INSERT INTO `recipe_method_categories` (`id`, `method_name`) VALUES
 -- Table structure for table `recipe_ratings`
 --
 
-DROP TABLE IF EXISTS `recipe_ratings`;
 CREATE TABLE IF NOT EXISTS `recipe_ratings` (
   `rating_id` int NOT NULL AUTO_INCREMENT,
   `recipe_id` int NOT NULL,
@@ -1296,7 +1285,6 @@ INSERT INTO `recipe_ratings` (`rating_id`, `recipe_id`, `user_id`, `rating`, `co
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,

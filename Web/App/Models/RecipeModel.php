@@ -12,15 +12,15 @@ class RecipeModel extends BaseModel {
     private $preparation_time;
     private $cooking_time;
     private $direction;
-    private $course;
-    private $meal;
-    private $method;
+    private $meal_type_1;
+    private $meal_type_2;
+    private $meal_type_3;
     private $timestamp;
     private $ingredientComponets = [];
 
     public function __construct($id = null, $name = null, $description = null, $image_url = null, 
-            $preparation_time = null, $cooking_time = null, $direction = null, $course = null, 
-            $meal = null, $method = null, $timestamp = null, $ingredientComponets = null) {
+            $preparation_time = null, $cooking_time = null, $direction = null, $meal_type_1 = null, 
+            $meal_type_2 = null, $meal_type_3 = null, $timestamp = null, $ingredientComponets = null) {
         parent::__construct();
         $this->id = $id;
         $this->name = $name;
@@ -29,9 +29,9 @@ class RecipeModel extends BaseModel {
         $this->preparation_time = $preparation_time;
         $this->cooking_time = $cooking_time;
         $this->direction = $direction;
-        $this->course = $course;
-        $this->meal = $meal;
-        $this->method = $method;
+        $this->meal_type_1 = $meal_type_1;
+        $this->meal_type_2 = $meal_type_2;
+        $this->meal_type_3 = $meal_type_3;
         $this->timestamp = $timestamp;
         $this->ingredientComponets = $ingredientComponets; 
     }
@@ -57,12 +57,12 @@ class RecipeModel extends BaseModel {
     }
     public function getDirection() { return $this->direction; }
     public function setDirection($direction) { $this->direction = $direction; }
-    public function getcourse() { return $this->course; }
-    public function setcourse($course) { $this->course = $course; }
-    public function getmeal() { return $this->meal; }
-    public function setmeal($meal) { $this->meal = $meal; }
-    public function getmethod() { return $this->method; }
-    public function setmethod($method) { $this->method = $method; }
+    public function getMealType1() { return $this->meal_type_1; }
+    public function setMealType1($meal_type_1) { $this->meal_type_1 = $meal_type_1; }
+    public function getMealType2() { return $this->meal_type_2; }
+    public function setMealType2($meal_type_2) { $this->meal_type_2 = $meal_type_2; }
+    public function getMealType3() { return $this->meal_type_3; }
+    public function setMealType3($meal_type_3) { $this->meal_type_3 = $meal_type_3; }
     public function getTimestamp() { return $this->timestamp; }
     public function setTimestamp($timestamp) { $this->timestamp = $timestamp; }
     public function getIngredientComponets() { return $this->ingredientComponets; }
@@ -87,18 +87,18 @@ class RecipeModel extends BaseModel {
     }
 
     public static function createObjectByRawArray($data){
-        $object = new RecipeModel();
+        $object = new self();
         $object->setId($data['id']);
         $object->setActive($data['isActive'] ?? 1);
         $object->setName($data['name']);
         $object->setDescription($data['description'] ?? "Unknown");
         $object->setImgUrl($data['image_url'] ?? null);
-        $object->setPreparationTime($data['preparation_time'] ?? "Unknown");
-        $object->setCookingTime($data['cooking_time'] ?? "Unknown");
+        $object->setPreparationTime($data['preparation_time_min'] ?? "Unknown");
+        $object->setCookingTime($data['cooking_time_min'] ?? "Unknown");
         $object->setDirection($data['directions'] ?? "Unknown");
-        $object->setcourse($data['course'] ?? "Unknown");
-        $object->setmeal($data['meal'] ?? "Unknown");
-        $object->setmethod($data['method'] ?? "Unknown");
+        $object->setMealType1($data['meal_type_1'] ?? "Unknown");
+        $object->setMealType2($data['meal_type_2'] ?? "Unknown");
+        $object->setMealType3($data['meal_type_3'] ?? "Unknown");
         $object->setTimestamp($data['timestamp'] ?? "Unknown");
         if (isset($data['ingredientComponents']))
             $object->setIngredientComponets(($data['ingredientComponents']));

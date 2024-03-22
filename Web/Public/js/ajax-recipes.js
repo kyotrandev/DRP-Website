@@ -30,7 +30,7 @@ function viewRecipes(data) {
         '<div class="card-footer d-flex align-items-center" style="border: none; background-color: white; padding: 0;">' +
         '<i class="fa-solid fa-clock-rotate-left"></i>' +
         '<p style="margin: 0;padding-left: 8px;">' +
-        recipe.preparation_time +
+        recipe.preparation_time_min +
         '"mins"</p>' +
         '</div>' +
         '<div class="rating"></div>' + // Thẻ div để chứa rating
