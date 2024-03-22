@@ -3,12 +3,12 @@ namespace App\Controllers;
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientCreateOperation;
 use App\Operations\IngredientUpdateOperation;
+use App\Operations\ValidateIngredientDataHolder;
 
 class IngredientController extends BaseController
 {
     public function index() {
-        $ingredients = IngredientReadOperation::getAllObjects();
-        return $this->loadView('ingredient.list_all', $ingredients);
+        return $this->loadView('ingredient.list_all');
     }
     public function listByCategory() {
         $category = $_GET['category'];
@@ -29,21 +29,25 @@ class IngredientController extends BaseController
         else
             return $this->loadView('ingredient.list_all', $ingredients);
     }
-    
     public function addUI() {
-        return $this->loadView('ingredient.add');
+        $optionVal = ValidateIngredientDataHolder::getInstance();
+        $data[] = $optionVal;
+        return $this->loadView('ingredient.add', $data);
     }
     public function add() {
         $data = $_POST;
+
+        echo '<pre>';
+        var_dump($data);
+        echo '</pre>';
+        die();
+
         IngredientCreateOperation::execute($data);
         header("Location: /ingredient/add");
     }
-
-
     public function findByName(){
         return $this->loadView('ingredient.find_ingredient');
     }
-
     public function editUI() {
         try {
             $ingredient = IngredientReadOperation::getSingleObjectById(1);
@@ -60,11 +64,20 @@ class IngredientController extends BaseController
         echo \App\Views\ViewRender::errorViewRender('404');
         return null;
     }
-
     public function edit() {
         $data = $_POST;
         IngredientUpdateOperation::execute($data);
         header("Location: /ingredient/edit");
+    }
+
+    public function test() {
+        $ingredients = IngredientReadOperation::getAllObjects();
+        echo '<pre>';
+        var_dump($ingredients);
+        echo '</pre>';
+
+        $this->loadView('pages.test', $ingredients);
+
     }
 
 }

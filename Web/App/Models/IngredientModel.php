@@ -74,7 +74,7 @@ class IngredientModel extends BaseModel {
     $ingredient->setID($data['id']);
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
-    $ingredient->setMeasurementUnit($data['unit']);
+    $ingredient->setMeasurementUnit($data['measurementUnit']);
     if(isset($data['nutritionComponents']) && $data['nutritionComponents'] != null);
       $ingredient->setNutritionComponents($data['nutritionComponents']);
     return $ingredient;

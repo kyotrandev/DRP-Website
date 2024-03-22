@@ -73,3 +73,5 @@ $router->post('/recipe/edit','RecipeController@edit');
 $router->get('/recipe/delete','RecipeController@delete');
 $router->get('/recipe/detail','RecipeController@viewDetail');
 $router->get('/recipe/search','RecipeController@search');
+
+$router->get('/test','IngredientController@test');

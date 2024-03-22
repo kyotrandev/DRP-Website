@@ -42,7 +42,7 @@ class DatabaseRelatedOperation {
     if ($stmt->rowCount() > 0){
       switch($fetchMode){
         case 1:
-          $stmt->setFetchMode(\PDO::FETCH_ASSOC); // Get the result as an associative arraybreak;
+          return $stmt->fetchAll(\PDO::FETCH_ASSOC); // Get the result as an associative arraybreak;
         case 2: 
           $stmt->setFetchMode(\PDO::FETCH_KEY_PAIR); // Get the result as an associative array where the first column is the key and the second column is the value
           break;

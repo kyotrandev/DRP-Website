@@ -77,7 +77,7 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
       $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
               cooking_time = :cooking_time, directions = :directions, image_url = :image_url,
               course = :course, meal = :meal, method = :method where id = :id";
-      self::query($sql, $conn, \PDO::FETCH_ASSOC, [
+      self::query($sql, 1, [
         'id' => $data['id'],
         'name' => $data['name'],
         'description' => $data['description'],
@@ -94,7 +94,7 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
               cooking_time = :cooking_time, directions = :directions, 
               course = :course, meal = :meal, method = :method where id = :id";
 
-      self::query($sql, $conn, \PDO::FETCH_ASSOC, [
+      self::query($sql,1, [
         'id' => $data['id'],
         'name' => $data['name'],
         'description' => $data['description'],

@@ -81,7 +81,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
             potassium = :potassium, protein = :protein, sodium = :sodium, sugar = :sugar, 
             vitamin_a = :vitamin_a, vitamin_c = :vitamin_c WHERE id = :id";
 
-    self::query($sql, $conn, \PDO::FETCH_ASSOC, [ 
+    self::query($sql, 1, [ 
       'id' => $data['id'],
       'name' => $data['name'],
       'category' => $data['category'],

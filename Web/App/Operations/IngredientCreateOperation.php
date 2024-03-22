@@ -30,14 +30,15 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     $validateData = ValidateIngredientDataHolder::getInstance();
     $validCategories = $validateData->validCategories;
     $validMeasurements = $validateData->validMeasurements;
+    $validvalidNutrition = $validateData->validNutrition;
     
     /**
      * Validate the data with specific rules
      * name: required, only letters and numbers
      * category: required, must be one of the valid categories
      * measurement_unit: required, must be one of the valid measurements
-     * calcium, calories, carbohydrate, cholesterol, fiber, iron, fat, monounsaturated_fat, polyunsaturated_fat,
-     * saturated_fat, potassium, protein, sodium, sugar, vitamin_a, vitamin_c: optional, must be a number
+     * Nutrition types: optional, must be one of the valid nutrition types which are queried from the database
+     * Nutrition values: optional, must be a number 
      */
 
     if ($data == null)
@@ -47,10 +48,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       throw new \PDOException(self::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". ");
 
     $requiredFields = ['name', 'category', 'measurement_unit'];
-    $numericFields = [
-      'calcium', 'calories', 'carbohydrate', 'cholesterol', 'fiber', 'iron', 'fat',
-      'monounsaturated_fat', 'polyunsaturated_fat', 'saturated_fat', 'potassium', 'protein', 'sodium', 'sugar', 'vitamin_a', 'vitamin_c'
-    ];
+    
 
     foreach ($requiredFields as $field) {
       if (empty($data[$field])) {
@@ -58,10 +56,9 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       }
     }
 
-    foreach ($numericFields as $field) {
-      if (!empty($data[$field]) && !is_numeric($data[$field])) {
+    foreach ($data['nutritionComponents'] as $nutritionType => $nutrtionValue) {
+      if(!in_array($nutritionType, $validvalidNutrition) || !is_numeric($nutrtionValue))
         throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. ');
-      }
     }
 
     if (
@@ -90,40 +87,25 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       $conn->beginTransaction();
       $insertIngredientSql = "INSERT INTO ingredients (`name`, `category`, `measurement_unit`)
               VALUES (:name, :category, :measurement_unit)";
-      self::query($insertIngredientSql, $conn, \PDO::FETCH_ASSOC, [
+      self::query($insertIngredientSql, 1, [
         'name' => $data['name'],
         'category' => $data['category'],
         'measurement_unit' => $data['measurement_unit']]);
       
       $ingredientId = $conn->lastInsertId();
-      $insertNutritionSql = "INSERT INTO ingredient_nutritions (`id`, `calories`, `calcium`, `carbohydrate`, 
-                              `cholesterol`, `fiber`, `iron`, `fat`, `monounsaturated_fat`, `polyunsaturated_fat`, 
-                              `saturated_fat`, `potassium`, `protein`, `sodium`, `sugar`, `vitamin_a`, `vitamin_c`) 
-                            VALUES ({$ingredientId} , :calcium, :calories, :carbohydrate, :cholesterol, 
-                              :fiber, :iron, :fat, :monounsaturated_fat, :polyunsaturated_fat, 
-                              :saturated_fat, :potassium, :protein, :sodium, :sugar, :vitamin_a, :vitamin_c)";
 
-      /** 
-       * Execute the query with the given data
-       */
-      self::query($insertNutritionSql, $conn, \PDO::FETCH_ASSOC, [
-        'calcium' => $data['calcium'] ?? 0,
-        'calories' => $data['calories'] ?? 0,
-        'carbohydrate' => $data['carbohydrate'] ?? 0,
-        'cholesterol' => $data['cholesterol'] ?? 0,
-        'fiber' => $data['fiber'] ?? 0,
-        'iron' => $data['iron'] ?? 0,
-        'fat' => $data['fat'] ?? 0,
-        'monounsaturated_fat' => $data['monounsaturated_fat'] ?? 0,
-        'polyunsaturated_fat' => $data['polyunsaturated_fat'] ?? 0,
-        'saturated_fat' => $data['saturated_fat'] ?? 0,
-        'potassium' => $data['potassium'] ?? 0,
-        'protein' => $data['protein'] ?? 0,
-        'sodium' => $data['sodium'] ?? 0,
-        'sugar' => $data['sugar'] ?? 0,
-        'vitamin_a' => $data['vitamin_a'] ?? 0,
-        'vitamin_c' => $data['vitamin_c'] ?? 0
-      ]);
+      $insertNutritionSql = "INSERT INTO `ingredient_nutritions`(`ingredient_id`, `nutrition_id`, `quantity`) VALUES ";
+      for ($i = 0; $i < count($data['nutritionType']); $i++) {
+        if (isset($data['nutritionValue'][$i]))
+          $insertNutritionSql .= "({$ingredientId}, '{$data['nutritionType'][$i]}', {$data['nutritionValue'][$i]}),";
+      }
+
+      $insertNutritionSql = rtrim($insertNutritionSql, ',');
+      echo $insertNutritionSql;
+      die();
+      
+      // execute the query to insert the ingredient_recipe data
+      $conn->exec($insertNutritionSql);
       $conn->commit();
     } catch (\PDOException $PDOException) {
       $conn->rollBack();

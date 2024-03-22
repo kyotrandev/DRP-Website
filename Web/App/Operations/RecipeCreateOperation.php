@@ -90,7 +90,7 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
         'meal' => $data['meal'],
         'method' => $data['method']
       ];
-      self::query($sql, $conn, \PDO::FETCH_ASSOC, $params);
+      self::query($sql, 1, $params);
 
 
       // Prepare the SQL query for the ingredient_recipe table
@@ -103,7 +103,7 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
       }
 
 
-    $sql2 .= implode(',', $values);
+    $sql2 .= implode(',', $values); 
     // execute the query to insert the ingredient_recipe data
     $conn->exec($sql2);
     $conn->commit();

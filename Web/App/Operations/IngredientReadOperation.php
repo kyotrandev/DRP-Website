@@ -372,10 +372,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getCategoryID(){
     try {
-      $sql = "SELECT id FROM ingredient_categories";
+      $sql = "SELECT id, detail FROM ingredient_categories";
 
       $categoryIDs = [];
-      $categoryIDs = self::query($sql, 8);
+      $categoryIDs = self::query($sql, 1);
       return $categoryIDs;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -392,10 +392,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
 
   static public function getNutritionType(){
     try {
-      $sql = "SELECT id FROM nutrition_types";
+      $sql = "SELECT id, detail FROM nutrition_types";
 
       $nutritionType = [];
-      $nutritionType = self::query($sql, 8);
+      $nutritionType = self::query($sql, 1);
       return $nutritionType;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -411,10 +411,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   
   static public function getMeasurementUnit(){
     try {
-      $sql = "SELECT id FROM ingredient_measuremenet_unit";
+      $sql = "SELECT id, detail FROM ingredient_measurement_unit";
 
       $measurementUnit = [];
-      $measurementUnit = self::query($sql, 8);
+      $measurementUnit = self::query($sql, 1);
       return $measurementUnit;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
