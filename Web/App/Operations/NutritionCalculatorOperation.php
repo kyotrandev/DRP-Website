@@ -13,7 +13,7 @@ class NutritionCalculatorOperation extends DatabaseRelatedOperation {
       $dbconn = new parent();
       $conn = $dbconn->DB_CONNECTION;
 
-      $sql = "SELECT ir.ingredient_id, ir.number_of_unit,ir.measurement_description
+      $sql = "SELECT ir.ingredient_id, ir.quantity,ir.measurement_unit
                 FROM ingredient_recipe ir
                 WHERE ir.recipe_id = :recipeId";
 
@@ -56,10 +56,10 @@ class NutritionCalculatorOperation extends DatabaseRelatedOperation {
         }
 
         foreach ($totalNutrition as $key => $value) {
-          if ($ingredient[$key] !== null && $row['number_of_unit'] !== null) {
-              if ($row['measurement_description'] == 'g') {
-                  $totalNutrition[$key] += $ingredient[$key] * $row['number_of_unit'] / 100;         
-          }else{ $totalNutrition[$key] += $ingredient[$key] * $row['number_of_unit'];}
+          if ($ingredient[$key] !== null && $row['quantity'] !== null) {
+              if ($row['measurement_unit'] == 'g') {
+                  $totalNutrition[$key] += $ingredient[$key] * $row['quantity'] / 100;         
+          }else{ $totalNutrition[$key] += $ingredient[$key] * $row['quantity'];}
           }
         }
       }

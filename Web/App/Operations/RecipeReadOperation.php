@@ -164,7 +164,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
       $sql = "select * from recipes where id = :id AND isActive = 1";
       $recipe = RecipeModel::createObjectByRawArray(self::query($sql, $conn, \PDO::FETCH_ASSOC, ['id' => $id])[0]);
 
-      $sql2 = "select ingredients.name, number_of_unit, ingredient_recipe.measurement_description 
+      $sql2 = "select ingredients.name, quantity, ingredient_recipe.measurement_unit 
                 from ingredient_recipe 
                 join recipes on ingredient_recipe.recipe_id = recipes.id
                 join ingredients on ingredient_recipe.ingredient_id = ingredients.id
@@ -197,7 +197,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
       $sql = "select * from recipes where id = :id";
       $recipe = RecipeModel::createObjectByRawArray(self::query($sql, $conn, \PDO::FETCH_ASSOC, ['id' => $id])[0]);
 
-      $sql2 = "select ingredients.name, number_of_unit, ingredient_recipe.measurement_description 
+      $sql2 = "select ingredients.name, quantity, ingredient_recipe.measurement_unit 
                 from ingredient_recipe 
                 join recipes on ingredient_recipe.recipe_id = recipes.id
                 join ingredients on ingredient_recipe.ingredient_id = ingredients.id
@@ -285,7 +285,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
 
-      $sql = "select ingredients.name, number_of_unit, ingredient_recipe.measurement_description 
+      $sql = "select ingredients.name, quantity, ingredient_recipe.measurement_unit 
                 from ingredient_recipe 
                 join ingredients on ingredient_recipe.ingredient_id = ingredients.id
                 where recipe_id = :id and ingredients.isActive = 1 and recipes.isActive = 1";

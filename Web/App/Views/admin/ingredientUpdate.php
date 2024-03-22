@@ -15,7 +15,7 @@ function getCategory($category) {
     ][$category];
 } 
 
-function getMeasurementDescription($measurementDescription) {
+function getMeasurementUnit($measurementUnit) {
     return [
         'tsp' => 'teaspoon',
         'cup' => 'cup',
@@ -25,7 +25,7 @@ function getMeasurementDescription($measurementDescription) {
         'can' => 'can',
         'oz' => 'oz',
         'unit' => 'unit'
-    ][$measurementDescription];
+    ][$measurementUnit];
 }
 ?>
 
@@ -48,7 +48,7 @@ function getMeasurementDescription($measurementDescription) {
             <form action="/manager/ingredient/update" method="POST" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
                 <input type="hidden" class="form-control" id="id" name="id" value="<?= $ingredient->getId() ?>">
                 <div class="mb-3">
-                    <label for="meal_type_3" class="col-sm-10 col-form-label">Category (Last: <?= getCategory($ingredient->getCategory())?>)</label>
+                    <label for="method" class="col-sm-10 col-form-label">Category (Last: <?= getCategory($ingredient->getCategory())?>)</label>
                     <div class="col-sm-15">
                         <select class="form-select" id="category" name="category">
                             <?php foreach (['EMMP', 'FAO', 'FRU', 'GNBK', 'HRBS', 'MSF', 'PRP', 'VEGI', 'OTHR'] as $category) : ?>
@@ -58,17 +58,17 @@ function getMeasurementDescription($measurementDescription) {
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="measurement_description" class="col-sm-10 col-form-label">Measurement Description (Last: <?= getMeasurementDescription($ingredient->getMeasurementDescription()) ?>)</label>
+                    <label for="measurement_unit" class="col-sm-10 col-form-label">Measurement Description (Last: <?= getMeasurementUnit($ingredient->getMeasurementUnit()) ?>)</label>
                     <div class="col-sm-15">
-                        <select class="form-select" id="measurement_description" name="measurement_description">
-                            <?php foreach (['tsp', 'cup', 'tbsp', 'g', 'lb', 'can', 'oz', 'unit'] as $measurementDescription) : ?>
-                                <option value="<?= $measurementDescription ?>" <?= ($ingredient->getMeasurementDescription() == $measurementDescription) ? 'selected' : '' ?>><?= getMeasurementDescription($measurementDescription) ?></option>
+                        <select class="form-select" id="measurement_unit" name="measurement_unit">
+                            <?php foreach (['tsp', 'cup', 'tbsp', 'g', 'lb', 'can', 'oz', 'unit'] as $measurementUnit) : ?>
+                                <option value="<?= $measurementUnit ?>" <?= ($ingredient->getMeasurementUnit() == $measurementUnit) ? 'selected' : '' ?>><?= getMeasurementUnit($measurementUnit) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="preparation_time_min" class="col-sm-10 col-form-label">Name</label>
+                    <label for="preparation_time" class="col-sm-10 col-form-label">Name</label>
                     <div class="col-sm-15">
                         <input type="text" class="form-control" id="name" name="name" value="<?= $ingredient->getName() ?>">
                     </div>

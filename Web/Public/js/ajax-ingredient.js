@@ -22,7 +22,7 @@ function viewIngredient(ingredients) {
       "<td>";
 
     // Chuyển đổi đơn vị đo lường
-    switch (ingredient.measurement_description) {
+    switch (ingredient.measurement_unit) {
       case "g":
         row += "Gram";
         break;

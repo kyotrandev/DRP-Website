@@ -4,21 +4,21 @@ $(document).ready(function () {
           name: {
               required: true
           },
-          preparation_time_min: {
+          preparation_time: {
               required: true,
               digits: true
           },
-          cooking_time_min: {
+          cooking_time: {
               required: true,
               digits: true
           },
           meal_recipe_1: {
               required: true
           },
-          meal_type_2: {
+          meal: {
               required: true
           },
-          meal_type_3: {
+          method: {
               required: true
           },
           directions: {
@@ -32,21 +32,21 @@ $(document).ready(function () {
           name: {
               required: "Please enter the recipe name."
           },
-          preparation_time_min: {
+          preparation_time: {
               required: "Please enter the preparation time.",
               digits: "Please enter a valid number for preparation time."
           },
-          cooking_time_min: {
+          cooking_time: {
               required: "Please enter the cooking time.",
               digits: "Please enter a valid number for cooking time."
           },
           meal_recipe_1: {
               required: "Please select a meal recipe."
           },
-          meal_type_2: {
+          meal: {
               required: "Please select a meal type."
           },
-          meal_type_3: {
+          method: {
               required: "Please select a meal category."
           },
           directions: {

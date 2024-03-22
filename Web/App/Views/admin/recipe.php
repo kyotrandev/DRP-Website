@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-auto">
                     <div class="col-sm-10">
-                        <select class="form-select" id="meal_type_1" name="meal_type_1">
+                        <select class="form-select" id="course" name="course">
                             <option value="" selected disabled hidden>Select meal recipe for</option>
                             <option value="Breakfast">Breakfast</option>
                             <option value="Lunch">Lunch</option>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-auto">
                     <div class="col-sm-10">
-                        <select class="form-select" id="meal_type_2" name="meal_type_2" aria-label="Select meal type">
+                        <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
                             <option value="" selected disabled hidden>Select meal type</option>
                             <option value="Appetizer">Appetizer</option>
                             <option value="Main Dish">Main Dish</option>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-auto">
                     <div class="col-sm-10">
-                        <select class="form-select" id="meal_type_3" name="meal_type_3" aria-label="Select meal type">
+                        <select class="form-select" id="method" name="method" aria-label="Select meal type">
                             <option value="" selected disabled hidden>Select meal category</option>
                             <option value="Baked">Baked</option>
                             <option value="Beverage">Beverage</option>
@@ -96,9 +96,9 @@
                         <td><?= $recipe->getPreparationTime()?></td>
                         <td><?= $recipe->getCookingTime()?></td>
                         <td><?= $recipe->getDirection()?></td>
-                        <td><?= $recipe->getMealType1()?></td>
-                        <td><?= $recipe->getMealType2()?></td>
-                        <td><?= $recipe->getMealType3()?></td>
+                        <td><?= $recipe->getCourse()?></td>
+                        <td><?= $recipe->getMeal()?></td>
+                        <td><?= $recipe->getMethod()?></td>
                         <td class="">
                             <?if($recipe->getActive()):?>
                                 <form class="d-inline-block" action="/manager/recipe" method="POST">

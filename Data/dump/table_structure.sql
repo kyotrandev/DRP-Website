@@ -443,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `ingredient_nutritions` (
 --
 -- Dumping data for table `ingredient_nutritions`
 --
-
+ 
 INSERT INTO `ingredient_nutritions` (`id`, `calories`, `calcium`, `carbohydrate`, `cholesterol`, `fiber`, `iron`, `fat`, `monounsaturated_fat`, `polyunsaturated_fat`, `saturated_fat`, `potassium`, `protein`, `sodium`, `sugar`, `vitamin_a`, `vitamin_c`) VALUES
 (1, 165, 12, 0, 75, 0, 1, 4, 1, 0, 1, 250, 31, 75, 0, 0, 0),
 (2, 50, 20, 10, 0, 2, 1, 0, 0, 0, 0, 200, 5, 50, 3, 20, 10),

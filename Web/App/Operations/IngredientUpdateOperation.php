@@ -19,7 +19,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
      * Validate the data with specific rules
      * name: required, only letters and numbers
      * category: required, must be one of the valid categories
-     * measurement_description: required, must be one of the valid measurements
+     * measurement_unit: required, must be one of the valid measurements
      * calcium, calories, carbohydrate, cholesterol, fiber, iron, fat, monounsaturated_fat, polyunsaturated_fat,
      * saturated_fat, potassium, protein, sodium, sugar, vitamin_a, vitamin_c: optional, must be a number
      */
@@ -28,7 +28,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
     $validCategories = array('EMMP', 'FAO', 'FRU', 'GNBK', 'HRBS', 'MSF', 'OTHR', 'PRP', 'VEGI');
     $validMeasurements = array('tsp', 'cup', 'tbsp', 'g', 'lb', 'can', 'oz', 'unit');
 
-    $requiredFields = ['name', 'category', 'measurement_description'];
+    $requiredFields = ['name', 'category', 'measurement_unit'];
     $numericFields = ['calcium', 'calories', 'carbohydrate', 'cholesterol', 'fiber', 'iron', 'fat', 
       'monounsaturated_fat', 'polyunsaturated_fat', 'saturated_fat', 'potassium', 'protein', 'sodium', 'sugar', 'vitamin_a', 'vitamin_c'];
 
@@ -46,7 +46,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
 
     if (!preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
         !in_array($data['category'], $validCategories) ||
-        !in_array($data['measurement_description'], $validMeasurements)) {
+        !in_array($data['measurement_unit'], $validMeasurements)) {
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. ');
     } 
   }
@@ -74,7 +74,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
       throw new \InvalidArgumentException("Invalid 'id' value in data array.");
     }
 
-    $sql = "UPDATE ingredients SET name = :name, category = :category, measurement_description = :measurement_description,  
+    $sql = "UPDATE ingredients SET name = :name, category = :category, measurement_unit = :measurement_unit,  
             calcium = :calcium, calories = :calories, carbohydrate = :carbohydrate, cholesterol = :cholesterol, 
             fiber = :fiber, iron = :iron, fat = :fat, monounsaturated_fat = :monounsaturated_fat, 
             polyunsaturated_fat = :polyunsaturated_fat, saturated_fat = :saturated_fat, 
@@ -85,7 +85,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
       'id' => $data['id'],
       'name' => $data['name'],
       'category' => $data['category'],
-      'measurement_description' => $data['measurement_description'],
+      'measurement_unit' => $data['measurement_unit'],
       'calcium' => $data['calcium'] ?? 0,
       'calories' => $data['calories'] ?? 0,
       'carbohydrate' => $data['carbohydrate'] ?? 0,

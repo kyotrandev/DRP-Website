@@ -25,8 +25,8 @@
     <option value="PRP">PRP</option>
     <option value="VEGI">VEGI</option>
   </select><br>
-  <label for="measurement_description">Measurement Description:</label><br>
-  <select id="measurement_description" name="measurement_description">
+  <label for="measurement_unit">Measurement Description:</label><br>
+  <select id="measurement_unit" name="measurement_unit">
     <option value="tsp">tsp</option>
     <option value="cup">cup</option>
     <option value="tbsp">tbsp</option>

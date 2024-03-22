@@ -11,12 +11,5 @@ abstract class BaseModel {
         $this->isActive = 1;
     }
 
-    protected function setActive(int $condition = 1){
-        $this->isActive = $condition;
-    }
-    protected function getActive(){
-        return $this->isActive;
-    }
-
     static abstract public function createObjectByRawArray($data);
 }  

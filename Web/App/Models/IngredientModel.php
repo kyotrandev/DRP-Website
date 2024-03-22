@@ -8,7 +8,7 @@ class IngredientModel extends BaseModel {
   private $id;
   private $name;
   private $category;
-  private $measurementDescription;
+  private $measurementUnit;
   private $nutritionComponents;
 
   const MSG_EXECUTE_PDO_LOG = "Error in executing prepare statement - ";
@@ -23,15 +23,15 @@ class IngredientModel extends BaseModel {
    * @param int|null $id The ingredient ID (optional, default is null).
    * @param string|null $name The ingredient name (optional, default is null).
    * @param string|null $category The ingredient category (optional, default is null).
-   * @param string|null $measurementDescription The ingredient measurement description (optional, default is null).
+   * @param string|null $measurementUnit The ingredient measurement description (optional, default is null).
    * @param array|null $nutritionComponents The ingredient nutrition components (optional, default is null).
    */
-  public function __construct($id = null, $name = null, $category = null, $measurementDescription = null, $nutritionComponents = null) {
+  public function __construct($id = null, $name = null, $category = null, $measurementUnit = null, $nutritionComponents = null) {
     parent::__construct();
     $this->id = $id ?? 0;
     $this->name = $name ?? '';
     $this->category = $category ?? '';
-    $this->measurementDescription = $measurementDescription ?? '';
+    $this->measurementUnit = $measurementUnit ?? '';
     $this->nutritionComponents = $nutritionComponents ?? [
       'calcium' => 0,
       'calories' => 0,
@@ -56,20 +56,18 @@ class IngredientModel extends BaseModel {
   public function getActive() { return $this->isActive; }
   public function getName() { return $this->name; }
   public function getCategory() { return $this->category; }
-  public function getMeasurementDescription() { return $this->measurementDescription; }
+  public function getMeasurementUnit() { return $this->measurementUnit; }
   public function getNutritionComponents() { return $this->nutritionComponents; }
   public function setId($id) { $this->id = $id; }
   public function setActive($condition = 1) { $this->isActive = $condition; }
   public function setName($name) { $this->name = $name; }
   public function setCategory($category) { $this->category = $category; }
-  public function setMeasurementDescription($measurementDescription) { 
-    $this->measurementDescription = $measurementDescription; 
+  public function setMeasurementUnit($measurementUnit) { 
+    $this->measurementUnit = $measurementUnit; 
   }
   public function setNutritionComponents($nutritionComponents) {
     $this->nutritionComponents = $nutritionComponents;
   }
-
-
   
   /**
    * Creates an IngredientModel object from a raw array of data.
@@ -83,7 +81,7 @@ class IngredientModel extends BaseModel {
     $ingredient->setActive($data['isActive'] ?? 1);
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
-    $ingredient->setMeasurementDescription($data['measurement_description']);
+    $ingredient->setMeasurementUnit($data['measurement_unit']);
     $nutritionComponents = [
       'calcium' => $data['calcium'],
       'calories' => $data['calories'],

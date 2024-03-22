@@ -11,7 +11,7 @@
                 category: {
                     required: true
                 },
-                measurement_description: {
+                measurement_unit: {
                     required: true
                 },
                 calcium: {
@@ -74,7 +74,7 @@
                 category: {
                     required: "Please select a category."
                 },
-                measurement_description: {
+                measurement_unit: {
                     required: "Please select a measurement description."
                 },
                 calcium: {

@@ -4,12 +4,10 @@ namespace App\Operations;
 
 use App\Models\IngredientModel;
 
-class IngredientReadOperation extends DatabaseRelatedOperation implements I_ReadOperation
-{
+class IngredientReadOperation extends DatabaseRelatedOperation implements I_ReadOperation {
   public function __construct() {
     parent::__construct();
   }
-
 
   /**
    * Retrieves a single ingredient object by its ID.
@@ -19,16 +17,24 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \PDOException If there is an error connecting to the database.
    * @throws \Exception If there is an error executing the database query.
    */
-  static public function getSingleObjectById(int $id) : ?IngredientModel{
 
-    $model = new static;
+  static public function getSingleObjectById(int $id) : ?IngredientModel{
+    $model = new parent();
     $conn = $model->DB_CONNECTION;
 
     if ($conn == false) {
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
 
-    $sql = "select * from ingredients where id = :id";
+    $sql = "SELECT  ingredients.id, ingredient_categories.detail, ingredient_measurement_unit.detail
+              ,`calories`,`calcium`,`carbohydrate`,`cholesterol`,`fiber`,`iron`,`fat`,`monounsaturated_fat`
+              ,`polyunsaturated_fat`,`saturated_fat`,`potassium`,`protein`,`sodium`,`sugar`,`vitamin_a`,`vitamin_c` 
+            FROM ingredients 
+            INNER JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
+            INNER JOIN ingredient_measurement_unit ON ingredients.id = ingredient_measurement_unit.id 
+            INNER JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.id
+            WHERE ingredients.id = :id AND ingredients.isActive = 1";
+
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
 

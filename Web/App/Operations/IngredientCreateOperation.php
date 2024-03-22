@@ -6,14 +6,12 @@ use App\Utils\Dialog;
 
 class IngredientCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
-  public function __construct()
-  {
+  public function __construct() {
     parent::__construct();
   }
 
 
-  static public function notify(string $message): void
-  {
+  static public function notify(string $message): void {
     Dialog::show($message);
   }
 
@@ -31,7 +29,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
      * Validate the data with specific rules
      * name: required, only letters and numbers
      * category: required, must be one of the valid categories
-     * measurement_description: required, must be one of the valid measurements
+     * measurement_unit: required, must be one of the valid measurements
      * calcium, calories, carbohydrate, cholesterol, fiber, iron, fat, monounsaturated_fat, polyunsaturated_fat,
      * saturated_fat, potassium, protein, sodium, sugar, vitamin_a, vitamin_c: optional, must be a number
      */
@@ -41,7 +39,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     $validCategories = array('EMMP', 'FAO', 'FRU', 'GNBK', 'HRBS', 'MSF', 'OTHR', 'PRP', 'VEGI');
     $validMeasurements = array('tsp', 'cup', 'tbsp', 'g', 'lb', 'can', 'oz', 'unit');
 
-    $requiredFields = ['name', 'category', 'measurement_description'];
+    $requiredFields = ['name', 'category', 'measurement_unit'];
     $numericFields = [
       'calcium', 'calories', 'carbohydrate', 'cholesterol', 'fiber', 'iron', 'fat',
       'monounsaturated_fat', 'polyunsaturated_fat', 'saturated_fat', 'potassium', 'protein', 'sodium', 'sugar', 'vitamin_a', 'vitamin_c'
@@ -62,7 +60,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     if (
       !preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
       !in_array($data['category'], $validCategories) ||
-      !in_array($data['measurement_description'], $validMeasurements)
+      !in_array($data['measurement_unit'], $validMeasurements)
     ) {
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. ');
     }
@@ -75,48 +73,56 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @param array $data The data to be saved
    * @throws \PDOException If the data cannot be saved
    */
-  static public function saveToDatabase(array $data): void
-  {
+  static public function saveToDatabase(array $data): void {
     $model = new static();
     $conn = $model->DB_CONNECTION;
     if ($conn == false) {
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
+    try {
+      $conn->beginTransaction();
+      $insertIngredientSql = "INSERT INTO ingredients (`name`, `category`, `measurement_unit`)
+              VALUES (:name, :category, :measurement_unit)";
+      self::query($insertIngredientSql, $conn, \PDO::FETCH_ASSOC, [
+        'name' => $data['name'],
+        'category' => $data['category'],
+        'measurement_unit' => $data['measurement_unit']]);
+      
+      $ingredientId = $conn->lastInsertId();
+      $insertNutritionSql = "INSERT INTO ingredient_nutritions (`id`, `calories`, `calcium`, `carbohydrate`, 
+                              `cholesterol`, `fiber`, `iron`, `fat`, `monounsaturated_fat`, `polyunsaturated_fat`, 
+                              `saturated_fat`, `potassium`, `protein`, `sodium`, `sugar`, `vitamin_a`, `vitamin_c`) 
+                            VALUES ({$ingredientId} , :calcium, :calories, :carbohydrate, :cholesterol, 
+                              :fiber, :iron, :fat, :monounsaturated_fat, :polyunsaturated_fat, 
+                              :saturated_fat, :potassium, :protein, :sodium, :sugar, :vitamin_a, :vitamin_c)";
 
-
-    $sql = "INSERT INTO ingredients (`name`, `category`, `measurement_description`, `calcium`, `calories`, `carbohydrate`, 
-              `cholesterol`, `fiber`, `iron`, `fat`, `monounsaturated_fat`, `polyunsaturated_fat`, 
-              `saturated_fat`, `potassium`, `protein`, `sodium`, `sugar`, `vitamin_a`, `vitamin_c`) 
-            VALUES (:name, :category, :measurement_description, :calcium, :calories, :carbohydrate, 
-              :cholesterol, :fiber, :iron, :fat, :monounsaturated_fat, :polyunsaturated_fat, 
-              :saturated_fat, :potassium, :protein, :sodium, :sugar, :vitamin_a, :vitamin_c)";
-
-    /** 
-     * Execute the query with the given data
-     */
-    self::query($sql, $conn, \PDO::FETCH_ASSOC, [
-      'name' => $data['name'],
-      'category' => $data['category'],
-      'measurement_description' => $data['measurement_description'],
-      'calcium' => $data['calcium'] ?? 0,
-      'calories' => $data['calories'] ?? 0,
-      'carbohydrate' => $data['carbohydrate'] ?? 0,
-      'cholesterol' => $data['cholesterol'] ?? 0,
-      'fiber' => $data['fiber'] ?? 0,
-      'iron' => $data['iron'] ?? 0,
-      'fat' => $data['fat'] ?? 0,
-      'monounsaturated_fat' => $data['monounsaturated_fat'] ?? 0,
-      'polyunsaturated_fat' => $data['polyunsaturated_fat'] ?? 0,
-      'saturated_fat' => $data['saturated_fat'] ?? 0,
-      'potassium' => $data['potassium'] ?? 0,
-      'protein' => $data['protein'] ?? 0,
-      'sodium' => $data['sodium'] ?? 0,
-      'sugar' => $data['sugar'] ?? 0,
-      'vitamin_a' => $data['vitamin_a'] ?? 0,
-      'vitamin_c' => $data['vitamin_c'] ?? 0
-    ]);
+      /** 
+       * Execute the query with the given data
+       */
+      self::query($insertNutritionSql, $conn, \PDO::FETCH_ASSOC, [
+        'calcium' => $data['calcium'] ?? 0,
+        'calories' => $data['calories'] ?? 0,
+        'carbohydrate' => $data['carbohydrate'] ?? 0,
+        'cholesterol' => $data['cholesterol'] ?? 0,
+        'fiber' => $data['fiber'] ?? 0,
+        'iron' => $data['iron'] ?? 0,
+        'fat' => $data['fat'] ?? 0,
+        'monounsaturated_fat' => $data['monounsaturated_fat'] ?? 0,
+        'polyunsaturated_fat' => $data['polyunsaturated_fat'] ?? 0,
+        'saturated_fat' => $data['saturated_fat'] ?? 0,
+        'potassium' => $data['potassium'] ?? 0,
+        'protein' => $data['protein'] ?? 0,
+        'sodium' => $data['sodium'] ?? 0,
+        'sugar' => $data['sugar'] ?? 0,
+        'vitamin_a' => $data['vitamin_a'] ?? 0,
+        'vitamin_c' => $data['vitamin_c'] ?? 0
+      ]);
+      $conn->commit();
+    } catch (\PDOException $PDOException) {
+      $conn->rollBack();
+      throw $PDOException;
+    }
   }
-
 
   /**
    * Execute the operation
@@ -124,8 +130,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @param array $data The data to be executed
    * @return bool True if the operation is successful, false otherwise
    */
-  static public function execute(array $data): bool
-  {
+  static public function execute(array $data): bool {
     /**
      * Validate the data before saving to the database
      */

@@ -61,7 +61,7 @@
                     <tr>
                         <td><?= $ingredient->getId()?></td>
                         <td><?= $ingredient->getCategory()?></td>
-                        <td><?= $ingredient->getMeasurementDescription()?></td>
+                        <td><?= $ingredient->getMeasurementUnit()?></td>
                         <td><?= $ingredient->getName()?></td>
                         <td>
                             <?if($ingredient->getActive()):?>
