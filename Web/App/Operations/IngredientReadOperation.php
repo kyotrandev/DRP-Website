@@ -6,7 +6,7 @@ use App\Models\IngredientModel;
 
 class IngredientReadOperation extends DatabaseRelatedOperation implements I_ReadOperation {
 
-  const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS unit
+  const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
                           FROM ingredients 
                           LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
                           LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
@@ -29,35 +29,13 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \Exception If there is an error executing the SQL statement.
    */
   static public function getNutrition($id) :?array {
-    $model = new parent();
-    $conn = $model->DB_CONNECTION;
 
-    if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-    }
-
-    /**
-     * Prepare the SQL statement to get nutrition information base on 
-     * @param self::NUTRITION_COMPONENTS
-     */
     $sql = "SELECT nutrition_types.detail AS nutrition_name, ingredient_nutritions.quantity AS nutrition_quantity
             FROM ingredient_nutritions INNER JOIN nutrition_types ON ingredient_nutritions.nutrition_id = nutrition_types.id
             WHERE ingredient_nutritions.ingredient_id = :id";            
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
-
-    try {
-      if ($stmt->execute()) {
-        $nutritionComponents = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-        return $nutritionComponents;
-      } else throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
-    } catch (\Exception $exception) {
-      handleException($exception);
-    } catch (\Throwable $throwable) {
-      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-    }
-    echo \App\Views\ViewRender::errorViewRender('500');
-    return null;
+    
+    $nutritionComponents = parent::query($sql, 1, [':id' => $id]);
+    return $nutritionComponents;
   }
 
 
@@ -72,28 +50,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \Exception If there is an error executing the SQL query.
    */
 
-  static public function getSingleObject($sql, bool $getNutriOrNot = true, $params = []){
-    $model = new parent();
-    $conn = $model->DB_CONNECTION;
-
-    if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-    }
-
-    $stmt = $conn->prepare($sql);
-    if (!is_null($params)) {
-      foreach ($params as $key => $value) {
-        $stmt->bindValue($key, $value);
+  static public function getSingleObject($sql, bool $getNutriOrNot = true, $params = [])  : null|IngredientModel{ 
+    $ingredient = self::querySingle($sql, 4, $params, "IngredientModel");
+    if ($getNutriOrNot == true){
+      if (!is_object($ingredient)) {
+        return null;
       }
-    }
 
-    if (!$stmt->execute()) 
-      throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
-    
-    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-    if ($getNutriOrNot == true)
-      $row['nutritionComponents'] = self::getNutrition($row['id']);
-    return IngredientModel::createObjectByRawArray($row);
+      $ingredient->setNutritionComponents(self::getNutrition($ingredient->getId()));
+    }
+    return $ingredient;
   }
 
 
@@ -103,17 +69,20 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurred.
    */
-  static public function getSingleObjectById(int $id) : ?IngredientModel{
+  static public function getSingleObjectById(int $id) : null|IngredientModel{
     try {
       return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
       return null;
-    } catch (\Throwable $throwable) {
-      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
     }
+      catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
   }
 
 
@@ -123,17 +92,19 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurs.
    */
-  static public function getSingleObjectByIdWithoutNutri(int $id) :?IngredientModel{
+  static public function getSingleObjectByIdWithoutNutri(int $id) :null|IngredientModel{
     try {
       return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
       return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-      return null;
     }
+    return null;
   }
 
 
@@ -148,32 +119,14 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \Exception If there is an error executing the SQL query.
    */
   static public function getMultipleObject($sql, bool $getNutriOrNot = true, $params = []) {
-    $model = new parent();
-    $conn = $model->DB_CONNECTION;
-
-    if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-    }
-
-    $stmt = $conn->prepare($sql);
-    if (!is_null($params)) 
-      foreach ($params as $key => $value) {
-        $stmt->bindValue($key, $value);
+    $ingredients = self::query($sql, 4, $params, "IngredientModel");
+    foreach ($ingredients as $ingredient) {
+      if ($getNutriOrNot == true){
+        $ingredient->setNutritionComponents(self::getNutrition($ingredient->getId()));
       }
-    
-    if (!$stmt->execute()) 
-      throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
-    
-    $ingredients = [];
-    while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      if ($getNutriOrNot == true)
-        $row['nutritionComponents'] = self::getNutrition($row['id']);
-      $ingredient = IngredientModel::createObjectByRawArray($row);
-      $ingredients[] = $ingredient;
     }
     return $ingredients;
   }
-
 
   /**
    * Retrieves all objects from the database.
@@ -188,7 +141,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
@@ -209,7 +161,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
@@ -224,7 +175,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int|null $limit The maximum number of objects to retrieve. If not provided, defaults to offset + 5.
    * @return array|null An array of objects retrieved with the specified offset and limit, or null if an error occurs.
    */
-
   public static function getObjectWithOffset(int $offset = 0, int $limit = null) : ?array {
     try{
       if ($limit === null) {
@@ -236,9 +186,8 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
-        handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return null;
   }
@@ -262,9 +211,8 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
-        handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return null;
   }
@@ -287,7 +235,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       handleException($exception);
 
     } catch (\Throwable $throwable) {
-        handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return null;
   }
@@ -308,9 +256,8 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
-        handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return null;
   }
@@ -355,20 +302,19 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getObjectWithOffsetByFielAndValueWithoutNutri(string $name, $value, int $offset = 0, int $limit = null) : ?array{
     try{
-       if ($limit === null) {
-         $limit = $offset + 5;
-       }
-       return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
-             [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
-     } catch (\PDOException $exception) {
-       handleException($exception);
-       echo \App\Views\ViewRender::errorViewRender('500');
-     } catch (\Exception $exception) {
-       handleException($exception);
-     } catch (\Throwable $throwable) {
-       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-     }
-     return null;
+      if ($limit === null) 
+        $limit = $offset + 5;
+      return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
+            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+    } catch (\PDOException $exception) {
+      handleException($exception);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+      return null;
+    }
   }
  
 
@@ -380,35 +326,17 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getIdAndNameAllObject() : ?array {
     try {
-      $model = new parent();
-      $conn = $model->DB_CONNECTION;
-      if ($conn == false)
-        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+      $sql = "select id, name from ingredients";
+      $pairs = self::query($sql, 1);
+      return $pairs;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
-      return null;
-    }
-
-    $sql = "select id, name from ingredients";
-    $stmt = $conn->prepare($sql);
-    try {
-      if ($stmt->execute()) {
-        $pairs = [];
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-          $pairs[] = [
-            'id' => $row['id'],
-            'name' => $row['name']
-          ];
-        }
-        return $pairs;
-      } else throw new \Exception(parent::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
     } catch (\Exception $exception) {
       handleException($exception);
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
-    echo \App\Views\ViewRender::errorViewRender('500');
     return null;
   }
 
@@ -421,20 +349,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getPaging(int $limit, int $offset)  {
     try {
-      $model = new static();
-      $conn = $model->DB_CONNECTION;
-      if ($conn == null) {
-        throw new \PDOException(self::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-      }
-
-
-      $stmt = $conn->prepare("select * from ingredients limit :limit offset :offset");
-      $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-      $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
-      $stmt->execute();
+      $sql = "select * from ingredients limit :limit offset :offset";
 
       // Fetch Data
-      $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+      $data = self::query($sql, 1, [':limit' => $limit, ':offset' => $offset]);
 
       // Response data JSON
       return json_encode($data);
@@ -454,18 +372,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getCategoryID(){
     try {
-      $dbcon = new parent();
-      $conn = $dbcon->DB_CONNECTION;
-      if($conn == false){
-        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-      }
-      
       $sql = "SELECT id FROM ingredient_categories";
-      $stmt = $conn->prepare($sql);
-      $stmt->execute();
 
       $categoryIDs = [];
-      $categoryIDs = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      $categoryIDs = self::query($sql, 8);
       return $categoryIDs;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -482,18 +392,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
 
   static public function getNutritionType(){
     try {
-      $dbcon = new parent();
-      $conn = $dbcon->DB_CONNECTION;
-      if($conn == false){
-        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-      }
-      
       $sql = "SELECT id FROM nutrition_types";
-      $stmt = $conn->prepare($sql);
-      $stmt->execute();
 
       $nutritionType = [];
-      $nutritionType = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      $nutritionType = self::query($sql, 8);
       return $nutritionType;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -509,18 +411,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   
   static public function getMeasurementUnit(){
     try {
-      $dbcon = new parent();
-      $conn = $dbcon->DB_CONNECTION;
-      if($conn == false){
-        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-      }
-      
       $sql = "SELECT id FROM ingredient_measuremenet_unit";
-      $stmt = $conn->prepare($sql);
-      $stmt->execute();
 
       $measurementUnit = [];
-      $measurementUnit = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+      $measurementUnit = self::query($sql, 8);
       return $measurementUnit;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
