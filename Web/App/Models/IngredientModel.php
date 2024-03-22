@@ -11,12 +11,6 @@ class IngredientModel extends BaseModel {
   private $measurementUnit;
   private $nutritionComponents ;
 
-  const MSG_EXECUTE_PDO_LOG = "Error in executing prepare statement - ";
-  const MSG_INPUT_DATA_EMPTY = "Error: input data cannot be empty - ";
-  const MSG_CONNECT_PDO_EXCEPTION = "Error: Unable to establish database connection - ";
-
-
-
   /**
    * Class constructor for IngredientModel.
    *
@@ -81,8 +75,8 @@ class IngredientModel extends BaseModel {
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
     $ingredient->setMeasurementUnit($data['unit']);
-    if(isset($data['$nutritionComponents']));
-      $ingredient->setNutritionComponents($data['$nutritionComponents']);
+    if(isset($data['nutritionComponents']) && $data['nutritionComponents'] != null);
+      $ingredient->setNutritionComponents($data['nutritionComponents']);
     return $ingredient;
   }
 }
