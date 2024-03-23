@@ -8,6 +8,7 @@ use App\Operations\UserOperation;
 use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeUpdateOperation;
 use App\Operations\UploadImageOperation;
+use App\Operations\ValidateIngredientDataHolder;
 
 class AdminController extends BaseController
 {
@@ -221,23 +222,18 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
+        $ingredientOpt = ValidateIngredientDataHolder::getInstance();
         $data = $_GET;
         $ingredient = IngredientReadOperation::getSingleObjectById($data['id']);
-        return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient]);
+
+        return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient, 'opts' => $ingredientOpt]);
     }
 
-    public function ingredientManagerUpdate()
-    {
+    public function ingredientManagerUpdate() {
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $data = $_POST;
-        if (IngredientUpdateOperation::execute($data)) {
-            echo '<script>
-            window.location.href = "/manager/ingredient";
-            </script>';
-        }
+        IngredientUpdateOperation::execute($data);
     }
 }

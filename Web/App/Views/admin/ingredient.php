@@ -64,7 +64,7 @@
                         <td><?= $ingredient->getMeasurementUnit()?></td>
                         <td><?= $ingredient->getName()?></td>
                         <td>
-                            <form id="set-active-form" class="d-inline-block" method="POST">
+                            <form  class="set-active-form d-inline-block" method="POST">
                                 <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
                                 <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
                                 <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 150px" type="submit">
@@ -89,20 +89,22 @@
 
 <script>
   $(document).ready(function() {
-    $('#set-active-form').submit(function(event) {
+    $('.set-active-form').submit(function(event) {
       event.preventDefault();
 
       var formData = $(this).serialize();
 
+      var url = $(this).attr('action');
+
       $.ajax({
         type: 'POST',
-        url: '/manager/ingredient',
+        url: url,
         data: formData,
-        dataType: 'json', 
+        dataType: 'json',
         success: function(response) {
           if (response.success) {
             alert(response.message);
-           
+            location.reload(); 
           } else {
             alert(response.message);
           }
@@ -114,5 +116,6 @@
     });
   });
 </script>
+
 
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php")?>     
