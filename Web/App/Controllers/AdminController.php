@@ -119,7 +119,7 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
+  
         if ($_GET['id'] != '') {
             $recipes = RecipeReadOperation::getSingleObjectByIdForAdmin($_GET['id']);
         } else if ($_GET['name'] != '') {
@@ -187,8 +187,9 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
+       
         $ingredients = null;
+        
         if (isset($_GET['s_id']) && $_GET['s_id'] != '') {
             $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id']);
         } else if (isset($_GET['s_name']) && $_GET['s_name'] != '') {
@@ -200,7 +201,7 @@ class AdminController extends BaseController
         } else if (isset($_GET['s_name']) && $_GET['s_name'] != ''){
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name']);
         }
-
+  
         if (!$ingredients) {
             $ingredients = IngredientReadOperation::getAllObjects();
         }
@@ -215,6 +216,8 @@ class AdminController extends BaseController
         }
         $data = $_POST;
         IngredientUpdateOperation::setIngredientActive($data);
+        echo "<script>window.location.href = '/../manager/ingredient';</script>";
+        exit; 
     }
 
     public function ingredientManagerUpdateUI() 

@@ -107,9 +107,10 @@
         data: formData,
         dataType: 'json', 
         success: function(response) {
+     
           if (response.success) {
             alert(response.message);
-           
+            window.location.href = '/../manager/ingredient';
           } else {
             alert(response.message);
           }

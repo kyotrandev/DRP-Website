@@ -7,13 +7,9 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
   const MSG_UNABLE_TO_VALIDATE_DATA = "Error: something went wrong during validate data - ";
 
   static public function notify(bool $success, string $message) {
-      $response = [
-        'success' => $success,
-        'message' => $message
-    ];
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
+    echo '<script>
+            alert(" ' . $message . '");
+            </script>';
   }
 
 
