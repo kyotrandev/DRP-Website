@@ -1,8 +1,5 @@
 <?
-
 namespace App\Operations;
-
-use App\Utils\Dialog;
 
 class IngredientCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation 
 { 
@@ -14,8 +11,15 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
   }
 
 
-  static public function notify(string $message): void {
-    Dialog::show($message);
+  static public function notify(bool $success, string $message) {
+      $response = [
+        'success' => $success,
+        'message' => $message
+    ];
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    return $success;
   }
 
 
@@ -63,9 +67,6 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
         throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 3');
       }
     }
-    echo "<pre>";
-    echo var_dump($data);
-    echo "</pre><br>Hello World!<br>";
     // return $data;
   }
 
@@ -111,7 +112,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
 
       // execute the query to insert the ingredient_recipe data
     if ($conn->exec($insertNutritionSql) === false) 
-      throw new \Exception("Error: Unable to insert ingredient nutrition data - " . __METHOD__);
+      throw new \Exception("Error: Unable to insert ingredient nutrition data - " . __METHOD__ . '. 1');
       $conn->commit();
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
@@ -125,37 +126,51 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @param array $data The data to be executed
    * @return bool True if the operation is successful, false otherwise
    */
-  static public function execute(array $data): bool {
-    /**
-     * Validate the data before saving to the database
-     */
+  static public function execute(array $data): void {
+    $response = array('success' => false, 'message' => '');
+
     try {
+      /**
+       * Validate the data before saving to the database
+       */
       self::validateData($data);
+
+      /**
+       * Saving data to the database process
+       */
+      self::saveToDatabase($data);
+
+
+      // If everything goes well, set success to true and provide a success message
+      self::notify(true, "Ingredient created successfully!");
+
+      // $response['success'] = true;
+      // $response['message'] = "Ingredient created successfully!";
     } catch (\InvalidArgumentException $InvalidArgumentException) {
+      // Handle validation errors
       handleException($InvalidArgumentException);
-      self::notify("Add ingredient failed casued by: " . $InvalidArgumentException->getMessage());
-      return false;
+      self::notify(false, "Add ingredient failed caused by: invalid input. Please check your input again!");
+      // $response['message'] = "Add ingredient failed caused by: " . $InvalidArgumentException->getMessage();
+    } catch (\PDOException $PDOException) {
+      // Handle database errors
+      handlePDOException($PDOException);
+      self::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
+      // $response['message'] = "Add ingredient failed caused by: Unknown error!, We are sorry for the inconvenience!";
+    } catch (\Exception $Exception) {
+      // Handle other exceptions
+      handleException($Exception);
+      self::notify(false, "Add ingredient failed caused by: invalid data!. Please check the data and try again!");
+      // $response['message'] = "Add ingredient failed caused by: invalid data!. Please check the data and try again!";
+    } catch (\Throwable $Throwable) {
+      // Handle other errors
+      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
+      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");
+      // $response['message'] = "Add ingredient failed caused by an unknown error!, We are sorry for the inconvenience!";
+      
     }
 
-    /**
-     * Saving datab to database process
-     */
-    try {
-      self::saveToDatabase($data);
-    } catch (\PDOException $PDOException) {
-      handlePDOException($PDOException);
-      self::notify("Add ingredient failed casued by: " . $PDOException->getMessage());
-      return false;
-    } catch (\Exception $Exception) {
-      handleException($Exception);
-      self::notify("Add ingredient failed casued by: " . $Exception->getMessage());
-      return false;
-    } catch (\Throwable $Throwable) {
-      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify("Add ingredient failed casued by: " . $Throwable->getMessage());
-      return false;
-    }
-    self::notify("Ingredient created successfully!");
-    return true;
+    // // Send the JSON response back to the client
+    // header('Content-Type: application/json');
+    // echo json_encode($response);
   }
 }

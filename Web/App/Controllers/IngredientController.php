@@ -36,11 +36,7 @@ class IngredientController extends BaseController
     }
     public function add() {
         $data = $_POST;
-        echo "<pre>";
-        var_dump($data);
-        echo "</pre>";
         IngredientCreateOperation::execute($data);
-        header("Location: /ingredient/add");
     }
     public function findByName(){
         return $this->loadView('ingredient.find_ingredient');
