@@ -118,7 +118,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @throws \PDOException If there is an error connecting to the database.
    * @throws \Exception If there is an error executing the SQL query.
    */
-  static public function getMultipleObject($sql, bool $getNutriOrNot = true, $params = []) {
+  static public function getMultipleObject($sql, bool $getNutriOrNot = true, $params = []) : ?array{
     $ingredients = self::query($sql, 4, $params, "IngredientModel");
     foreach ($ingredients as $ingredient) {
       if ($getNutriOrNot == true){

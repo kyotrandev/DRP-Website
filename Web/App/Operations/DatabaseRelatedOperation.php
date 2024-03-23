@@ -26,7 +26,7 @@ class DatabaseRelatedOperation {
    * @throws \Exception If there is an error during execution.
    * @throws \Throwable If there is a throwable error during execution.
    */
-  static protected function query(string $sql, int $fetchMode = 4, $params = [], string $className = null) :? array {
+  static protected function query(string $sql, int $fetchMode = 4, $params = [], string $className = null) : array|bool {
     $dbconn = new self();
     $conn = $dbconn->DB_CONNECTION;
 
@@ -64,9 +64,8 @@ class DatabaseRelatedOperation {
         case 8: 
           $stmt->setFetchMode(\PDO::FETCH_BOTH); // Get the result as an array of the first column
       }
-      return $stmt->fetchAll();
     }
-    return null; 
+    return $stmt->fetchAll();
   }
 
   /**
@@ -83,7 +82,7 @@ class DatabaseRelatedOperation {
    * @throws \Exception If there is a general exception during the query execution.
    * @throws \Throwable If there is a throwable error during the query execution.
    */
-  static protected function querySingle(string $sql, int $fetchMode = 0, $params = [], string $className = null) : array|IngredientModel|null{
+  static protected function querySingle(string $sql, int $fetchMode = 0, $params = [], string $className = null) : array|IngredientModel|bool{
     $dbconn = new DatabaseRelatedOperation();
     $conn = $dbconn->DB_CONNECTION;
     if($conn == false) 
@@ -114,11 +113,10 @@ class DatabaseRelatedOperation {
           $stmt->setFetchMode(\PDO::FETCH_LAZY); // Get the result as an array of the first column
           break;
         default:
-          $stmt->setFetchMode(\PDO::FETCH_BOTH); // Get the result as an array of the first column
-        }
-        return $stmt->fetch();
+        $stmt->setFetchMode(\PDO::FETCH_BOTH); // Get the result as an array of the first column
       }
-    return null;
+    }
+    return $stmt->fetch();
   }
 
 }

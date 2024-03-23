@@ -36,12 +36,9 @@ class IngredientController extends BaseController
     }
     public function add() {
         $data = $_POST;
-
-        echo '<pre>';
+        echo "<pre>";
         var_dump($data);
-        echo '</pre>';
-        die();
-
+        echo "</pre>";
         IngredientCreateOperation::execute($data);
         header("Location: /ingredient/add");
     }
@@ -71,11 +68,7 @@ class IngredientController extends BaseController
     }
 
     public function test() {
-        $ingredients = IngredientReadOperation::getAllObjects();
-        echo '<pre>';
-        var_dump($ingredients);
-        echo '</pre>';
-
+        $ingredients = IngredientReadOperation::getSingleObjectById(5);
         $this->loadView('pages.test', $ingredients);
 
     }
