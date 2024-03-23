@@ -222,9 +222,10 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
+
         $ingredientOpt = ValidateIngredientDataHolder::getInstance();
         $data = $_GET;
-        $ingredient = IngredientReadOperation::getSingleObjectById($data['id']);
+        $ingredient = IngredientReadOperation::getSingleObjectByIdIgnoreActive($data['id']);
 
         return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient, 'opts' => $ingredientOpt]);
     }
@@ -234,6 +235,10 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $data = $_POST;
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";
+
         IngredientUpdateOperation::execute($data);
     }
 }

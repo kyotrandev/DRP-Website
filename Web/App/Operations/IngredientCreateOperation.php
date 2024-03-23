@@ -31,7 +31,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
      * @param ValidateIngredientDataHolder $validateData The instance of ValidateIngredientDataHolder.
      * @param array $requiredFields The required fields for the ingredient.
      */
-    $validateData = new ValidateIngredientDataHolder();
+    $validateData = ValidateIngredientDataHolder::getInstance();
     $validCategories = $validateData->validCategories;
     $validMeasurements = $validateData->validMeasurements;
     $requiredFields = ['name', 'category', 'measurement_unit'];

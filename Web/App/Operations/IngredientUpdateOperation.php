@@ -32,7 +32,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
      * @param ValidateIngredientDataHolder $validateData The instance of ValidateIngredientDataHolder.
      * @param array $requiredFields The required fields for the ingredient.
      */
-    $validateData = new ValidateIngredientDataHolder();
+    $validateData = ValidateIngredientDataHolder::getInstance();
     $validCategories = $validateData->validCategories;
     $validMeasurements = $validateData->validMeasurements;
     $requiredFields = ['name', 'category', 'measurement_unit'];
@@ -83,37 +83,36 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
 
     try {
       $conn->beginTransaction();
+      
+      // Update the ingredients table
       $insertIngredientSql = "UPDATE ingredients SET name = :name, category = :category, measurement_unit = :measurement_unit
                               WHERE id = :id";
-
       $ingredientStmt = $conn->prepare($insertIngredientSql);
       $ingredientStmt->execute([
-        'id ' => $data['id'],
+        'id' => $data['id'],
         'name' => $data['name'],
         'category' => $data['category'],
         'measurement_unit' => $data['measurement_unit']
       ]);
-
-      $insertNutritionSql ="UPDATE `ingredient_nutritions` SET nutrition_value = :nutrition_value 
-                            WHERE ingredient_id = :ingredient_id AND nutrition_type = :nutrition_type";
+      
+      // Update the ingredient_nutritions table
+      $insertNutritionSql = "UPDATE ingredient_nutritions SET quantity = :quantity  
+                             WHERE ingredient_id = :ingredient_id AND nutrition_id = :nutrition_id";
+      $stmt = $conn->prepare($insertNutritionSql);
+  
       foreach ($data['nutritionComponents'] as $nutritionType => $nutritionValue) {
-        $stmt = $conn->prepare($insertNutritionSql);
-        $stmt->execute([
-          'ingredient_id' => $data['id'],
-          'nutrition_type' => $nutritionType,
-          'nutrition_value' => $nutritionValue
-        ]);
+        $stmt->bindValue(':ingredient_id', $data['id'], \PDO::PARAM_INT);
+        $stmt->bindValue(':nutrition_id', $nutritionType, \PDO::PARAM_STR);
+        $stmt->bindValue(':quantity', $nutritionValue, \PDO::PARAM_INT);
+        $stmt->execute();
       }
-      $insertNutritionSql = rtrim($insertNutritionSql, ',');
-
-      // execute the query to insert the ingredient_recipe data
-    if ($conn->exec($insertNutritionSql) === false) 
-      throw new \Exception("Error: Unable to insert ingredient nutrition data - " . __METHOD__ . '. 1');
+  
       $conn->commit();
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
     }
+    
   }
 
   /**

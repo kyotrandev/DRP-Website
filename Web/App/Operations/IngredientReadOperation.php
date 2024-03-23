@@ -12,6 +12,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
                           LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
                           LEFT JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.ingredient_id ";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
+  const getSingleObjectByIdIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id";
   const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id";
   const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset ingredients.id";
   const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id limit :limit offset :offset";
@@ -95,6 +96,36 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   static public function getSingleObjectByIdWithoutNutri(int $id) :null|IngredientModel{
     try {
       return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+  static public function getSingleObjectByIdIgnoreActive(int $id) : null|IngredientModel{
+    try {
+      return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, true, [':id' => $id]);
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+  static public function getSingleObjectByIdIgnoreActiveWithoutNutri(int $id) : null|IngredientModel{
+    try {
+      return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, false, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
