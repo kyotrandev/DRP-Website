@@ -41,11 +41,15 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     $validateData = new ValidateIngredientDataHolder();
     $validCategories = $validateData->validCategories;
     $validMeasurements = $validateData->validMeasurements;
-    $requiredFields = ['name', 'category', 'measurement_unit', 'nutritionComponents'];
+    $requiredFields = ['name', 'category', 'measurement_unit'];
+    if (empty(array_filter($data['nutritionComponents']))) {
+      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 1');
+    }
+ 
 
 
     if ($data == null)
-      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 1');
+      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 2');
 
     if ($validCategories == null || $validMeasurements == null)
       throw new \PDOException(self::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". 1");
@@ -57,14 +61,14 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       !in_array($data['category'], array_column($validCategories, 'id')) ||
       !in_array($data['measurement_unit'], array_column($validMeasurements, 'id'))
     ) {
-      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 2');
+      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 3');
     }
 
 
     // Check if the required fields are empty
     foreach ($requiredFields as $field) {
       if (empty($data[$field])) {
-        throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 3');
+        throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 4');
       }
     }
     // return $data;
@@ -127,8 +131,6 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @return bool True if the operation is successful, false otherwise
    */
   static public function execute(array $data): void {
-    $response = array('success' => false, 'message' => '');
-
     try {
       /**
        * Validate the data before saving to the database
@@ -144,33 +146,22 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       // If everything goes well, set success to true and provide a success message
       self::notify(true, "Ingredient created successfully!");
 
-      // $response['success'] = true;
-      // $response['message'] = "Ingredient created successfully!";
     } catch (\InvalidArgumentException $InvalidArgumentException) {
       // Handle validation errors
       handleException($InvalidArgumentException);
       self::notify(false, "Add ingredient failed caused by: invalid input. Please check your input again!");
-      // $response['message'] = "Add ingredient failed caused by: " . $InvalidArgumentException->getMessage();
     } catch (\PDOException $PDOException) {
       // Handle database errors
       handlePDOException($PDOException);
       self::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
-      // $response['message'] = "Add ingredient failed caused by: Unknown error!, We are sorry for the inconvenience!";
     } catch (\Exception $Exception) {
       // Handle other exceptions
       handleException($Exception);
       self::notify(false, "Add ingredient failed caused by: invalid data!. Please check the data and try again!");
-      // $response['message'] = "Add ingredient failed caused by: invalid data!. Please check the data and try again!";
     } catch (\Throwable $Throwable) {
       // Handle other errors
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");
-      // $response['message'] = "Add ingredient failed caused by an unknown error!, We are sorry for the inconvenience!";
-      
+      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
     }
-
-    // // Send the JSON response back to the client
-    // header('Content-Type: application/json');
-    // echo json_encode($response);
   }
 }
