@@ -6,7 +6,7 @@ use App\Models\IngredientModel;
 
 class IngredientReadOperation extends DatabaseRelatedOperation implements I_ReadOperation {
 
-  const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
+  const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.isActive, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
                           FROM ingredients 
                           LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
                           LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 

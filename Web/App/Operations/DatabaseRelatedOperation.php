@@ -85,13 +85,19 @@ class DatabaseRelatedOperation {
   static protected function querySingle(string $sql, int $fetchMode = 0, $params = [], string $className = null) : array|IngredientModel|bool{
     $dbconn = new DatabaseRelatedOperation();
     $conn = $dbconn->DB_CONNECTION;
+
     if($conn == false) 
       throw new \PDOException(self::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');  
+
+
     $stmt = $conn->prepare($sql);
+
     if (!empty($params))
       foreach ($params as $key => $value)
         $stmt->bindValue($key, $value);
+
     $stmt->execute();
+    
     if ($stmt->rowCount() > 0){
       switch($fetchMode){
         case 1:

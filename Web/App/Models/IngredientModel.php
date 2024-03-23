@@ -72,6 +72,7 @@ class IngredientModel extends BaseModel {
   static public function createObjectByRawArray($data) {
     $ingredient = new self();
     $ingredient->setID($data['id']);
+    $ingredient->setActive($data['isActive']);
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
     $ingredient->setMeasurementUnit($data['measurementUnit']);

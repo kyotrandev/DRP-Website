@@ -5,12 +5,6 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
 { 
   const MSG_UNABLE_TO_VALIDATE_DATA = "Error: something went wrong during validate data - ";
 
-
-  public function __construct() {
-    parent::__construct();
-  }
-
-
   static public function notify(bool $success, string $message) {
       $response = [
         'success' => $success,
@@ -19,8 +13,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
 
     header('Content-Type: application/json');
     echo json_encode($response);
-    return $success;
-  }
+    }
 
 
   /**
@@ -149,15 +142,11 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     } catch (\InvalidArgumentException $InvalidArgumentException) {
       // Handle validation errors
       handleException($InvalidArgumentException);
-      self::notify(false, "Add ingredient failed caused by: invalid input. Please check your input again!");
+      self::notify(false, "Add ingredient failed caused by: invalid data! Please check your input again!");
     } catch (\PDOException $PDOException) {
       // Handle database errors
       handlePDOException($PDOException);
       self::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
-    } catch (\Exception $Exception) {
-      // Handle other exceptions
-      handleException($Exception);
-      self::notify(false, "Add ingredient failed caused by: invalid data!. Please check the data and try again!");
     } catch (\Throwable $Throwable) {
       // Handle other errors
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());

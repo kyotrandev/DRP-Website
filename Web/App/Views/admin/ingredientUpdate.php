@@ -45,7 +45,7 @@ function getMeasurementUnit($measurementUnit) {
             <h1 class="display-1">Manager Update Ingredient</h1>
         </div>
         <div class="row g-5">
-            <form action="/manager/ingredient/update" method="POST" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
+            <form id="ingredient-form" method="POST" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
                 <input type="hidden" class="form-control" id="id" name="id" value="<?= $ingredient->getId() ?>">
                 <div class="mb-3">
                     <label for="method" class="col-sm-10 col-form-label">Category (Last: <?= getCategory($ingredient->getCategory())?>)</label>
@@ -90,3 +90,31 @@ function getMeasurementUnit($measurementUnit) {
 </body>
 
 </html>
+
+<script>
+  $(document).ready(function() {
+    $('#ingredient-form').submit(function(event) {
+      event.preventDefault();
+
+      var formData = $(this).serialize();
+
+      $.ajax({
+        type: 'POST',
+        url: '/manager/ingredient/update',
+        data: formData,
+        dataType: 'json', 
+        success: function(response) {
+          if (response.success) {
+            alert(response.message);
+           
+          } else {
+            alert(response.message);
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
