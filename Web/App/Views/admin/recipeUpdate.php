@@ -1,20 +1,11 @@
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php") ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Manager Update Recipe</title>
-</head>
-
-<body>
     <div class="container py-5">
-        <div class="py-3 text-center">
-            <h1 class="display-1">Manager Update Recipe</h1>
+        <div class="text-center">
+            <h1>Manager Update Recipe</h1>
         </div>
-        <div class="row g-5">
+
+        <div class="row g-5 py-4">
             <form action="/manager/recipe/update" method="POST" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
                 <input type="hidden" class="form-control" id="id" name="id" value="<?= $recipe->getId() ?>">
                 <div class="mb-3">
@@ -100,11 +91,12 @@
                 <div class="d-grid gap-2">
                     <button class="btn btn-success" name="update" type="submit">Update</button>
                 </div>
-                <div class="d-md-flex justify-content-md-end py-3">
-                    <a href="/manager/recipe" class="btn btn-secondary me-md-2" tabindex="-1" role="button">Back</a>
-                </div>
             </form>
         </div>
+
+        <div class="d-md-flex justify-content-center py-3">
+            <a href="/manager/recipe" class="btn btn-secondary me-md-2" tabindex="-1" role="button">Back</a>
+        </div>      
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
