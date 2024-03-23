@@ -30,7 +30,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    */
   static public function getNutrition($id) :?array {
 
-    $sql = "SELECT nutrition_types.detail AS nutrition_name, ingredient_nutritions.quantity AS nutrition_quantity
+    $sql = "SELECT nutrition_types.id as nutrition_id, nutrition_types.detail AS nutrition_name, ingredient_nutritions.quantity AS nutrition_quantity
             FROM ingredient_nutritions INNER JOIN nutrition_types ON ingredient_nutritions.nutrition_id = nutrition_types.id
             WHERE ingredient_nutritions.ingredient_id = :id";            
     

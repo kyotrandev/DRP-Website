@@ -14,6 +14,7 @@
   <div style="display: flex; justify-content: center;">
     <h4 class="m-2">General information</h2>
   </div>
+
   <div class="row mb-3 justify-content-center ">
     <div class="col-sm-3">
       <label class="visually-hidden" for="name">Name:</label><br>
@@ -51,18 +52,19 @@
   </div>
 
   <div class="row mb-3 justify-content-center">
-    <?php $count = 0; ?>
-    <?php foreach ($data[0]->validNutrition as $opts) : ?>
+      <?php $count = 0; ?>
+      <?php foreach ($data[0]->validNutrition as $opts) : ?>
       <?php if ($count % 4 == 0) : ?>
   </div>
+
   <div class="row justify-content-center">
-  <?php endif; ?>
-  <div class="col-6 col-md-3">
-    <label for="<?= $opts['id'] ?>">Enter value of <?= $opts['detail'] ?></label>
-    <input class="form-control px-2" type="number" id="<?= $opts['id'] ?>" name="nutritionComponents[<?= $opts['id'] ?>]" step="0.01"><br>
-  </div>
-  <?php $count++; ?>
-<?php endforeach; ?>
+    <?php endif; ?>
+    <div class="col-6 col-md-3">
+      <label for="<?= $opts['id'] ?>">Enter value of <?= $opts['detail'] ?></label>
+      <input class="form-control px-2" type="number" id="<?= $opts['id'] ?>" name="nutritionComponents[<?= $opts['id'] ?>]" step="0.01"><br>
+    </div>
+    <?php $count++; ?>
+    <?php endforeach; ?>
   </div>
 
 
@@ -91,11 +93,11 @@
         type: 'POST',
         url: '/ingredient/add',
         data: formData,
-        dataType: 'json', 
+        dataType: 'json',
         success: function(response) {
           if (response.success) {
             alert(response.message);
-           
+
           } else {
             alert(response.message);
           }
