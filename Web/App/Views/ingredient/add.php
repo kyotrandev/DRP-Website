@@ -11,6 +11,9 @@
 </div>
 
 <form id="ingredient-form" method="post" style="width: 80vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
+  <div style="display: flex; justify-content: center;">
+    <h4 class="m-2">General information</h2>
+  </div>
   <div class="row mb-3 justify-content-center ">
     <div class="col-sm-3">
       <label class="visually-hidden" for="name">Name:</label><br>
@@ -55,8 +58,8 @@
   <div class="row justify-content-center">
   <?php endif; ?>
   <div class="col-6 col-md-3">
-    <label class="visually-hidden" for="<?= $opts['id'] ?>">Nutrition:</label><br>
-    <input class="form-control px-2" type="number" id="<?= $opts['id'] ?>" name="nutritionComponents[<?= $opts['id'] ?>]" step="0.01" placeholder="Enter value of <?= $opts['detail'] ?>"><br>
+    <label for="<?= $opts['id'] ?>">Enter value of <?= $opts['detail'] ?></label>
+    <input class="form-control px-2" type="number" id="<?= $opts['id'] ?>" name="nutritionComponents[<?= $opts['id'] ?>]" step="0.01"><br>
   </div>
   <?php $count++; ?>
 <?php endforeach; ?>
