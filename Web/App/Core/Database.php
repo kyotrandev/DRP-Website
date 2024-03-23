@@ -52,7 +52,9 @@ class Database
             return $connection;
         } catch (\PDOException $e) {
             handlePDOException($e);
-            return false;
+        } catch (\Throwable $e) {
+            handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()) ;
         }
+        return false;
     }
 }

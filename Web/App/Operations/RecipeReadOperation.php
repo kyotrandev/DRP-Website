@@ -28,7 +28,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where isActive = 1";
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);
@@ -53,7 +53,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes";
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);
@@ -96,7 +96,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
       }
       $sql = "select * from recipes where isActive = 1 limit {$limit} offset {$offset} ";
 
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);
@@ -130,7 +130,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where {$fieldName} like '%{$value}%' AND isActive = 1";
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);
@@ -162,7 +162,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where id = :id AND isActive = 1";
-      $recipe = RecipeModel::createObjectByRawArray(self::query($sql, $conn, \PDO::FETCH_ASSOC, ['id' => $id])[0]);
+      $recipe = RecipeModel::createObjectByRawArray(self::query($sql,1, ['id' => $id])[0]);
 
       $sql2 = "select ingredients.name, quantity, ingredient_recipe.measurement_unit 
                 from ingredient_recipe 
@@ -195,7 +195,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where id = :id";
-      $recipe = RecipeModel::createObjectByRawArray(self::query($sql, $conn, \PDO::FETCH_ASSOC, ['id' => $id])[0]);
+      $recipe = RecipeModel::createObjectByRawArray(self::query($sql,1, ['id' => $id])[0]);
 
       $sql2 = "select ingredients.name, quantity, ingredient_recipe.measurement_unit 
                 from ingredient_recipe 
@@ -252,7 +252,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where {$fieldName} = {$value} and isActive = 1 limit {$limit} offset {$offset}";
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);
@@ -363,7 +363,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
       $sql = "select * from recipes where id in (select recipe_id from ingredient_recipe where {$field} = {$value}) and isActive = 1";
-      $data = self::query($sql, $conn, \PDO::FETCH_ASSOC);
+      $data = self::query($sql,1);
       $recipes = [];
       foreach ($data as $recipe) {
         $recipes[] = RecipeModel::createObjectByRawArray($recipe);

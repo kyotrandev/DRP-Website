@@ -7,10 +7,17 @@ class UserOperation extends DatabaseRelatedOperation {
   const TABLE = 'users';
   const CLASSMODEL = 'App\\Models\\UserModel';
   static public function check($table, $field, $data) {
-    $dbconn = new static; 
-    $conn = $dbconn->DB_CONNECTION;
     $sql = "select * from {$table} where {$field}=:data limit 1";
-    $result = self::query($sql, $conn, \PDO::FETCH_ASSOC, [':data' => $data]);
+    try {
+      $result = self::query($sql, 1, [':data' => $data]);
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
     return !empty($result);
   }
 

@@ -4,77 +4,110 @@
     color: #ff4d4d;
     font-size: 14px;
   }
-
-</style>
 </style>
 
-<h2 style="margin-left: 40%; margin-top: 30px">Ingredient Form</h2>
+<div style="display: flex; justify-content: center;">
+  <h2 class="m-5">Ingredient Form</h2>
+</div>
 
-<form id="ingredient-form" action="/ingredient/add" method="post" style="width: 30%; margin-left: 40%; margin-bottom: 40px; align-items: center;">
-  <label for="id">ID:</label><br>
-  <input type="number" id="id" name="id"><br>
-  <label for="category">Category:</label><br>
-  <select id="category" name="category">
-    <option value="EMMP">EMMP</option>
-    <option value="FAO">FAO</option>
-    <option value="FRU">FRU</option>
-    <option value="GNBK">GNBK</option>
-    <option value="HRBS">HRBS</option>
-    <option value="MSF">MSF</option>
-    <option value="OTHR">OTHR</option>
-    <option value="PRP">PRP</option>
-    <option value="VEGI">VEGI</option>
-  </select><br>
-  <label for="measurement_unit">Measurement Description:</label><br>
-  <select id="measurement_unit" name="measurement_unit">
-    <option value="tsp">tsp</option>
-    <option value="cup">cup</option>
-    <option value="tbsp">tbsp</option>
-    <option value="g">g</option>
-    <option value="lb">lb</option>
-    <option value="can">can</option>
-    <option value="oz">oz</option>
-  </select><br>
-  <label for="name">Name:</label><br>
-  <input type="text" id="name" name="name"><br>
-  <label for="calcium">Calcium:</label><br>
-  <input type="number" id="calcium" name="calcium" step="0.01"><br>
-  <label for="calories">Calories:</label><br>
-  <input type="number" id="calories" name="calories" step="0.01"><br>
-  <label for="carbohydrate">Carbohydrate:</label><br>
-  <input type="number" id="carbohydrate" name="carbohydrate" step="0.01"><br>
-  <label for="cholesterol">Cholesterol:</label><br>
-  <input type="number" id="cholesterol" name="cholesterol" step="0.01"><br>
-  <label for="fiber">Fiber:</label><br>
-  <input type="number" id="fiber" name="fiber" step="0.01"><br>
-  <label for="iron">Iron:</label><br>
-  <input type="number" id="iron" name="iron" step="0.01"><br>
-  <label for="fat">Fat:</label><br>
-  <input type="number" id="fat" name="fat" step="0.01"><br>
-  <label for="monounsaturated_fat">Monounsaturated Fat:</label><br>
-  <input type="number" id="monounsaturated_fat" name="monounsaturated_fat" step="0.01"><br>
-  <label for="polyunsaturated_fat">Polyunsaturated Fat:</label><br>
-  <input type="number" id="polyunsaturated_fat" name="polyunsaturated_fat" step="0.01"><br>
-  <label for="saturated_fat">Saturated Fat:</label><br>
-  <input type="number" id="saturated_fat" name="saturated_fat" step="0.01"><br>
-  <label for="potassium">Potassium:</label><br>
-  <input type="number" id="potassium" name="potassium" step="0.01"><br>
-  <label for="protein">Protein:</label><br>
-  <input type="number" id="protein" name="protein" step="0.01"><br>
-  <label for="sodium">Sodium:</label><br>
-  <input type="number" id="sodium" name="sodium" step="0.01"><br>
-  <label for="sugar">Sugar:</label><br>
-  <input type="number" id="sugar" name="sugar" step="0.01"><br>
-  <label for="vitamin_a">Vitamin A:</label><br>
-  <input type="number" id="vitamin_a" name="vitamin_a" step="0.01"><br>
-  <label for="vitamin_c">Vitamin C:</label><br>
-  <input type="number" id="vitamin_c" name="vitamin_c" step="0.01"><br>
-  <button type="submit" name="login">Upload</button>
+<form id="ingredient-form" method="post" style="width: 80vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
+  <div style="display: flex; justify-content: center;">
+    <h4 class="m-2">General information</h2>
+  </div>
+
+  <div class="row mb-3 justify-content-center ">
+    <div class="col-sm-3">
+      <label class="visually-hidden" for="name">Name:</label><br>
+      <input class="form-control px-2" type="text" id="name" name="name" placeholder="Enter name of ingredient"><br>
+    </div>
+
+    <div class="col-sm-3">
+      <label class="visually-hidden" for="category">Category:</label><br>
+      <select class="form-select px-2" id="category" name="category">
+        <option value="" disabled selected hidden>Select category for ingredient</option>
+        <? foreach ($data[0]->validCategories as $opts) : ?>
+          <option value="<?= $opts['id'] ?>"><?= $opts['detail'] ?></option>
+        <? endforeach; ?>
+      </select>
+    </div>
+
+    <div class="col-sm-3">
+      <label class="visually-hidden" for="measurement_unit"></label><br>
+      <select class="form-select px-2" id="measurement_unit" name="measurement_unit">
+        <option value="" disabled selected hidden>Select unit for ingredient</option>
+        <? foreach ($data[0]->validMeasurements as $opts) : ?>
+          <option value="<?= $opts['id'] ?>"><?= $opts['detail'] ?></option>
+        <? endforeach; ?>
+      </select>
+    </div>
+
+    <div class="col-sm-3">
+      <label class="visually-hidden" for="measurement_unit"></label><br>
+      <input class="form-control px-2" type="text" placeholder="Have a good day sir!" aria-label="Disabled input example" disabled>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: center;">
+    <h4 class="m-2">Nutrition components</h2>
+  </div>
+
+  <div class="row mb-3 justify-content-center">
+      <?php $count = 0; ?>
+      <?php foreach ($data[0]->validNutrition as $opts) : ?>
+      <?php if ($count % 4 == 0) : ?>
+  </div>
+
+  <div class="row justify-content-center">
+    <?php endif; ?>
+    <div class="col-6 col-md-3">
+      <label for="<?= $opts['id'] ?>">Enter value of <?= $opts['detail'] ?></label>
+      <input class="form-control px-2" type="number" id="<?= $opts['id'] ?>" name="nutritionComponents[<?= $opts['id'] ?>]" step="0.01"><br>
+    </div>
+    <?php $count++; ?>
+    <?php endforeach; ?>
+  </div>
+
+
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">Primary</button>
+  </div>
+
 </form>
-  <!-- Include jQuery library -->
-  <script src="/Public/js/libs/jquery/jquery-3.5.1.min.js"></script>
-  <!-- Include jQuery Validate plugin -->
-  <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script>
+<!-- Include jQuery library -->
+<script src="/Public/js/libs/jquery/jquery-3.5.1.min.js"></script>
+<!-- <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script> -->
 <script src="/Public/js/validate-ingredients.js"></script>
 
+<script>
+  $(document).ready(function() {
+    $('#ingredient-form').submit(function(event) {
+      // Ngăn chặn hành vi mặc định của form
+      event.preventDefault();
+
+      // Lấy dữ liệu form
+      var formData = $(this).serialize();
+
+      // Gửi dữ liệu form đi bằng AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/ingredient/add',
+        data: formData,
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            alert(response.message);
+
+          } else {
+            alert(response.message);
+          }
+        },
+        error: function(xhr, status, error) {
+          // Xử lý lỗi AJAX nếu có
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
 <? require_once($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php"); ?>

@@ -63,19 +63,13 @@
                         <td><?= $ingredient->getMeasurementUnit()?></td>
                         <td><?= $ingredient->getName()?></td>
                         <td>
-                            <?if($ingredient->getActive()):?>
-                                <form class="d-inline-block" action="/manager/ingredient" method="POST">
-                                    <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
-                                    <input type="hidden" name="isActive" value="0">
-                                    <button class="btn btn-danger" style="width: 150px" type="submit">Unset Active</button>
-                                </form>
-                            <?else:?>
-                                <form class="d-inline-block" action="/manager/ingredient" method="POST">
-                                    <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
-                                    <input type="hidden" name="isActive" value="1">
-                                    <button class="btn btn-success" style="width: 150px" type="submit">Set Active</button>
-                                </form>
-                            <?endif;?>
+                            <form  class="set-active-form d-inline-block" method="POST">
+                                <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
+                                <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
+                                <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 150px" type="submit">
+                                    <?= $ingredient->getActive() ? 'Deactivate' : 'Activate' ?>
+                                </button>
+                            </form>
                             <a href="/manager/ingredient/update?id=<?= $ingredient->getId() ?>" class="btn btn-secondary d-inline-block" role="button">Edit</a>
                         </td>
                     </tr>
@@ -90,5 +84,37 @@
         </div>
     </div>
 </div>
-<? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php")?>     
 <script src="/Public/js/validate-signup.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.set-active-form').submit(function(event) {
+      event.preventDefault();
+
+      var formData = $(this).serialize();
+
+      var url = $(this).attr('action');
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            alert(response.message);
+            location.reload(); 
+          } else {
+            alert(response.message);
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
+
+
+<? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php")?>     

@@ -8,6 +8,7 @@ use App\Operations\UserOperation;
 use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeUpdateOperation;
 use App\Operations\UploadImageOperation;
+use App\Operations\ValidateIngredientDataHolder;
 
 class AdminController extends BaseController
 {
@@ -187,15 +188,16 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
 
-        if ($_GET['s_id'] != '') {
+        $ingredients = null;
+        if (isset($_GET['s_id']) && $_GET['s_id'] != '') {
             $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id']);
-        } else if ($_GET['s_name'] != '') {
+        } else if (isset($_GET['s_name']) && $_GET['s_name'] != '') {
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name']);
-        } else if ($_GET['s_category'] != ''){
+        } else if (isset($_GET['s_category']) && $_GET['s_category'] != ''){
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('category', $_GET['s_category']);
-        } else if ($_GET['s_measurement_desciption'] != ''){
+        } else if (isset($_GET['s_measurement_desciption']) && $_GET['s_measurement_desciption'] != ''){
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('measurement_unit', $_GET['s_measurement_desciption']);
-        } else if ($_GET['s_name'] != ''){
+        } else if (isset($_GET['s_name']) && $_GET['s_name'] != ''){
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name']);
         }
 
@@ -211,35 +213,32 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $data = $_POST;
         IngredientUpdateOperation::setIngredientActive($data);
-
-        header("Location: /manager/ingredient");
     }
 
-    public function ingredientManagerUpdateUI()
+    public function ingredientManagerUpdateUI() 
     {
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
 
+        $ingredientOpt = ValidateIngredientDataHolder::getInstance();
         $data = $_GET;
-        $ingredient = IngredientReadOperation::getSingleObjectById($data['id']);
-        return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient]);
+        $ingredient = IngredientReadOperation::getSingleObjectByIdIgnoreActive($data['id']);
+
+        return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient, 'opts' => $ingredientOpt]);
     }
 
-    public function ingredientManagerUpdate()
-    {
+    public function ingredientManagerUpdate() {
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $data = $_POST;
-        if (IngredientUpdateOperation::execute($data)) {
-            echo '<script>
-            window.location.href = "/manager/ingredient";
-            </script>';
-        }
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";
+
+        IngredientUpdateOperation::execute($data);
     }
 }
