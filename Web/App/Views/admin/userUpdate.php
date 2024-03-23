@@ -10,7 +10,7 @@
 <body>
     <div class="container py-5">
         <div class="py-3 text-center">
-            <h1 class="display-1">Manager Update User</h1>
+            <h1>Manager Update User</h1>
         </div>
         
         <div class="row g-5">
@@ -66,9 +66,10 @@
                     <button class="btn btn-success" name="update" type="submit">Update</button>
                 </div>
             </form>
-            <div class="d-md-flex justify-content-md-end py-3">
-                    <a href="/manager/user" class="btn btn-secondary me-md-2" tabindex="-1" role="button">Back</a>
-            </div>
+        </div>
+        
+        <div class="d-md-flex justify-content-center">
+            <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button">Back</a>
         </div>
     </div>
     

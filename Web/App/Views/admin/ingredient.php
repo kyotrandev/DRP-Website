@@ -1,11 +1,10 @@
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php")?>
-<title>Manager Ingredient</title>
-<div class="container py-3" style="width: 100vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
-    <div class="container">
-        <div class="text-center">
-            <h1>Manager Ingredient</h1>
-        </div>
+
+<div class="container-fluid py-5" style="width: 100%;">
+    <div class="text-center">
+        <h1>Manager Ingredient</h1>
     </div>
+
     <div class="row g-3">    
         <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span>List ingredient</span>
