@@ -4,25 +4,31 @@
   <div class="row">
     <div class="col-md-4">
       <div class="advert">
-        <img src="/Public/images/account.png" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="Ảnh user">
         <div class="link">    
-            <a href="/manager/user" class="btn btn-secondary" tabindex="-1" role="button">Quản lý người dùng!</a>
+            <a href="/manager/user">
+              <img src="/Public/images/account.png" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="Ảnh user">
+            </a>
+            <h3 class="text-center">Manager User!</h3>
+          </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="advert">
+        <div class="link">
+          <a href="/manager/recipe">
+            <img src="/Public/images/recipe.png" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="ảnh recipe">
+          </a>
+          <h3 class="text-center">Manager Recipe!</h3>
         </div>
       </div>
     </div>
     <div class="col-md-4">
       <div class="advert">
-        <img src="/Public/images/recipe.png" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="ảnh recipe">
         <div class="link">
-            <a href="/manager/recipe" class="btn btn-secondary" tabindex="-1" role="button">Quản lý công thức!</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="advert">
-        <img src="/Public/images/ingredient.jpg" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="ảnh ingredient">
-        <div class="link">
-            <a href="/manager/ingredient" class="btn btn-secondary" tabindex="-1" role="button">Quản lý nguyên liệu!</a>
+            <a href="/manager/ingredient">
+              <img src="/Public/images/ingredient.jpg" class="img-thumbnail mb-2" style="height:415px; aspect-ratio: 1/1; object-fit: cover;" alt="ảnh ingredient">
+            </a>
+            <h3 class="text-center">Manager Ingredient!</h3>
         </div>
       </div>
     </div>
