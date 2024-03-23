@@ -40,33 +40,13 @@ function viewRecipes(data) {
     );
 
     // Xuất thông tin chi tiết của công thức thành chuỗi JSON
-    var idDetails = JSON.stringify(recipe.id);
+    var idDetails = JSON.stringify(recipe.recipe_id);
 
     // Thêm dữ liệu vào thuộc tính data-details của thẻ card
     recipeDiv.find(".card-details").attr("data-details", idDetails);
     // Thêm thẻ div vào container
     recipeContainer.append(recipeDiv);
 
-    // Thêm rating ảo
-    var rating = Math.floor(Math.random() * 3) + 3; // Tạo số rating ngẫu nhiên từ 0 đến 5
-    for (var i = 0; i < 5; i++) {
-      if (i < Math.floor(rating)) {
-        // Thêm sao màu vàng cho các rating nguyên
-        recipeDiv
-          .find(".rating")
-          .append('<i class="fa-solid fa-star" style="color: gold;"></i>');
-      } else if (i === Math.floor(rating) && rating % 1 !== 0) {
-        // Nếu rating không phải là số nguyên, thêm nửa sao màu vàng
-        recipeDiv
-          .find(".rating")
-          .append('<i class="fa-solid fa-star-half" style="color: gold;"></i>');
-      } else {
-        // Thêm sao trống cho các rating còn lại
-        recipeDiv
-          .find(".rating")
-          .append('<i class="fa-regular fa-star" style="color: gold;"></i>');
-      }
-    }
   });
 }
 

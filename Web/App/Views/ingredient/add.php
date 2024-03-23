@@ -76,7 +76,7 @@
 </form>
 <!-- Include jQuery library -->
 <script src="/Public/js/libs/jquery/jquery-3.5.1.min.js"></script>
-<!-- <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script> -->
+ <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script> 
 <script src="/Public/js/validate-ingredients.js"></script>
 
 <script>

@@ -1,6 +1,5 @@
 function viewIngredient(ingredients) {
-  // Parse JSON data into JavaScript object
-  var ingredients = JSON.parse(ingredients);
+
 
   // Xóa dữ liệu cũ trong bảng
   $(".ingredientTableBody").empty();

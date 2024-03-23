@@ -27,18 +27,21 @@ class DatabaseRelatedOperation {
    * @throws \Throwable If there is a throwable error during execution.
    */
   static protected function query(string $sql, int $fetchMode = 4, $params = [], string $className = null) : array|bool {
+    
     $dbconn = new self();
     $conn = $dbconn->DB_CONNECTION;
 
     if($dbconn->DB_CONNECTION == false) 
       throw new \PDOException(self::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-
+    
     $stmt = $conn->prepare($sql);
+    
     if (!empty($params))
       foreach ($params as $key => $value)
         $stmt->bindValue($key, $value);
 
     $stmt->execute();
+
     if ($stmt->rowCount() > 0){
       switch($fetchMode){
         case 1:

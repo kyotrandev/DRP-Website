@@ -8,7 +8,7 @@ use App\Operations\ValidateIngredientDataHolder;
 class IngredientController extends BaseController
 {
     public function index() {
-        return $this->loadView('ingredient.list_all');
+        return $this->loadView('ingredient.index');
     }
     public function listByCategory() {
         $category = $_GET['category'];
@@ -65,7 +65,8 @@ class IngredientController extends BaseController
 
     public function test() {
         $ingredients = IngredientReadOperation::getSingleObjectById(5);
-        $this->loadView('pages.test', $ingredients);
+        $ingredientss[] = $ingredients; 
+        $this->loadView('pages.test', $ingredientss);
 
     }
 

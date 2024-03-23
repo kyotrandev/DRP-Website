@@ -13,7 +13,7 @@ class RecipeController extends BaseController
 
     public function index()
     {
-        $this->loadView('recipe.recipe');
+        $this->loadView('recipe.index');
     }
 
     public function viewDetail()
