@@ -123,17 +123,17 @@ class AdminController extends BaseController
         if ($_GET['id'] != '') {
             $recipes = RecipeReadOperation::getSingleObjectByIdForAdmin($_GET['id']);
         } else if ($_GET['name'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['name']);
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['name'], true);
         } else if ($_GET['course'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $_GET['course']);
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $_GET['course'], true);
         } else if ($_GET['meal'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal', $_GET['meal']);
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal', $_GET['meal'], true);
         } else if ($_GET['method'] != '') {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('method', $_GET['method']);
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('method', $_GET['method'], true);
         }
 
         if (!$recipes) {
-            $recipes = RecipeReadOperation::getAllObjectsForAdmin();
+            $recipes = RecipeReadOperation::getAllObjects(true);
         }
 
         return $this->loadView('admin.recipe', ['recipes' => $recipes]);
@@ -193,13 +193,13 @@ class AdminController extends BaseController
         if (isset($_GET['s_id']) && $_GET['s_id'] != '') {
             $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id']);
         } else if (isset($_GET['s_name']) && $_GET['s_name'] != '') {
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name']);
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name'], true);
         } else if (isset($_GET['s_category']) && $_GET['s_category'] != ''){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('category', $_GET['s_category']);
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('category', $_GET['s_category'], true);
         } else if (isset($_GET['s_measurement_desciption']) && $_GET['s_measurement_desciption'] != ''){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('measurement_unit', $_GET['s_measurement_desciption']);
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('measurement_unit', $_GET['s_measurement_desciption'], true);
         } else if (isset($_GET['s_name']) && $_GET['s_name'] != ''){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name']);
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name'], true);
         }
   
         if (!$ingredients) {
