@@ -203,7 +203,7 @@ class AdminController extends BaseController
         }
   
         if (!$ingredients) {
-            $ingredients = IngredientReadOperation::getAllObjects();
+            $ingredients = IngredientReadOperation::getAllObjects(true);
         }
 
         return $this->loadView('admin.ingredient', ['ingredients' => $ingredients]);
@@ -225,7 +225,7 @@ class AdminController extends BaseController
 
         $ingredientOpt = ValidateIngredientDataHolder::getInstance();
         $data = $_GET;
-        $ingredient = IngredientReadOperation::getSingleObjectByIdIgnoreActive($data['id']);
+        $ingredient = IngredientReadOperation::getSingleObjectById($data['id'], true);
 
         return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient, 'opts' => $ingredientOpt]);
     }

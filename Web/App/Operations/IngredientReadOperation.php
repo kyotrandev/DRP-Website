@@ -12,9 +12,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
                           LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
   const getSingleObjectByIdIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id";
-  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value";
-  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset";
-  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
+  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value AND ingredients.isActive = 1";
+  const getAllObjectsByFieldAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value";
+  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset AND ingredients.isActive = 1";
+  const getObjectsWithOffsetIgnoreActiveMode = self::BASE_SQL_QUERY . " limit :limit offset :offset";
+  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset AND ingredients.isActive = 1";
+  const getObjectWithOffsetByFielAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
   
   public function __construct() {
     parent::__construct();
@@ -56,7 +59,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       if (!is_object($ingredient)) {
         return null;
       }
-
       $ingredient->setNutritionComponents(self::getNutrition($ingredient->getId()));
     }
     return $ingredient;
@@ -69,22 +71,22 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurred.
    */
-  static public function getSingleObjectById(int $id) : null|IngredientModel{
+  static public function getSingleObjectById(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
-      return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
+      if ($ignoreActiveStatus) 
+        return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
+      else 
+        return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, true, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
-      return null;
     } catch (\Exception $exception) {
       handleException($exception);
-    }
-      catch (\Throwable $throwable) {
+    } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return null;
   }
-
 
   /**
    * Retrieves a single IngredientModel object by its ID without including nutritional information.
@@ -92,13 +94,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurs.
    */
-  static public function getSingleObjectByIdWithoutNutri(int $id) :null|IngredientModel{
+  static public function getSingleObjectByIdWithoutNutri(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
-      return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
+      if ($ignoreActiveStatus) 
+        return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
+      else 
+        return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, false, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
-      return null;
     } catch (\Exception $exception) {
       handleException($exception);
     } catch (\Throwable $throwable) {
@@ -107,35 +111,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     return null;
   }
 
-  static public function getSingleObjectByIdIgnoreActive(int $id) : null|IngredientModel{
-    try {
-      return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, true, [':id' => $id]);
-    } catch (\PDOException $PDOException) {
-      handlePDOException($PDOException);
-      echo \App\Views\ViewRender::errorViewRender('500');
-      return null;
-    } catch (\Exception $exception) {
-      handleException($exception);
-    } catch (\Throwable $throwable) {
-      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-    }
-    return null;
-  }
-
-  static public function getSingleObjectByIdIgnoreActiveWithoutNutri(int $id) : null|IngredientModel{
-    try {
-      return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, false, [':id' => $id]);
-    } catch (\PDOException $PDOException) {
-      handlePDOException($PDOException);
-      echo \App\Views\ViewRender::errorViewRender('500');
-      return null;
-    } catch (\Exception $exception) {
-      handleException($exception);
-    } catch (\Throwable $throwable) {
-      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-    }
-    return null;
-  }
 
 
   /**
@@ -158,14 +133,18 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     return $ingredients;
   }
 
+
   /**
    * Retrieves all objects from the database.
    *
    * @return array|null An array of objects if successful, null otherwise.
    */
-  static public function getAllObjects() : ?array {
+  static public function getAllObjects(bool $ignoreActiveStatus = false) : ?array {
     try {
-      return self::getMultipleObject(self::BASE_SQL_QUERY);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::BASE_SQL_QUERY);
+      else 
+        return self::getMultipleObject(self::BASE_SQL_QUERY . " WHERE ingredients.isActive = 1");
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -183,9 +162,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    *
    * @return array|null An array of objects without nutritional information, or null if an error occurs.
    */
-  static public function getAllObjectsWithoutNutri() : ?array {
+  static public function getAllObjectsWithoutNutri(bool $ignoreActiveStatus = false) : ?array {
     try {
-      return self::getMultipleObject(self::BASE_SQL_QUERY, false);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::BASE_SQL_QUERY, false);
+      else 
+        return self::getMultipleObject(self::BASE_SQL_QUERY . " WHERE ingredients.isActive = 1", false);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -205,12 +187,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int|null $limit The maximum number of objects to retrieve. If not provided, defaults to offset + 5.
    * @return array|null An array of objects retrieved with the specified offset and limit, or null if an error occurs.
    */
-  public static function getObjectWithOffset(int $offset = 0, int $limit = null) : ?array {
+  public static function getObjectWithOffset(int $offset = 0, int $limit = null, bool $ignoreActiveStatus = false) : ?array {
     try{
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectsWithOffset, true, [':offset' => $offset, ':limit' => $limit]);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::getObjectsWithOffset, true, [':offset' => $offset, ':limit' => $limit]);
+      else 
+        return self::getMultipleObject(self::getObjectsWithOffsetIgnoreActiveMode, true, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -255,9 +240,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param mixed $value The value to match in the specified column.
    * @return array|null An array of objects matching the specified column name and value, or null if an error occurred.
    */
-  static public function getAllObjectsByFieldAndValue(string $columnName, $value) : ?array {
+  static public function getAllObjectsByFieldAndValue(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
-      self::getMultipleObject(self::getAllObjectsByFieldAndValue, true, [':name' => $columnName, ':value' => $value]);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, true, [':name' => $columnName, ':value' => $value]);
+      else
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValueIgnoreActiveMode, true, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -278,9 +266,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param mixed $value The value to match in the specified column.
    * @return array|null An array of objects matching the specified column name and value, or null if an error occurred.
    */
-  static public function getAllObjectsByFieldAndValueWithoutNutri(string $columnName, $value) : ?array {
+  static public function getAllObjectsByFieldAndValueWithoutNutri(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
-      self::getMultipleObject(self::getAllObjectsByFieldAndValue, false, [':name' => $columnName, ':value' => $value]);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, false, [':name' => $columnName, ':value' => $value]);
+      else
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValueIgnoreActiveMode, false, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -302,12 +293,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int|null $limit The maximum number of objects to retrieve. Default is null, which retrieves 5 objects.
    * @return array|null An array of objects matching the specified field and value, or null if an error occurs.
    */
-  static public function getObjectWithOffsetByFielAndValue(string $name, $value, int $offset = 0, int $limit = null) : ?array{
+  static public function getObjectWithOffsetByFielAndValue(string $name, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus= false) : ?array{
    try{
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, true, 
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, true, 
+            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+      else
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValueIgnoreActiveMode, true, 
             [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
@@ -330,11 +325,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int|null $limit The maximum number of objects to retrieve. Default is null, which retrieves 5 objects.
    * @return array|null An array of objects matching the specified field and value, or null if an error occurs.
    */
-  static public function getObjectWithOffsetByFielAndValueWithoutNutri(string $name, $value, int $offset = 0, int $limit = null) : ?array{
+  static public function getObjectWithOffsetByFielAndValueWithoutNutri(string $name, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus=false) : ?array{
     try{
       if ($limit === null) 
         $limit = $offset + 5;
-      return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
+
+      if ($ignoreActiveStatus)
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
+            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+      else  
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValueIgnoreActiveMode, false, 
             [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
@@ -354,9 +354,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @return array|null An array of associative arrays containing the ID and name of each ingredient,
    *                   or null if an error occurred.
    */
-  static public function getIdAndNameAllObject() : ?array {
+  static public function getIdAndNameAllObject(bool $ignoreActiveStatus = false) : ?array {
     try {
       $sql = "select id, name from ingredients";
+
+      $sql .= ($ignoreActiveStatus)  ? "" : " WHERE ingredients.isActive = 1";
+
       $pairs = self::query($sql, 1);
       return $pairs;
     } catch (\PDOException $PDOException) {
@@ -377,13 +380,13 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $offset The starting offset for retrieving ingredients.
    * @param int|null $limit The maximum number of ingredients to retrieve. If not provided, defaults to offset + 5.
    */
-  static public function getPaging(int $offset, int $limit = null)  {
+  static public function getPaging(int $offset, int $limit = null, bool $ignoreActiveStatus = false) { 
     try {
       if($limit === null) {
         $limit = $offset + 10;
       }
 
-      $sql = self::getObjectsWithOffset;
+      $sql = ($ignoreActiveStatus) ? self::getObjectsWithOffsetIgnoreActiveMode : self::getObjectsWithOffset;
 
       // Fetch Data
       $data = self::query($sql, 4, [':offset' => $offset, ':limit' => $limit], "IngredientModel");
@@ -398,6 +401,7 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
       return json_encode(["error" => "Internal server error: " . $exception->getMessage()]);
     }
   }
+
 
   /**
    * Retrieves the IDs of all ingredient categories from the database.
@@ -422,7 +426,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
     return null;
   }
-
 
   static public function getNutritionType(){
     try {
