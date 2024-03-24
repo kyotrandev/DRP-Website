@@ -6,8 +6,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/App/Core/init.php');
 class RecipeModel extends BaseModel {
     const TABLE = 'Recipes';
 
-    private $recipe_id;
     private $user_id;
+    private $recipe_id;
+    private $isActive;
     private $name;
     private $description;
     private $image_url;
@@ -72,25 +73,9 @@ class RecipeModel extends BaseModel {
     public function setTimestamp($timestamp) { $this->timestamp = $timestamp; }
     public function getIngredientComponets() { return $this->ingredientComponets; }
     public function setIngredientComponets($ingredientComponets) { 
-        $this->ingredientComponets = self::addIngredient($ingredientComponets); 
+        $this->ingredientComponets = $ingredientComponets; 
     }
 
-    public static function addIngredient($data) {
-        if(isset($data)){
-            $ingredientComponets = [];
-            foreach ($data as $ingredient) {
-                $ingredientComponets[] = array(
-                    'ingredient_id' => $ingredient['id'],
-                    'ingredient_name'=> $ingredient['name'],
-                    'quantity' => $ingredient['quantity'],
-                    'unit' => $ingredient['measurement_unit']
-                );
-            }
-        } else {
-            $ingredientComponets [] = null;
-        }
-        return $ingredientComponets;
-    }
 
     public static function createObjectByRawArray($data){
         $object = new RecipeModel();
@@ -107,7 +92,7 @@ class RecipeModel extends BaseModel {
         $object->setMeal($data['meal'] ?? "Unknown");
         $object->setMethod($data['method'] ?? "Unknown");
         $object->setTimestamp($data['timestamp'] ?? "Unknown");
-        if (isset($data['ingredientComponents']))
+        if (empty($data['ingredientComponents']))
             $object->setIngredientComponets(($data['ingredientComponents']));
         return $object;
     }

@@ -74,9 +74,9 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   static public function getSingleObjectById(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
       if ($ignoreActiveStatus) 
-        return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
-      else 
         return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, true, [':id' => $id]);
+      else 
+        return self::getSingleObject(self::getSingleObjectById, true, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -97,9 +97,9 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   static public function getSingleObjectByIdWithoutNutri(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
       if ($ignoreActiveStatus) 
-        return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
-      else 
         return self::getSingleObject(self::getSingleObjectByIdIgnoreActiveMode, false, [':id' => $id]);
+      else 
+        return self::getSingleObject(self::getSingleObjectById, false, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -193,9 +193,9 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
         $limit = $offset + 5;
       }
       if ($ignoreActiveStatus) 
-        return self::getMultipleObject(self::getObjectsWithOffset, true, [':offset' => $offset, ':limit' => $limit]);
-      else 
         return self::getMultipleObject(self::getObjectsWithOffsetIgnoreActiveMode, true, [':offset' => $offset, ':limit' => $limit]);
+      else 
+        return self::getMultipleObject(self::getObjectsWithOffset, true, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -215,12 +215,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int|null $limit The maximum number of objects to retrieve. If null, defaults to offset + 5.
    * @return array|null An array of objects or null if an exception occurs.
    */
-  public static function getObjectWithOffsetWithoutNutri(int $offset = 0, int $limit = null) : ?array {
+  public static function getObjectWithOffsetWithoutNutri(int $offset = 0, int $limit = null, bool $ignoreActiveStatus = false) : ?array {
     try{
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      return self::getMultipleObject(self::getObjectsWithOffset, false, [':offset' => $offset, ':limit' => $limit]);
+      if ($ignoreActiveStatus) 
+        return self::getMultipleObject(self::getObjectsWithOffsetIgnoreActiveMode, false, [':offset' => $offset, ':limit' => $limit]);
+      else
+        return self::getMultipleObject(self::getObjectsWithOffset, false, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -243,15 +246,14 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   static public function getAllObjectsByFieldAndValue(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
       if ($ignoreActiveStatus) 
-        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, true, [':name' => $columnName, ':value' => $value]);
-      else
         return self::getMultipleObject(self::getAllObjectsByFieldAndValueIgnoreActiveMode, true, [':name' => $columnName, ':value' => $value]);
+      else
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, true, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
     } catch (\Exception $exception) {
       handleException($exception);
-
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
@@ -269,9 +271,9 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   static public function getAllObjectsByFieldAndValueWithoutNutri(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
       if ($ignoreActiveStatus) 
-        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, false, [':name' => $columnName, ':value' => $value]);
-      else
         return self::getMultipleObject(self::getAllObjectsByFieldAndValueIgnoreActiveMode, false, [':name' => $columnName, ':value' => $value]);
+      else
+        return self::getMultipleObject(self::getAllObjectsByFieldAndValue, false, [':name' => $columnName, ':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -299,11 +301,11 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
         $limit = $offset + 5;
       }
       if ($ignoreActiveStatus) 
-        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, true, 
-            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
-      else
         return self::getMultipleObject(self::getObjectWithOffsetByFielAndValueIgnoreActiveMode, true, 
-            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+          [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+      else
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, true, 
+          [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -331,11 +333,11 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
         $limit = $offset + 5;
 
       if ($ignoreActiveStatus)
-        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
-            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
-      else  
         return self::getMultipleObject(self::getObjectWithOffsetByFielAndValueIgnoreActiveMode, false, 
-            [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+          [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+      else  
+        return self::getMultipleObject(self::getObjectWithOffsetByFielAndValue, false, 
+          [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
