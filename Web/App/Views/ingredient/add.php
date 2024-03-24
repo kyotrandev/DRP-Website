@@ -48,7 +48,7 @@
   </div>
 
   <div style="display: flex; justify-content: center;">
-    <h4 class="m-2">Nutrition components</h2>
+    <h4 class="m-2">Nutrition components</h4>
   </div>
 
   <div class="row mb-3 justify-content-center">

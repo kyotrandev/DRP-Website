@@ -157,7 +157,7 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
 
-        $recipe = RecipeReadOperation::getSingleObjectByIdForAdmin($_GET['id']);
+        $recipe = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
         return $this->loadView('admin.recipeUpdate', ['recipe' => $recipe]);
     }
 
@@ -212,9 +212,7 @@ class AdminController extends BaseController
     public function setIngredientActive()
     {
         $data = $_POST;
-        IngredientUpdateOperation::setIngredientActive($data);
-        echo "<script>window.location.href = '/../manager/ingredient';</script>";
-        exit; 
+        IngredientUpdateOperation::setIngredientActive($data); 
     }
 
     public function ingredientManagerUpdateUI() 
@@ -235,10 +233,6 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $data = $_POST;
-        // echo "<pre>";
-        // print_r($data);
-        // echo "</pre>";
-
         IngredientUpdateOperation::execute($data);
     }
 }

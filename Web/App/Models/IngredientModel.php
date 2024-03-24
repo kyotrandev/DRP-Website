@@ -21,7 +21,6 @@ class IngredientModel extends BaseModel {
    * @param array|null $nutritionComponents The ingredient nutrition components (optional, default is null).
    */
   public function __construct($id = null, $name = null, $category = null, $measurementUnit = null, $nutritionComponents = null) {
-    parent::__construct();
     $this->id = $id ?? 0;
     $this->name = $name ?? '';
     $this->category = $category ?? '';

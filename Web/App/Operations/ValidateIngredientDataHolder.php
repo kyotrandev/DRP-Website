@@ -7,10 +7,9 @@ class ValidateIngredientDataHolder {
     public $validMeasurements;
     public $validNutrition;
     private function __construct() {
-        // Khởi tạo giá trị của $validCategories và $validMeasurements ở đây
-        $this->validCategories = IngredientReadOperation::getCategoryID();
-        $this->validMeasurements = IngredientReadOperation::getMeasurementUnit();
-        $this->validNutrition = IngredientReadOperation::getNutritionType();
+        $this->validCategories = IngredientReadOperation::getCat(1);
+        $this->validMeasurements = IngredientReadOperation::getCat(2);
+        $this->validNutrition = IngredientReadOperation::getCat(3);
     }
 
     public static function getInstance() {

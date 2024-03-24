@@ -2955,7 +2955,7 @@ DROP TABLE IF EXISTS `recipe_ingredient`;
 CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
   `ingredient_id` int NOT NULL,
   `recipe_id` int NOT NULL,
-  `quanity` int DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
   KEY `ingredient_id` (`ingredient_id`),
   KEY `recipe_id` (`recipe_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -2964,7 +2964,7 @@ CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
 -- Dumping data for table `recipe_ingredient`
 --
 
-INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `quanity`) VALUES
+INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `quantity`) VALUES
 (1, 1, 300),
 (2, 1, 200),
 (3, 1, 2),

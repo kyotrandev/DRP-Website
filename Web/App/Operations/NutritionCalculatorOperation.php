@@ -3,13 +3,8 @@ namespace App\Operations;
 
 class NutritionCalculatorOperation extends DatabaseRelatedOperation {
 
-  public function __construct() {
-    parent::__construct();
-  }
-
   public static function calculateNutritionForRecipe($recipeId) {
     try {
-
       $dbconn = new parent();
       $conn = $dbconn->DB_CONNECTION;
 

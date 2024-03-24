@@ -14,7 +14,7 @@ function viewRecipes(data) {
         '<img src="' +
         (recipe.image_url
           ? "/Public/uploads/recipes/" + recipe.image_url
-          : "/Public/images/" + "image_not_found.png") +
+          : "/Public/images/image_not_found.png") +
         '" class="card-img-top" alt="Picture of meal" style="object-fit: cover; height:12rem;">' +
         '<div class="card-content" style="height:10rem">' +
         '<div class="card-body"  style="height:9rem; overflow: hidden">' +
@@ -24,13 +24,15 @@ function viewRecipes(data) {
         '<p class="card-text">' +
         recipe.description +
         "</p>" +
+        "</p>"  
+        + 
         // Data attribute để lưu trữ thông tin chi tiết của công thức
         '<div class="card-details" style="display: none;" ' +
         '</div>' +
         '<div class="card-footer d-flex align-items-center" style="border: none; background-color: white; padding: 0;">' +
         '<i class="fa-solid fa-clock-rotate-left"></i>' +
         '<p style="margin: 0;padding-left: 8px;">' +
-        recipe.preparation_time_min +
+        recipe.preparation_time +
         '"mins"</p>' +
         '</div>' +
         '<div class="rating"></div>' + // Thẻ div để chứa rating

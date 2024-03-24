@@ -1,6 +1,6 @@
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php")?>
 <title>Manager Recipe</title>
-<div class="container-fluid py-5" style="width: 100%;">
+    <div class="container-fluid py-5" style="width: 100%;">
         <div class="text-center">
             <h1>Manager recipe</h1>
         </div>
@@ -64,65 +64,71 @@
             </div>    
             
             <div class="row g-0 py-1">
-                <table class="table table-bordered nav">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col" style="width: 100px">Name</th>
-                        <th scope="col" style="width: 150px">Description</th>
-                        <th scope="col" style="width: 70px">Image</th>
-                        <th scope="col" style="width: 70px">Preparation Time Min</th>
-                        <th scope="col" style="width: 70px">Cooking Time Min</th>
-                        <th scope="col" style="width: 545px">Directions</th>            
-                        <th scope="col" style="width: 70px">Meal Type 1</th>
-                        <th scope="col" style="width: 70px">Meal Type 2</th>
-                        <th scope="col" style="width: 70px">Meal Type 3</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                    <?php $count = 0; 
-                    if(!is_array($recipes)){
-                        $recipes = [$recipes];
-                    }
-                    foreach ($recipes as $recipe): 
-                        $count++;
-                        if ($count > 10):
-                            break;
-                        endif;?>
+                <div class="table-responsive">
+                    <table class="table table-bordered nav">
                         <tr>
-                            <td><?= $recipe->getId()?></td>
-                            <td><?= $recipe->getName()?></td>
-                            <td><?= $recipe->getDescription()?></td>
-                            <td><img src="/Public/uploads/recipes/<?echo $recipe->getImgUrl() ?? "image_not_found.png" ; ?>" alt="<?php echo $recipe->getName(); ?>" width="100px" height="100"></td>
-                            <td><?= $recipe->getPreparationTime()?></td>
-                            <td><?= $recipe->getCookingTime()?></td>
-                            <td><?= $recipe->getDirection()?></td>
-                            <td><?= $recipe->getCourse()?></td>
-                            <td><?= $recipe->getMeal()?></td>
-                            <td><?= $recipe->getMethod()?></td>
-                            <td>
-                                <div class="row g-1">
-                                    <?if($recipe->getActive()):?>
-                                        <form class="col-auto" action="/manager/recipe" method="POST">
-                                            <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
-                                            <input type="hidden" name="isActive" value="0">
-                                            <button class="btn btn-danger" type="submit">Not Active</button>
-                                        </form>
-                                    <?else:?>
-                                        <form class="col-auto" action="/manager/recipe" method="POST">
-                                            <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
-                                            <input type="hidden" name="isActive" value="1">
-                                            <button class="btn btn-success" type="submit">Active</button>
-                                        </form>
-                                    <?endif;?>
-                                    <a href="/manager/recipe/update?id=<?= $recipe->getId() ?>" class="btn btn-secondary col-auto" role="button" style="200px">Edit</a>
-                                </div>
-                            </td>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Preparation Time Min</th>
+                            <th scope="col">Cooking Time Min</th>
+                            <th scope="col">Directions</th>            
+                            <th scope="col">Meal Type 1</th>
+                            <th scope="col">Meal Type 2</th>
+                            <th scope="col">Meal Type 3</th>
+                            <th scope="col">Actions</th>
                         </tr>
-                    <?php endforeach; ?>
-                </table>
+                        <?php $count = 0; 
+                        if(!is_array($recipes)){
+                            $recipes = [$recipes];
+                        }
+                        foreach ($recipes as $recipe): 
+                            $count++;
+                            if ($count > 10):
+                                break;
+                            endif;?>
+                            <tr>
+                                <td><?= $recipe->getId()?></td>
+                                <td><?= $recipe->getName()?></td>
+                                <td><?= $recipe->getDescription()?></td>
+                                <td>
+                                    <img src="<?=$recipe->getImgUrl() ? "/Public/uploads/recipes/" . $recipe->getImgUrl() : "/Public/images/image_not_found.png"; ?>" 
+                                         alt="<?php echo $recipe->getName(); ?>" 
+                                         style="width: 200px; height: 200px; ">
+                                </td>
+                                <td><?= $recipe->getPreparationTime()?></td>
+                                <td><?= $recipe->getCookingTime()?></td>
+                                <td><?= $recipe->getDirection()?></td>
+                                <td><?= $recipe->getCourse()?></td>
+                                <td><?= $recipe->getMeal()?></td>
+                                <td><?= $recipe->getMethod()?></td>
+                                <td>
+                                    <div class="row g-1">
+                                        <?if($recipe->getActive()):?>
+                                            <form class="col-auto" action="/manager/recipe" method="POST">
+                                                <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
+                                                <input type="hidden" name="isActive" value="0">
+                                                <button class="btn btn-danger" type="submit">Not Active</button>
+                                            </form>
+                                        <?else:?>
+                                            <form class="col-auto" action="/manager/recipe" method="POST">
+                                                <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
+                                                <input type="hidden" name="isActive" value="1">
+                                                <button class="btn btn-success" type="submit">Active</button>
+                                            </form>
+                                        <?endif;?>
+                                        <a href="/manager/recipe/update?id=<?= $recipe->getId() ?>" class="btn btn-secondary col-auto" role="button" style="200px">Edit</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center m-3">
-            <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button">Back</a>
+        <div class="d-md-flex justify-content-center py-3 mb-5" >
+            <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button" style="width: 10%;">Back</a>
         </div>
     </div>
 </div>
