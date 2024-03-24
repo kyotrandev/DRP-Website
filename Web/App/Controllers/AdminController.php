@@ -121,7 +121,7 @@ class AdminController extends BaseController
         }
   
         if ($_GET['id'] != '') {
-            $recipes = RecipeReadOperation::getSingleObjectByIdForAdmin($_GET['id']);
+            $recipes = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
         } else if ($_GET['name'] != '') {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['name'], true);
         } else if ($_GET['course'] != '') {
@@ -191,7 +191,7 @@ class AdminController extends BaseController
         $ingredients = null;
         
         if (isset($_GET['s_id']) && $_GET['s_id'] != '') {
-            $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id']);
+            $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id'], true);
         } else if (isset($_GET['s_name']) && $_GET['s_name'] != '') {
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name'], true);
         } else if (isset($_GET['s_category']) && $_GET['s_category'] != ''){
