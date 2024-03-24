@@ -212,9 +212,7 @@ class AdminController extends BaseController
     public function setIngredientActive()
     {
         $data = $_POST;
-        IngredientUpdateOperation::setIngredientActive($data);
-        echo "<script>window.location.href = '/../manager/ingredient';</script>";
-        exit; 
+        IngredientUpdateOperation::setIngredientActive($data); 
     }
 
     public function ingredientManagerUpdateUI() 

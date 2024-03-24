@@ -67,7 +67,7 @@
                                 <td><?= $ingredient->getMeasurementUnit()?></td>
                                 <td style="display: flex; justify-content: space-between;">
                                     <div>
-                                        <form  class="set-active-form d-inline-block" method="POST">
+                                        <form  class="set-active-form d-inline-block">
                                             <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
                                             <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
                                             <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 150px" type="submit">
@@ -95,38 +95,39 @@
 </div>
 
 <script src="/Public/js/validate-signup.js"></script>
-
+<script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>    
 <script>
 $(document).ready(function() {
-  $('.set-active-form').submit(function(event) {
+$('.set-active-form').submit(function(event) {
     event.preventDefault();
 
     var formData = $(this).serialize();
-    var url = $(this).attr('action');
 
     var button = $(this).find('button[type="submit"]'); // Get the button element
 
     $.ajax({
-      type: 'POST',
-      url: url,
-      data: formData,
-      dataType: 'json',
-      success: function(response) {
+    type: 'POST',
+    url: '/manager/ingredient',
+    data: formData,
+    dataType: 'json',
+    success: function(response) {
         if (response.success) {
-          alert(response.message);
-          // Toggle button class and text
-          button.toggleClass('btn-danger btn-success').text(response.isActive ? 'Deactivate' : 'Activate');
+        alert(response.message);
+        button.toggleClass('btn-danger btn-success');
+        
+        var buttonText = button.hasClass('btn-danger') ? 'Deactivate' : 'Activate';
+        button.text(buttonText);
         } else {
-          alert(response.message);
+        alert(response.message);
         }
-      },
-      error: function(xhr, status, error) {
+    },
+    error: function(xhr, status, error) {
         console.error(error);
-      }
+    }
     });
-  });
 });
-</script>
+});
+</script> 
 
 
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php")?>     
