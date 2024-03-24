@@ -14,7 +14,7 @@ function viewRecipes(data) {
         '<img src="' +
         (recipe.image_url
           ? "/Public/uploads/recipes/" + recipe.image_url
-          : "/Public/images/" + "image_not_found.png") +
+          : "/Public/images/image_not_found.png") +
         '" class="card-img-top" alt="Picture of meal" style="object-fit: cover; height:12rem;">' +
         '<div class="card-content" style="height:10rem">' +
         '<div class="card-body"  style="height:9rem; overflow: hidden">' +
