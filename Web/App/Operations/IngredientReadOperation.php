@@ -9,14 +9,14 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.isActive, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
                           FROM ingredients 
                           LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
-                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id";
+                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id ";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
   const getSingleObjectByIdIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id";
   const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value AND ingredients.isActive = 1";
   const getAllObjectsByFieldAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value";
-  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset AND ingredients.isActive = 1";
+  const getObjectsWithOffset = self::BASE_SQL_QUERY . "WHERE ingredients.isActive = 1 limit :limit offset :offset ";
   const getObjectsWithOffsetIgnoreActiveMode = self::BASE_SQL_QUERY . " limit :limit offset :offset";
-  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset AND ingredients.isActive = 1";
+  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value AND ingredients.isActive = 1 limit :limit offset :offset ";
   const getObjectWithOffsetByFielAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
   
 
