@@ -211,9 +211,6 @@ class AdminController extends BaseController
 
     public function setIngredientActive()
     {
-        if (!$this->isAdmin()) {
-            return parent::loadError('404');
-        }
         $data = $_POST;
         IngredientUpdateOperation::setIngredientActive($data);
         echo "<script>window.location.href = '/../manager/ingredient';</script>";

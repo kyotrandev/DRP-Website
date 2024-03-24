@@ -9,7 +9,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
   static public function notify(bool $success, string $message) {
     echo '<script>
             alert(" ' . $message . '");
-            </script>';
+          </script>';
   }
 
 

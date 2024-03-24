@@ -17,7 +17,7 @@
 
             <div class="row g-2">
                 <div class="col">
-                    <form action="/manager/ingredient" method="GET" class="row g-1 d-flex justify-content-between flex-fill">
+                    <form method="GET" class="row g-1 d-flex justify-content-between flex-fill">
                         <div class="col-1">
                             <input type="text" class="form-control" id="id" name="id" placeholder="ID...">
                         </div>
