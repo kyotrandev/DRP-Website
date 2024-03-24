@@ -19,10 +19,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset AND ingredients.isActive = 1";
   const getObjectWithOffsetByFielAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
   
-  public function __construct() {
-    parent::__construct();
-  }
-
 
   /**
    * Retrieves the nutrition information for a specific ingredient.
@@ -107,7 +103,6 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
     return null;
   }
-
 
 
   /**

@@ -88,7 +88,7 @@ class DatabaseRelatedOperation {
    * @throws \Exception If there is a general exception during the query execution.
    * @throws \Throwable If there is a throwable error during the query execution.
    */
-  static protected function querySingle(string $sql, int $fetchMode = 0, $params = [], string $className = null) : array|IngredientModel|bool{
+  static protected function querySingle(string $sql, int $fetchMode = 0, $params = [], string $className = null) {
     $dbconn = new DatabaseRelatedOperation();
     $conn = $dbconn->DB_CONNECTION;
 

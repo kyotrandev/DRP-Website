@@ -8,23 +8,21 @@ class RecipeModel extends BaseModel {
 
     private $user_id;
     private $recipe_id;
-    private $isActive;
     private $name;
-    private $description;
-    private $image_url;
     private $preparation_time;
     private $cooking_time;
-    private $direction;
     private $course;
     private $meal;
-    private $method;
+    private $method;    
+    private $direction;
+    private $description;
+    private $image_url;
     private $timestamp;
     private $ingredientComponets = [];
 
     public function __construct($recipe_id = null,$user_id = null, $name = null, $description = null, $image_url = null, 
             $preparation_time = null, $cooking_time = null, $direction = null, $course = null, 
             $meal = null, $method = null, $timestamp = null, $ingredientComponets = null) {
-        parent::__construct();
         $this->recipe_id = $recipe_id;
         $this->user_id = $user_id;
         $this->name = $name;
@@ -72,7 +70,7 @@ class RecipeModel extends BaseModel {
     public function getTimestamp() { return $this->timestamp; }
     public function setTimestamp($timestamp) { $this->timestamp = $timestamp; }
     public function getIngredientComponets() { return $this->ingredientComponets; }
-    public function setIngredientComponets($ingredientComponets) { 
+    public function setIngredientComponents($ingredientComponets) { 
         $this->ingredientComponets = $ingredientComponets; 
     }
 
@@ -93,7 +91,7 @@ class RecipeModel extends BaseModel {
         $object->setMethod($data['method'] ?? "Unknown");
         $object->setTimestamp($data['timestamp'] ?? "Unknown");
         if (empty($data['ingredientComponents']))
-            $object->setIngredientComponets(($data['ingredientComponents']));
+            $object->setIngredientComponents(($data['ingredientComponents']));
         return $object;
     }
 }

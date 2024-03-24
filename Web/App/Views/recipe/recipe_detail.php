@@ -1,29 +1,5 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/header.php'); ?>
-<?
-function getUnitText($value)
-{
-    switch ($value) {
-        case 'tsp':
-            return 'Teaspoon';
-        case 'cup':
-            return 'Cup';
-        case 'tbsp':
-            return 'Tablespoon';
-        case 'g':
-            return 'Gram';
-        case 'lb':
-            return 'Pound';
-        case 'can':
-            return 'Can';
-        case 'oz':
-            return 'Ounce';
-        case 'unit':
-            return 'Unit';
-        default:
-            return '';
-    }
-}
-?>
+
 <div class="recipe_detail">
     <div class="container mt-3" style="width:50%">
         <div class="row p-3 mb-3" style="background-color: white; border-radius: 4px;">
@@ -62,7 +38,7 @@ function getUnitText($value)
                             <div class=" m-3">
                                 <? $index = 1;?>
                                 <? foreach ($data->getIngredientComponets() as $ingredient) : ?>
-                                    <p><?php echo $index++ . ". " . $ingredient['ingredient_name'] . " - " .  $ingredient['quantity'] . " " . getUnitText($ingredient['unit']); ?></p>
+                                    <p><?php echo $index++ . ". " . $ingredient['ingredientName'] . " - " .  $ingredient['quantity'] . " " . $ingredient['unit']; ?></p>
                                 <? endforeach; ?>
                             </div>
                         </div>
