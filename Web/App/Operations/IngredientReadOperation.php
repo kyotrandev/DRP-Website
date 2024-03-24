@@ -367,8 +367,8 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
 
       $sql = ($ignoreActiveStatus) ? self::getObjectsWithOffsetIgnoreActiveMode : self::getObjectsWithOffset;
 
-      // Response data JSON
-      return json_encode(self::query($sql, 4, [':offset' => $offset, ':limit' => $limit], "IngredientModel"));
+      // Response Ingredients data 
+      return self::query($sql, 1, [':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       return json_encode(["error" => "Database error: " . $PDOException->getMessage()]);

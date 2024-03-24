@@ -62,7 +62,7 @@ class PaginationController
 
         $this->config['limit'] = 20;
         $offset = ($page - 1) * $this->config['limit'];
-        $ingredient = IngredientReadOperation::getPaging($this->config['limit'], $offset);
+        $ingredient = IngredientReadOperation::getPaging( $offset, $this->config['limit']);
 
         $totalIngredient = IngredientReadOperation::getAllObjects();
         // Set Total to count Total Page  
