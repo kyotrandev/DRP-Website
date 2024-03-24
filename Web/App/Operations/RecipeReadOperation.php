@@ -287,38 +287,38 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   }
 
 
-  // /**
-  //  * Retrieves a list of recipes from the database based on the given field and value.
-  //  *
-  //  * @param string $field The name of the field to search for.
-  //  * @param mixed $value The value to match against the field.
-  //  * @return string The JSON-encoded response containing the retrieved recipes.
-  //  * @throws \PDOException If there is an error connecting to the database.
-  //  * @throws \Exception If there is an internal server error.
-  //  */
-  // static public function getRecipeByIngredientId(string $field, $value) : ?array{
-  //   try {
-  //     $model = new static();
-  //     $conn = $model->DB_CONNECTION;
-  //     if ($conn == false) {
-  //       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-  //     }
-  //     $sql = "select * from recipes where id in (select recipe_id from ingredient_recipe where {$field} = {$value}) and isActive = 1";
-  //     $data = self::query($sql,1);
-  //     $recipes = [];
-  //     foreach ($data as $recipe) {
-  //       $recipes[] = RecipeModel::createObjectByRawArray($recipe);
-  //     }
-  //     return $recipes;
-  //   } catch (\PDOException $PDOException) {
-  //     handlePDOException($PDOException);
-  //     echo \App\Views\ViewRender::errorViewRender('500');
-  //   } catch (\Exception $exception) {
-  //     handleException($exception);
-  //   } catch (\Throwable $throwable) {
-  //     handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-  //   }
-  //   return null;
-  // }
+  /**
+   * Retrieves a list of recipes from the database based on the given field and value.
+   *
+   * @param string $field The name of the field to search for.
+   * @param mixed $value The value to match against the field.
+   * @return string The JSON-encoded response containing the retrieved recipes.
+   * @throws \PDOException If there is an error connecting to the database.
+   * @throws \Exception If there is an internal server error.
+   */
+  static public function getRecipeByIngredientFieldAndValue(string $field, $value) : ?array{
+    try {
+      $model = new parent();
+      $conn = $model->DB_CONNECTION;
+      if ($conn == false) {
+        throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+      }
+      $sql = "SELECT `recipes`.`recipe_id` AS recipeId , `recipes`.`name` AS recipeName 
+              FROM `recipe_ingredient` 
+              LEFT JOIN `recipes` ON `recipe_ingredient`.`recipe_id` = `recipes`.`recipe_id`
+              LEFT JOIN `ingredients` ON `recipe_ingredient`.`ingredient_id` = `ingredients`.`id`
+              WHERE `ingredients`.`:field` = :value";
+
+      return self::query($sql,1, [':field' => $field, ':value' => $value]);
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
 
 }
