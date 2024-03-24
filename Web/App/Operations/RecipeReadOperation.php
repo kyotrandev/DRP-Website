@@ -321,4 +321,26 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
     return null;
   }
 
+
+
+  static public function getCat($mode){
+    try {
+      switch($mode){
+        case 1: 
+          return self::query("SELECT `id`, `type_name` FROM `recipe_meal_categories`", 1);
+        case 2:
+          return self::query("SELECT `id`, `method_name` FROM `recipe_method_categories`", 1);
+        case 3: 
+          return self::query("SELECT `id`, `type_name` FROM `recipe_course_categories`", 1);
+      }
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null; 
+  }
 }

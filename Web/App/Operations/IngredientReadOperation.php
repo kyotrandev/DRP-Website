@@ -379,22 +379,27 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   }
 
 
+
   /**
-   * Retrieves the IDs of all ingredient categories from the database.
+   * Retrieves the category details based on the given ID.
    *
-   * @return array|null An array of category IDs, or null if an error occurred.
+   * @param int $mode The mode of the find category to retrieve. 
+   * 1 for ingredient_categories, 2 for nutrition_types, 3 for ingredient_measurement_unit
+   * 
+   * @return array|null An array containing the ID and detail of the category, or null if the ID is invalid.
    */
-  static public function getCat($id) :?array{
+  static public function getCat($mode) :?array{
+    $sql = "SELECT id, detail FROM ";
     try {
-      switch ($id){
+      switch ($mode){
         case 1:
-          $sql = "SELECT id, detail FROM ingredient_categories";
+          $sql .= " ingredient_categories";
           break;
         case 2:
-          $sql = "SELECT id, detail FROM nutrition_types";
+          $sql .=  " ingredient_measurement_unit";
           break;
         case 3:
-          $sql = "SELECT id, detail FROM ingredient_measurement_unit";
+          $sql .= " nutrition_types";
           break;
         default:
           return null;
