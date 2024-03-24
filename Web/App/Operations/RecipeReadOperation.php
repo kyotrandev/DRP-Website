@@ -273,7 +273,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
       $sql = ($ignoreActiveStatus) ? self::getObjectsWithOffsetIgnoreActiveMode : self::getObjectsWithOffset;
 
       // Fetch Data
-      $data = self::query($sql, 4, [':offset' => $offset, ':limit' => $limit], "RecipeModel");
+      $data = self::query($sql, 1, [':offset' => $offset, ':limit' => $limit]);
 
       // Response data JSON
       return json_encode($data);

@@ -24,6 +24,8 @@ function viewRecipes(data) {
         '<p class="card-text">' +
         recipe.description +
         "</p>" +
+        "</p>"  
+        + 
         // Data attribute để lưu trữ thông tin chi tiết của công thức
         '<div class="card-details" style="display: none;" ' +
         '</div>' +

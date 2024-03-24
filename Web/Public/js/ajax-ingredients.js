@@ -18,66 +18,10 @@ function viewIngredient(ingredients) {
       "<td>" +
       ingredient.category +
       "</td>" +
-      "<td>";
-
-    // Chuyển đổi đơn vị đo lường
-    switch (ingredient.measurement_description) {
-      case "g":
-        row += "Gram";
-        break;
-      case "kg":
-        row += "Kilogram";
-        break;
-      case "ml":
-        row += "Milliliter";
-        break;
-      case "l":
-        row += "Liter";
-        break;
-      case "tsp":
-        row += "Teaspoon";
-        break;
-      case "tbsp":
-        row += "Tablespoon";
-        break;
-      case "cup":
-        row += "Cup";
-        break;
-      case "pint":
-        row += "Pint";
-        break;
-      case "quart":
-        row += "Quart";
-        break;
-      case "gallon":
-        row += "Gallon";
-        break;
-      case "oz":
-        row += "Ounce";
-        break;
-      case "lb":
-        row += "Pound";
-        break;
-      case "mg":
-        row += "Milligram";
-        break;
-      case "mcg":
-        row += "Microgram";
-        break;
-      case "IU":
-        row += "International Unit";
-        break;
-      case "can":
-        row += "Can";
-        break;
-      case "unit":
-        row += "Unit";
-        break;
-      default:
-        row += "Unknown";
-    }
-
-    row += "</td></tr>";
+      "<td>" + 
+      ingredient.measurementUnit + 
+      "</td>" + 
+      "</tr>";
 
     // Thêm hàng vào tbody của bảng
     $(".ingredientTableBody").append(row);

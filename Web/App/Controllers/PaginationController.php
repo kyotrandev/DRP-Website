@@ -47,7 +47,7 @@ class PaginationController
 
         $this->config['$limit'] = 12;
         $offset = ($page - 1) * $this->config['$limit'];
-        $recipes = RecipeReadOperation::getPaging($offset, $this->config['$limit']);
+        $recipes = RecipeReadOperation::getPaging($offset,$this->config['$limit']);
 
         // Return Recipes as JSON to Ajax request
         echo json_encode($recipes);
@@ -62,7 +62,7 @@ class PaginationController
 
         $this->config['limit'] = 20;
         $offset = ($page - 1) * $this->config['limit'];
-        $ingredient = IngredientReadOperation::getPaging($offset, $this->config['limit']);
+        $ingredient = IngredientReadOperation::getPaging( $offset, $this->config['limit']);
 
         $totalIngredient = IngredientReadOperation::getAllObjects();
         // Set Total to count Total Page  
