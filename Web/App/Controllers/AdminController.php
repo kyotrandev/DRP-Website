@@ -233,10 +233,6 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $data = $_POST;
-        // echo "<pre>";
-        // print_r($data);
-        // echo "</pre>";
-
         IngredientUpdateOperation::execute($data);
     }
 }

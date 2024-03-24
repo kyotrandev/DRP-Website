@@ -5,7 +5,7 @@
             <h1 class="display-1">Manager Update Ingredient</h1>
         </div>
         
-        <form id="ingredient-form" method="POST" enctype="multipart/form-data" style="width: 80vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
+        <form id="ingredient-form" style="width: 80vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
             <input type="hidden" class="form-control" id="id" name="id" value="<?= $ingredient->getId() ?>">
 
             <div class="row mb-3 justify-content-center">
@@ -81,7 +81,8 @@
 </body>
 
 </html>
-
+<script src="/Public/js/libs/jquery/jquery-3.6.0.min.js">
+</script>
 <script>
   $(document).ready(function() {
     $('#ingredient-form').submit(function(event) {
@@ -96,12 +97,8 @@
         dataType: 'json', 
         success: function(response) {
      
-          if (response.success) {
-            alert(response.message);
-            window.location.href = '/../manager/ingredient';
-          } else {
-            alert(response.message);
-          }
+          alert(response.message);
+          
         },
         error: function(xhr, status, error) {
           console.error(error);

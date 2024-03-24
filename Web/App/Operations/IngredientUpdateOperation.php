@@ -137,7 +137,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
       // If everything goes well, set success to true and provide a success message
       
 
-      self::notify(true, "Ingredient created successfully!");
+      self::notify(true, "Ingredient updated successfully!");
     } catch (\InvalidArgumentException $InvalidArgumentException) {
       // Handle validation errors
       handleException($InvalidArgumentException);
