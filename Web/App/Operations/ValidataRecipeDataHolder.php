@@ -3,15 +3,15 @@ namespace App\Operations;
 
 class ValidataRecipeDataHolder {
   private static $instance;
-  public $validCategories;
-  public $validMeasurements;
-  public $validNutrition;
+  public $validMeal;
+  public $validMethod;
+  public $validCourse;
   public $validIngredients;
 
   private function __construct(){
-    $this->validCategories = RecipeReadOperation::getCat(1);
-    $this->validMeasurements = RecipeReadOperation::getCat(2);
-    $this->validNutrition = RecipeReadOperation::getCat(3);
+    $this->validMeal = RecipeReadOperation::getCat(1);
+    $this->validMethod = RecipeReadOperation::getCat(2);
+    $this->validCourse = RecipeReadOperation::getCat(3);
     $this->validIngredients = IngredientReadOperation::getIdAndNameAllObject();
   }
 

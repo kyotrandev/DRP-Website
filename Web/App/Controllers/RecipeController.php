@@ -6,7 +6,7 @@ use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeCreateOperation;
 use App\Operations\IngredientReadOperation;
 use App\Operations\UploadImageOperation;
-
+use App\Operations\ValidataRecipeDataHolder;
 
 class RecipeController extends BaseController
 {
@@ -38,7 +38,9 @@ class RecipeController extends BaseController
     }
     public function addUI()
     {
-        $data = IngredientReadOperation::getIdAndNameAllObject();
+        $data[] = ValidataRecipeDataHolder::getInstance();
+        
+        $data[] = IngredientReadOperation::getIdAndNameAllObject();
         $this->loadView('recipe.add', $data);
     }
     public function add() {

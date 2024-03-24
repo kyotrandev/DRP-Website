@@ -23,10 +23,10 @@
     font-size: 14px;
   }
 
-  input[type="number"] {
+  /* input[type="number"] {
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
-  }
+  } */
 </style>
 
 <head>
@@ -36,7 +36,6 @@
 </head>
 
 <body>
-
   <h2 style="text-align: center; margin-top: 50px;">Add Your Creative Recipe</h2>
 
   <form id="recipe-form" action="/recipe/add" method="post" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
@@ -61,31 +60,25 @@
     </div>
 
     <div class="input-group mb-2">
-
       <select class="form-select" id="course" name="course" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal recipe for</option>
-        <option value="Breakfast">Breakfast</option>
-        <option value="Lunch">Lunch</option>
-        <option value="Dinner">Dinner</option>
+        <? foreach($data[0]->validCourse as $course): ?> 
+          <option value="<?=$course['id']?>"><?=$course['type_name'];?></option>
+        <? endforeach; ?>
       </select>
 
       <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal type</option>
-        <option value="Appetizer">Appetizer</option>
-        <option value="Main Dish">Main Dish</option>
-        <option value="Side Dish">Side Dish</option>
-        <option value="Dessert">Dessert</option>
+        <? foreach($data[0]->validMeal as $meal): ?> 
+          <option value="<?=$meal['id']?>"><?=$meal['type_name'];?></option>
+        <? endforeach;?>
       </select>
 
       <select class="form-select" id="method" name="method" aria-label="Select meal type">
         <option value="" selected disabled hidden>Select meal category</option>
-        <option value="Baked">Baked</option>
-        <option value="Beverage">Beverage</option>
-        <option value="Salad and Salad Dressing">Salad and Salad Dressing</option>
-        <option value="Soup">Soup</option>
-        <option value="Sauce and Condiment">Sauce and Condiment</option>
-        <option value="Snack">Snack</option>
-        <option value="Other">Other</option>
+        <? foreach($data[0]->validMethod as $method): ?> 
+          <option value="<?=$method['id']?>"><?=$method['method_name'];?></option>
+        <? endforeach;?>
       </select>
     </div>
 
