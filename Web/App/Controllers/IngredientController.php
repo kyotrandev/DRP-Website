@@ -64,7 +64,7 @@ class IngredientController extends BaseController
     }
 
     public function test() {
-        $ingredients = IngredientReadOperation::getPaging(1, 10);
+        $ingredients = IngredientReadOperation::getAllObjects();
         $ingredientss[] = $ingredients; 
         $this->loadView('pages.test', $ingredientss);
 

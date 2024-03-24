@@ -38,8 +38,6 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
     if (empty(array_filter($data['nutritionComponents']))) {
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 1');
     }
- 
-
 
     if ($data == null)
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 2');

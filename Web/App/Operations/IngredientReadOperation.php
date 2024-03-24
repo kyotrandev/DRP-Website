@@ -9,13 +9,12 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   const BASE_SQL_QUERY = "SELECT DISTINCT ingredients.id, ingredients.isActive, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
                           FROM ingredients 
                           LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
-                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id 
-                          LEFT JOIN ingredient_nutritions ON ingredients.id = ingredient_nutritions.ingredient_id ";
+                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
   const getSingleObjectByIdIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id";
-  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id";
-  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset ingredients.id";
-  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value ingredients.id limit :limit offset :offset";
+  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value";
+  const getObjectsWithOffset = self::BASE_SQL_QUERY . " limit :limit offset :offset";
+  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
   
   public function __construct() {
     parent::__construct();
@@ -378,12 +377,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
    * @param int $offset The starting offset for retrieving ingredients.
    * @param int|null $limit The maximum number of ingredients to retrieve. If not provided, defaults to offset + 5.
    */
-  static public function getPaging(int $limit, int $offset)  {
+  static public function getPaging(int $offset, int $limit = null)  {
     try {
-      $sql = "select * from ingredients limit :limit offset :offset";
+      if($limit === null) {
+        $limit = $offset + 10;
+      }
+
+      $sql = self::getObjectsWithOffset;
 
       // Fetch Data
-      $data = self::query($sql, 1, [':limit' => $limit, ':offset' => $offset]);
+      $data = self::query($sql, 4, [':offset' => $offset, ':limit' => $limit], "IngredientModel");
 
       // Response data JSON
       return json_encode($data);

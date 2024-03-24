@@ -26,26 +26,8 @@ class IngredientModel extends BaseModel {
     $this->name = $name ?? '';
     $this->category = $category ?? '';
     $this->measurementUnit = $measurementUnit ?? '';
-    $this->nutritionComponents = $nutritionComponents ?? [
-      'calcium' => 0,
-      'calories' => 0,
-      'carbohydrate' => 0,
-      'cholesterol' => 0,
-      'fiber' => 0,
-      'iron' => 0,
-      'fat' => 0,
-      'monounsaturated_fat' => 0,
-      'polyunsaturated_fat' => 0,
-      'saturated_fat' => 0,
-      'potassium' => 0,
-      'protein' => 0,
-      'sodium' => 0,
-      'sugar' => 0,
-      'vitamin_a' => 0,
-      'vitamin_c' => 0
-    ];
+    $this->nutritionComponents = $nutritionComponents;
   }
-  
   public function getId() { return $this->id; }
   public function getActive() { return $this->isActive; }
   public function getName() { return $this->name; }
@@ -76,8 +58,9 @@ class IngredientModel extends BaseModel {
     $ingredient->setName($data['name']);
     $ingredient->setCategory($data['category']);
     $ingredient->setMeasurementUnit($data['measurementUnit']);
-    if(isset($data['nutritionComponents']) && $data['nutritionComponents'] != null);
+    if(!empty($data['nutritionComponents']))
       $ingredient->setNutritionComponents($data['nutritionComponents']);
+    
     return $ingredient;
   }
 }

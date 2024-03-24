@@ -38,7 +38,10 @@ class DatabaseRelatedOperation {
     
     if (!empty($params))
       foreach ($params as $key => $value)
-        $stmt->bindValue($key, $value);
+        if(is_numeric($value))
+          $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+        else
+          $stmt->bindValue($key, $value, \PDO::PARAM_STR);
 
     $stmt->execute();
 
@@ -97,7 +100,10 @@ class DatabaseRelatedOperation {
 
     if (!empty($params))
       foreach ($params as $key => $value)
-        $stmt->bindValue($key, $value);
+        if(is_numeric($value))
+          $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+        else
+          $stmt->bindValue($key, $value, \PDO::PARAM_STR);
 
     $stmt->execute();
     
