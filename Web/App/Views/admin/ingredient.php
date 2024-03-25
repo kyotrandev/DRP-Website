@@ -5,7 +5,7 @@
         <h1>Manager Ingredient</h1>
     </div>
 
-    <div  class="row g-0 justify-content-center">
+    <div class="row g-0 justify-content-center">
 
         <!-- SEARCH AND TABLE-->
         <div class="col-auto" style="padding: 20px;
@@ -45,11 +45,11 @@
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Measurement unit</th>
-                            <th>Actions</th>
+                            <th scope="col" class="col-1">ID</th>
+                            <th scope="col" class="col-3">Name</th>
+                            <th scope="col" class="col-3">Category</th>
+                            <th scope="col" class="col-2">Measurement unit</th>
+                            <th scope="col" class="col-3">Actions</th>
                         </tr>
                         <?php $count = 0; 
                         if(!is_array($ingredients)){
@@ -65,19 +65,21 @@
                                 <td><?= $ingredient->getName()?></td>
                                 <td><?= $ingredient->getCategory()?></td>
                                 <td><?= $ingredient->getMeasurementUnit()?></td>
-                                <td style="display: flex; justify-content: space-between;">
-                                    <div>
-                                        <form  class="set-active-form d-inline-block">
+                                <!-- <td style="display: flex; justify-content: space-between;"> -->
+                                <td>
+                                    <form class="set-active-form d-inline-block">
+                                        <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
+                                        <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
+                                        <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 120px" type="submit">
+                                            <?= $ingredient->getActive() ? 'Deactivate' : 'Activate' ?>
+                                        </button>
+                                    </form>
+
+                                    <form class="d-inline-block" action="">
                                             <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
-                                            <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
-                                            <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 150px" type="submit">
-                                                <?= $ingredient->getActive() ? 'Deactivate' : 'Activate' ?>
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <div>
-                                        <a href="/manager/ingredient/update?id=<?= $ingredient->getId() ?>" class="btn btn-secondary d-inline-block" role="button">Edit</a>
-                                    </div>
+                                            <button class="btn btn-danger" type="submid">Delete</button>
+                                    </form>
+                                    <a href="/manager/ingredient/update?id=<?= $ingredient->getId() ?>" class="btn btn-secondary d-inline-block" role="button">Edit</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
