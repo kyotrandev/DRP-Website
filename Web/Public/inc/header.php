@@ -35,6 +35,14 @@ use App\Controllers\UserController;
       flex-direction: column;
     }
 
+    .limited-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     input[type="number"] {
       -moz-appearance: textfield;
       -webkit-appearance: textfield;
