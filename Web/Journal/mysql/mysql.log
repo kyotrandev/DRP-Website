@@ -1,0 +1,6 @@
+2024-03-25T14:11:11.240534Z	 2447 Connect	ad_db_ct07@172.21.0.5 on ct07_db using TCP/IP
+2024-03-25T14:11:11.240906Z	 2447 Query	SELECT DISTINCT ingredients.id, ingredients.isActive, ingredients.name, ingredient_categories.detail AS category, ingredient_measurement_unit.detail AS measurementUnit
+                          FROM ingredients 
+                          LEFT JOIN ingredient_categories ON ingredients.category = ingredient_categories.id
+                          LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id  WHERE ingredients.name LIKE '%Chicken%'
+2024-03-25T14:11:11.242233Z	 2447 Quit	

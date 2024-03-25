@@ -26,6 +26,7 @@ services:
       - "3306:3306"
     volumes:
       - ./Data/mysql:/var/lib/mysql
+      - ./Web/Journal/mysql:/var/log/mysql
     networks:
       - DRP
 

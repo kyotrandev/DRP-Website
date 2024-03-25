@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql-db:3306
--- Generation Time: Mar 22, 2024 at 09:28 AM
+-- Generation Time: Mar 25, 2024 at 01:32 PM
 -- Server version: 8.3.0
--- PHP Version: 8.2.16
+-- PHP Version: 8.2.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,14 +20,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `ct07_db`
 --
-CREATE DATABASE IF NOT EXISTS `ct07_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `ct07_db`;
 
 DELIMITER $$
 --
 -- Procedures
 --
-DROP PROCEDURE IF EXISTS `GenerateRandomRatings`$$
 CREATE DEFINER=`ad_db_ct07`@`%` PROCEDURE `GenerateRandomRatings` ()   BEGIN
     DECLARE i INT DEFAULT 1;
     DECLARE rand_user_id INT;
@@ -60,29 +57,25 @@ DELIMITER ;
 -- Table structure for table `ingredients`
 --
 
-DROP TABLE IF EXISTS `ingredients`;
-CREATE TABLE IF NOT EXISTS `ingredients` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ingredients` (
+  `id` int NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `isActive` tinyint(1) DEFAULT '1',
   `category` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `measurement_unit` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_ingre_cat` (`category`),
-  KEY `FK_ingre_unit` (`measurement_unit`)
-) ENGINE=InnoDB AUTO_INCREMENT=325 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `measurement_unit` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `ingredients`
 --
 
 INSERT INTO `ingredients` (`id`, `name`, `isActive`, `category`, `measurement_unit`) VALUES
-(1, 'Chicken Breast', 1, 'MSF', 'G'),
+(1, 'Chicken Breast', 0, 'FRU', 'CUP'),
 (2, 'Mixed Vegetables', 1, 'VEGI', 'G'),
-(3, 'Soy Sauce', 1, 'OTHR', 'TBSP'),
+(3, 'Soy Sauce', 0, 'OTHR', 'TBSP'),
 (4, 'Cornstarch', 1, 'OTHR', 'TBSP'),
 (5, 'Shrimp', 1, 'MSF', 'G'),
-(6, 'Cucumber', 1, 'VEGI', 'UNIT'),
+(6, 'Cucumber', 0, 'VEGI', 'UNIT'),
 (7, 'Lime Juice', 1, 'OTHR', 'TBSP'),
 (8, 'Chili Pepper', 1, 'HRBS', 'UNIT'),
 (9, 'Black Beans', 0, 'PRP', 'CAN'),
@@ -363,7 +356,9 @@ INSERT INTO `ingredients` (`id`, `name`, `isActive`, `category`, `measurement_un
 (321, 'Garlic Powder', 1, 'OTHR', 'TSP'),
 (322, 'Salt', 1, 'OTHR', 'TSP'),
 (323, 'Black Pepper', 1, 'OTHR', 'TSP'),
-(324, 'Tortillas', 1, 'MSF', 'UNIT');
+(324, 'Tortillas', 1, 'MSF', 'UNIT'),
+(375, 'ac', 1, 'FAO', 'OZ'),
+(376, 'abv', 1, 'FAO', 'OZ');
 
 -- --------------------------------------------------------
 
@@ -371,11 +366,9 @@ INSERT INTO `ingredients` (`id`, `name`, `isActive`, `category`, `measurement_un
 -- Table structure for table `ingredient_categories`
 --
 
-DROP TABLE IF EXISTS `ingredient_categories`;
-CREATE TABLE IF NOT EXISTS `ingredient_categories` (
+CREATE TABLE `ingredient_categories` (
   `id` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -399,11 +392,9 @@ INSERT INTO `ingredient_categories` (`id`, `detail`) VALUES
 -- Table structure for table `ingredient_measurement_unit`
 --
 
-DROP TABLE IF EXISTS `ingredient_measurement_unit`;
-CREATE TABLE IF NOT EXISTS `ingredient_measurement_unit` (
+CREATE TABLE `ingredient_measurement_unit` (
   `id` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  `detail` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -426,13 +417,10 @@ INSERT INTO `ingredient_measurement_unit` (`id`, `detail`) VALUES
 -- Table structure for table `ingredient_nutritions`
 --
 
-DROP TABLE IF EXISTS `ingredient_nutritions`;
-CREATE TABLE IF NOT EXISTS `ingredient_nutritions` (
+CREATE TABLE `ingredient_nutritions` (
   `ingredient_id` int NOT NULL,
   `nutrition_id` varchar(6) NOT NULL,
-  `quantity` int NOT NULL,
-  KEY `ingredient_id` (`ingredient_id`),
-  KEY `nutrition_id` (`nutrition_id`)
+  `quantity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -441,11 +429,11 @@ CREATE TABLE IF NOT EXISTS `ingredient_nutritions` (
 
 INSERT INTO `ingredient_nutritions` (`ingredient_id`, `nutrition_id`, `quantity`) VALUES
 (1, 'CAL', 165),
-(1, 'CALC', 12),
-(1, 'CARB', 0),
+(1, 'CALC', 20),
+(1, 'CARB', 20),
 (1, 'CHOL', 75),
 (1, 'FAT', 4),
-(1, 'FE', 1),
+(1, 'FE', 33),
 (1, 'MUFAT', 1),
 (1, 'NA', 75),
 (1, 'POT', 250),
@@ -2810,7 +2798,11 @@ INSERT INTO `ingredient_nutritions` (`ingredient_id`, `nutrition_id`, `quantity`
 (324, 'FIB', 1),
 (324, 'NA', 2),
 (324, 'PRO', 40),
-(324, 'SUG', 220);
+(324, 'SUG', 220),
+(375, 'CAL', 24),
+(375, 'CALC', 24),
+(376, 'CAL', 24),
+(376, 'CALC', 24);
 
 -- --------------------------------------------------------
 
@@ -2818,11 +2810,9 @@ INSERT INTO `ingredient_nutritions` (`ingredient_id`, `nutrition_id`, `quantity`
 -- Table structure for table `nutrition_types`
 --
 
-DROP TABLE IF EXISTS `nutrition_types`;
-CREATE TABLE IF NOT EXISTS `nutrition_types` (
+CREATE TABLE `nutrition_types` (
   `id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `detail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  `detail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -2853,10 +2843,9 @@ INSERT INTO `nutrition_types` (`id`, `detail`) VALUES
 -- Table structure for table `recipes`
 --
 
-DROP TABLE IF EXISTS `recipes`;
-CREATE TABLE IF NOT EXISTS `recipes` (
+CREATE TABLE `recipes` (
   `user_id` int NOT NULL,
-  `recipe_id` int NOT NULL AUTO_INCREMENT,
+  `recipe_id` int NOT NULL,
   `isActive` tinyint(1) DEFAULT '1',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -2867,13 +2856,8 @@ CREATE TABLE IF NOT EXISTS `recipes` (
   `course` int NOT NULL,
   `meal` int NOT NULL,
   `method` int NOT NULL,
-  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`recipe_id`,`user_id`) USING BTREE,
-  KEY `recipes_ibfk_2` (`meal`),
-  KEY `recipes_ibfk_3` (`method`),
-  KEY `recipes_ibfk_4` (`user_id`),
-  KEY `recipes_ibfk_1` (`course`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `recipes`
@@ -2889,7 +2873,7 @@ INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`
 (1, 7, 1, 'Salmon Patties', 'Delicious and flavorful salmon patties, perfect for a light meal or appetizer.', '4cm7v3yn.png', 15, 15, '1. Drain and flake the canned salmon.\n2. In a mixing bowl, combine flaked salmon, beaten eggs, breadcrumbs, diced onion, chopped parsley, lemon juice, Dijon mustard, salt, and pepper.\n3. Mix well until thoroughly combined.\n4. Form the mixture into patties of desired size.\n5. Heat oil in a skillet over medium heat.\n6. Fry the salmon patties until golden brown and cooked through, about 3-4 minutes per side.\n7. Remove from the skillet and drain on paper towels.\n8. Serve hot with your favorite dipping sauce or side dishes.', 1, 3, 4, '2024-03-21 09:16:24'),
 (4, 8, 1, 'Homemade Ratatouille', 'This delicious summer vegetable stew is truly something. If you love fresh vegetables, grab them from your farmer’s market and plan on making this best ratatouille recipe ASAP. It’s rich and satisfying, yet wonderfully healthy. Be sure to pick up French bread to go with this iconic French dish!', '4cm7v3yn.png', 14, 24, '1. Drain and flake the canned salmon.\n2. In a mixing bowl, combine flaked salmon, beaten eggs, breadcrumbs, diced onion, chopped parsley, lemon juice, Dijon mustard, salt, and pepper.\n3. Mix well until thoroughly combined.\n4. Form the mixture into patties of desired size.\n5. Heat oil in a skillet over medium heat.\n6. Fry the salmon patties until golden brown and cooked through, about 3-4 minutes per side.\n7. Remove from the skillet and drain on paper towels.\n8. Serve hot with your favorite dipping sauce or side dishes.', 1, 2, 7, '2024-03-21 10:09:07'),
 (1, 9, 1, 'Egg Salad', 'A simple and tasty egg salad, perfect for sandwiches or as a side dish.', 'ojyw9t2p.jpg', 10, 10, '1. Boil the eggs until hard-cooked, then peel and chop them.\n2. In a mixing bowl, combine the chopped eggs, mayonnaise, mustard, diced celery, chopped chives, salt, and pepper.\n3. Mix well until all ingredients are evenly distributed.\n4. Refrigerate the egg salad for at least 30 minutes before serving to allow the flavors to meld.\n5. Serve as a sandwich filling, on crackers, or as a side dish. Enjoy!', 3, 1, 1, '2024-03-21 09:16:24'),
-(2, 10, 1, 'The Perfect Medium Steak Recipe', 'My family loves it when I make their steaks medium. They come out just right and if you blindfolded us, we’d never believe we were eating steaks cooked at home. This is how you make steak if you want it to taste like those big steakhouses do it!', 'rare-steak-recipejpg.jpg', 21, 42, 'After patting your steaks dry, season them with the salt and pepper on both sides. Heat your cast iron skillet with your oil over medium-high, then pop the steaks in when the oil is hot. Sear for 3 to 4 minutes per side and don’t forget the edges (about a minute on those). Turn heat down to medium and add the butter, herbs, and garlic, spooning that sauce over the steaks until the internal temperature is 135F. Remove from heat and cover for 10 minutes to let them rest and arrive at a perfect medium steak temperature of 145F.', 1, 4, 2, '2024-03-21 10:14:58'),
+(2, 10, 1, 'The Perfect Medium Steak Recipe', 'My family loves it when I make their steaks medium. They come out just right and if you blindfolded us, we’d never believe we were eating steaks cooked at home. This is how you make steak if you want it to taste like those big steakhouses do it!', 'waifu_jasmin.jpg', 21, 42, 'After patting your steaks dry, season them with the salt and pepper on both sides. Heat your cast iron skillet with your oil over medium-high, then pop the steaks in when the oil is hot. Sear for 3 to 4 minutes per side and don’t forget the edges (about a minute on those). Turn heat down to medium and add the butter, herbs, and garlic, spooning that sauce over the steaks until the internal temperature is 135F. Remove from heat and cover for 10 minutes to let them rest and arrive at a perfect medium steak temperature of 145F.', 1, 4, 2, '2024-03-21 10:14:58'),
 (1, 11, 1, 'Triangles with Potato and Beef', 'Delicious triangles filled with a savory mixture of potatoes and beef, perfect as a snack or appetizer.', '3z66ao3w.jpg', 30, 40, '1. Boil the potatoes until tender, then mash them.\n2. In a skillet, cook the ground beef until browned. Drain excess fat.\n3. Add onion, garlic, and spices to the skillet with the beef. Cook until onion is softened.\n4. Combine the mashed potatoes with the cooked beef mixture.\n5. Lay out the phyllo pastry sheets and cut them into triangles.\n6. Place a spoonful of the potato and beef mixture onto each triangle.\n7. Fold the pastry over the filling to form a triangle shape.\n8. Brush the triangles with melted butter.\n9. Bake in a preheated oven at 375°F (190°C) until golden brown, about 20-25 minutes.\n10. Serve hot and enjoy!', 2, 3, 7, '2024-03-21 09:16:24'),
 (1, 12, 1, 'Cheese Sticks', 'Delicious crispy cheese sticks, perfect as an appetizer or snack.', 'd2gol6y5.jpg', 15, 20, '1. Preheat the oven to 375°F (190°C).\n2. Cut the cheese into sticks.\n3. In a bowl, whisk together breadcrumbs, grated Parmesan cheese, and Italian seasoning.\n4. Dip each cheese stick in beaten egg, then coat with breadcrumb mixture.\n5. Place coated cheese sticks on a baking sheet lined with parchment paper.\n6. Bake in the preheated oven until golden brown and crispy, about 15-20 minutes.\n7. Serve hot with marinara sauce for dipping, if desired.', 3, 2, 6, '2024-03-21 09:16:24'),
 (1, 13, 1, 'Jalapeno Bites', 'Spicy jalapeno bites stuffed with cheese, perfect as an appetizer or snack.', 'sc6daczv.jpg', 20, 15, '1. Preheat the oven to 375°F (190°C).\n2. Cut jalapenos in half lengthwise and remove seeds.\n3. Fill each jalapeno half with cream cheese.\n4. Wrap each jalapeno with a slice of bacon.\n5. Place jalapeno bites on a baking sheet lined with parchment paper.\n6. Bake in the preheated oven until bacon is crispy and jalapenos are tender, about 15 minutes.\n7. Serve hot and enjoy!', 3, 1, 7, '2024-03-21 09:16:24'),
@@ -2898,14 +2882,14 @@ INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`
 (1, 16, 1, 'Couscous Cranberry Orange Salad', 'A refreshing and colorful salad made with couscous, cranberries, oranges, and a citrus dressing.', 'zwgwp0gk.png', 15, 10, '1. Cook couscous according to package instructions. Let it cool.\n2. In a large bowl, combine cooked couscous, dried cranberries, orange segments, and chopped parsley.\n3. In a small bowl, whisk together olive oil, orange juice, lemon juice, honey, salt, and pepper to make the dressing.\n4. Pour the dressing over the salad and toss gently to combine.\n5. Chill in the refrigerator for at least 30 minutes before serving.\n6. Serve chilled and enjoy!', 2, 2, 2, '2024-03-21 09:16:24'),
 (2, 17, 1, 'Classic Baklava Recipe', 'Baklava holds a special place in my heart for my husband and I traveled through Europe prior to kids and enjoyed this sweet and delicious dessert together. With crispy phyllo soaked in honey and an aroma that smells like heaven, this Baklava recipe is one of my favorite desserts to make the day before any gathering because it keeps well and impresses everyone.', 'tcoq4nha.png', 234, 24, '1. Heat olive oil in a large pot over medium heat.', 3, 2, 4, '2024-03-21 10:10:01'),
 (1, 18, 1, 'Turkey Meatloaf', 'A healthier version of classic meatloaf made with lean ground turkey, breadcrumbs, and savory seasonings.', '4p4tb5jj.png', 15, 60, '1. Preheat the oven to 350°F (175°C). Grease a loaf pan.\n2. In a large bowl, mix together ground turkey, breadcrumbs, chopped onion, minced garlic, ketchup, Worcestershire sauce, egg, salt, and pepper until well combined.\n3. Transfer the mixture into the prepared loaf pan, and shape it into a loaf.\n4. Bake in the preheated oven for 45-50 minutes, or until the internal temperature reaches 165°F (75°C).\n5. Let the meatloaf rest for a few minutes before slicing.\n6. Serve slices of meatloaf with your favorite side dishes and enjoy!', 1, 2, 1, '2024-03-21 09:16:24'),
-(1, 19, 1, 'The Best Traditional Chili Recipe', 'For the best chili recipe ever, you want something that takes easy-to-find ingredients and puts it all together in one pot. The recipe calls for stove top cooking though you could easily prep this and throw it in your slow cooker or instant pot to come home to after a long day. All you’ll need are some sides and you’ll be golden!', 'Chili-recipe.jpg', 2, 42, 'Making homemade chili is quite simple. You’ll first need to cook the onions and garlic. Then you’ll add your beef and cook it through. You’ll finally add the peppers and seasonings, stirring it together to get that beautiful flavor together. There is nothing like a real homemade chili recipe to warm you up on a cold day.\r\n\r\nAfter that, you can choose to drain away fat or leave it in for a fuller flavor before adding in the rest of the ingredients and letting it simmer until you can’t stand salivating over the aroma any longer!', 2, 4, 4, '2024-03-21 10:12:36'),
+(1, 19, 1, 'The Best Traditional Chili Recipe', 'For the best chili recipe ever, you want something that takes easy-to-find ingredients and puts it all together in one pot. The recipe calls for stove top cooking though you could easily prep this and throw it in your slow cooker or instant pot to come home to after a long day. All you’ll need are some sides and you’ll be golden!', 'waifu_jasmin.jpg', 2, 42, 'Making homemade chili is quite simple. You’ll first need to cook the onions and garlic. Then you’ll add your beef and cook it through. You’ll finally add the peppers and seasonings, stirring it together to get that beautiful flavor together. There is nothing like a real homemade chili recipe to warm you up on a cold day.\r\n\r\nAfter that, you can choose to drain away fat or leave it in for a fuller flavor before adding in the rest of the ingredients and letting it simmer until you can’t stand salivating over the aroma any longer!', 2, 4, 4, '2024-03-21 10:12:36'),
 (1, 20, 1, 'Chicken Salad', 'A refreshing salad made with cooked chicken, fresh vegetables, and a creamy dressing.', '3qbxni96.png', 15, 10, '1. In a large bowl, combine cooked chicken, diced celery, diced red onion, chopped fresh parsley, and halved grapes.\n2. In a separate small bowl, mix together mayonnaise, Greek yogurt, lemon juice, Dijon mustard, salt, and pepper to make the dressing.\n3. Pour the dressing over the chicken mixture and toss until well coated.\n4. Serve the chicken salad chilled over a bed of lettuce or in sandwiches, wraps, or on crackers.', 3, 2, 6, '2024-03-21 09:16:24'),
 (1, 21, 1, 'Lentil Garbanzo Salad', 'A nutritious salad made with lentils, garbanzo beans, fresh vegetables, and a tangy vinaigrette dressing.', '406g4sbo.png', 20, 10, '1. In a large bowl, combine cooked lentils, drained and rinsed garbanzo beans, diced cucumber, diced red bell pepper, chopped fresh cilantro, and sliced green onions.\n2. In a separate small bowl, whisk together olive oil, lemon juice, Dijon mustard, minced garlic, salt, and pepper to make the dressing.\n3. Pour the dressing over the lentil mixture and toss until well coated.\n4. Serve the salad chilled or at room temperature.', 1, 3, 7, '2024-03-21 09:16:24'),
 (1, 22, 1, 'Chickpea and Quinoa Salad', 'A nutritious and delicious salad made with chickpeas, quinoa, and fresh vegetables.', '1l44ovlv.png', 20, 15, '1. Cook quinoa according to package instructions and let it cool.\n2. In a large bowl, combine cooked quinoa, chickpeas, diced cucumber, cherry tomatoes, diced red onion, chopped parsley, and crumbled feta cheese.\n3. In a small bowl, whisk together olive oil, lemon juice, garlic, salt, and pepper to make the dressing.\n4. Pour the dressing over the salad and toss until well combined.\n5. Serve chilled or at room temperature and enjoy!', 2, 3, 3, '2024-03-21 09:16:24'),
 (1, 23, 1, 'Cajun Shrimp Pasta', 'Spicy and flavorful pasta dish with Cajun-seasoned shrimp and vegetables.', '2mn2lz7t.png', 20, 20, '1. Cook pasta according to package instructions.\n2. In a large skillet, heat olive oil over medium heat.\n3. Add shrimp and Cajun seasoning, cook until shrimp are pink and cooked through.\n4. Remove shrimp from skillet and set aside.\n5. In the same skillet, add bell peppers, onions, and garlic, cook until softened.\n6. Stir in diced tomatoes, tomato sauce, and cooked pasta.\n7. Add cooked shrimp back to the skillet and toss everything together.\n8. Serve hot and garnish with chopped parsley if desired.', 2, 2, 2, '2024-03-21 09:16:24'),
 (1, 24, 1, 'Ziti with Chicken and Asparagus', 'Delicious pasta dish with tender chicken, fresh asparagus, and ziti pasta.', '732bxaw4.png', 15, 25, '1. Cook pasta according to package instructions.\n2. In a large skillet, heat olive oil over medium heat.\n3. Add diced chicken breast, cook until browned and cooked through.\n4. Remove chicken from skillet and set aside.\n5. In the same skillet, add asparagus spears and cook until tender.\n6. Stir in cooked pasta, chicken, and Alfredo sauce.\n7. Season with salt and pepper to taste.\n8. Serve hot and garnish with grated Parmesan cheese if desired.', 1, 2, 1, '2024-03-21 09:16:24'),
-(2, 25, 1, 'Homemade Lemon Curd Recipe', 'Lemon curd is delicious, no doubt about it. But making it yourself is better than anything you’ve ever had. Trust me here, once you make it, you’ll find any excuse to make it again and again!', 'Lemon-curd-recipe.jpg', 22, 42, 'You want to place a saucepan of simmering water over medium/medium-low heat and put a heatproof bowl on top of that for a double-broiler effect. Put the egg yolks, sugar, lemon juice, zest, and salt into the heatproof bowl, whisking until thoroughly blended. Keep whisking constantly to keep the yolks from curdling, until the mixture thickens and is like hollandaise sauce in consistency, roughly 10 to 12 minutes. Then take it from the heat. Cut the butter into pieces and whisk it into your lemon curd, then pour it into a glass jar or bowl, add plastic wrap that touches the curd on top and let it cool completely before serving.', 3, 1, 7, '2024-03-21 10:12:36'),
-(4, 26, 1, 'Classic New Orleans Gumbo Recipe', 'This is the best gumbo recipe because it’s made with wholesome ingredients. If you’ve ever bought those box kits to make a simple gumbo recipe at home, you can now toss the box and make it fresh yourself.', 'gumbo-recipe.jpg', 24, 15, 'I know the ingredient list looks a little daunting. I’ll admit, it’s long, however, you should have most of those ingredients in your pantry and fridge to begin with so it will all come together quite easily. It does take an hour to prepare but that’s mostly chopping and such. In the end, you get to put your feet up and enjoy the rest of your day off, soon to be better with a bowl full of shrimp and sausage gumbo!', 2, 2, 7, '2024-03-21 10:13:40'),
+(2, 25, 1, 'Homemade Lemon Curd Recipe', 'Lemon curd is delicious, no doubt about it. But making it yourself is better than anything you’ve ever had. Trust me here, once you make it, you’ll find any excuse to make it again and again!', 'waifu_jasmin.jpg', 22, 42, 'You want to place a saucepan of simmering water over medium/medium-low heat and put a heatproof bowl on top of that for a double-broiler effect. Put the egg yolks, sugar, lemon juice, zest, and salt into the heatproof bowl, whisking until thoroughly blended. Keep whisking constantly to keep the yolks from curdling, until the mixture thickens and is like hollandaise sauce in consistency, roughly 10 to 12 minutes. Then take it from the heat. Cut the butter into pieces and whisk it into your lemon curd, then pour it into a glass jar or bowl, add plastic wrap that touches the curd on top and let it cool completely before serving.', 3, 1, 7, '2024-03-21 10:12:36'),
+(4, 26, 1, 'Classic New Orleans Gumbo Recipe', 'This is the best gumbo recipe because it’s made with wholesome ingredients. If you’ve ever bought those box kits to make a simple gumbo recipe at home, you can now toss the box and make it fresh yourself.', 'waifu_jasmin.jpg', 24, 15, 'I know the ingredient list looks a little daunting. I’ll admit, it’s long, however, you should have most of those ingredients in your pantry and fridge to begin with so it will all come together quite easily. It does take an hour to prepare but that’s mostly chopping and such. In the end, you get to put your feet up and enjoy the rest of your day off, soon to be better with a bowl full of shrimp and sausage gumbo!', 2, 2, 7, '2024-03-21 10:13:40'),
 (1, 27, 1, 'Marinara Mac & Cheese', 'Creamy macaroni and cheese with marinara sauce.', 'xwhgnizp.png', 15, 30, '1. Cook macaroni according to package instructions. Drain and set aside.\n2. In a saucepan, melt butter over medium heat. Stir in flour until smooth. Gradually add milk, stirring constantly until thickened.\n3. Add shredded cheese and stir until melted and smooth.\n4. Mix in cooked macaroni until well coated.\n5. Serve hot topped with marinara sauce and enjoy!', 1, 2, 6, '2024-03-21 09:16:24'),
 (1, 28, 1, 'Vegetable Salad with White Beans', 'A refreshing salad made with fresh vegetables and white beans, tossed in a tangy vinaigrette dressing.', 'yhzfq39e.png', 10, 10, '1. In a large mixing bowl, combine white beans, cherry tomatoes, sliced cucumber, diced red bell pepper, and sliced red onion.\n2. In a small bowl, whisk together olive oil, red wine vinegar, Dijon mustard, honey, and chopped fresh parsley to make the dressing.\n3. Pour the dressing over the salad ingredients and toss gently to coat.\n4. Season with salt and pepper to taste.\n5. Serve chilled.\n6. Enjoy!', 2, 2, 1, '2024-03-21 09:16:24'),
 (1, 29, 1, 'Vegetarian Stuffed Peppers', 'Delicious vegetarian dish with bell peppers stuffed with a flavorful quinoa and vegetable mixture.', '7toae0nn.png', 10, 20, '1. Preheat the oven to 375°F (190°C).\n2. Cut the tops off the bell peppers and remove the seeds and membranes.\n3. In a large bowl, mix together cooked quinoa, black beans, corn kernels, and chopped cilantro.\n4. Stuff each bell pepper with the quinoa mixture.\n5. Place the stuffed peppers in a baking dish.\n6. Cover the baking dish with aluminum foil and bake for 25-30 minutes, or until the peppers are tender.\n7. Remove the foil and bake for an additional 5 minutes to brown the tops.\n8. Serve hot and enjoy!', 3, 2, 6, '2024-03-21 09:16:24'),
@@ -2929,12 +2913,10 @@ INSERT INTO `recipes` (`user_id`, `recipe_id`, `isActive`, `name`, `description`
 -- Table structure for table `recipe_course_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_course_categories`;
-CREATE TABLE IF NOT EXISTS `recipe_course_categories` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `recipe_course_categories` (
+  `id` int NOT NULL,
+  `type_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `recipe_course_categories`
@@ -2951,13 +2933,10 @@ INSERT INTO `recipe_course_categories` (`id`, `type_name`) VALUES
 -- Table structure for table `recipe_ingredient`
 --
 
-DROP TABLE IF EXISTS `recipe_ingredient`;
-CREATE TABLE IF NOT EXISTS `recipe_ingredient` (
+CREATE TABLE `recipe_ingredient` (
   `ingredient_id` int NOT NULL,
   `recipe_id` int NOT NULL,
-  `quantity` int DEFAULT NULL,
-  KEY `ingredient_id` (`ingredient_id`),
-  KEY `recipe_id` (`recipe_id`)
+  `quantity` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -3255,12 +3234,10 @@ INSERT INTO `recipe_ingredient` (`ingredient_id`, `recipe_id`, `quantity`) VALUE
 -- Table structure for table `recipe_meal_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_meal_categories`;
-CREATE TABLE IF NOT EXISTS `recipe_meal_categories` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `recipe_meal_categories` (
+  `id` int NOT NULL,
+  `type_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `recipe_meal_categories`
@@ -3278,12 +3255,10 @@ INSERT INTO `recipe_meal_categories` (`id`, `type_name`) VALUES
 -- Table structure for table `recipe_method_categories`
 --
 
-DROP TABLE IF EXISTS `recipe_method_categories`;
-CREATE TABLE IF NOT EXISTS `recipe_method_categories` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `method_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `recipe_method_categories` (
+  `id` int NOT NULL,
+  `method_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `recipe_method_categories`
@@ -3304,18 +3279,14 @@ INSERT INTO `recipe_method_categories` (`id`, `method_name`) VALUES
 -- Table structure for table `recipe_ratings`
 --
 
-DROP TABLE IF EXISTS `recipe_ratings`;
-CREATE TABLE IF NOT EXISTS `recipe_ratings` (
-  `rating_id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `recipe_ratings` (
+  `rating_id` int NOT NULL,
   `recipe_id` int NOT NULL,
   `user_id` int NOT NULL,
   `rating` int NOT NULL,
   `comment` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`rating_id`),
-  UNIQUE KEY `recipe_id` (`recipe_id`,`user_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `recipe_ratings`
@@ -3405,9 +3376,8 @@ INSERT INTO `recipe_ratings` (`rating_id`, `recipe_id`, `user_id`, `rating`, `co
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int NOT NULL,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `first_Name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -3416,20 +3386,152 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `gender` enum('Male','Female') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Male',
   `level` enum('1','2','3','4') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `BMI_index` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `BMI_index` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `first_Name`, `last_Name`, `date_of_birth`, `email`, `gender`, `level`, `BMI_index`) VALUES
-(1, 'tao', '$2y$10$ftWSOFRz5zxbkFTd.01PHuKV6vGTmM7ocJOnsRMAWsZEGrpw6NEC6', NULL, NULL, NULL, 'tao@gmail.com', 'Male', '1', NULL),
-(2, 'taotao', '$2y$10$nWRRgU7ACr/ytBumq3Zb7OKhiAF6Zp6PmY8fXc9z/dOvNF2K03GoW', NULL, NULL, NULL, 'taotao@gmail.com', 'Male', '2', NULL),
+(1, 'tao', '$2y$10$ftWSOFRz5zxbkFTd.01PHuKV6vGTmM7ocJOnsRMAWsZEGrpw6NEC6', NULL, NULL, NULL, 'tao@gmail.com', 'Male', '1', 100),
+(2, 'taotao', '$2y$10$nWRRgU7ACr/ytBumq3Zb7OKhiAF6Zp6PmY8fXc9z/dOvNF2K03GoW', NULL, NULL, NULL, 'taotao@gmail.com', 'Male', '3', 100),
 (3, 'admin', '$2y$10$/FTkpPSQPmjB8fAI6zHEI.9hSbZW3Z/LZwq6pTmdVemneiemCUkye', NULL, NULL, NULL, 'admin@gmail.com', NULL, '1', NULL),
-(4, 'taotaotao', '$2y$10$u7WYyWQltzYc7VYs3LowTO3BewwXkEUmuestdjaaajuevEsRIgVzG', NULL, NULL, NULL, 'taotaotao@gmail.com', 'Male', '3', NULL);
+(4, 'taotaotao', '$2y$10$u7WYyWQltzYc7VYs3LowTO3BewwXkEUmuestdjaaajuevEsRIgVzG', NULL, NULL, NULL, 'taotaotao@gmail.com', 'Male', '3', 100),
+(5, 'adminn', '$2y$10$fpyyfrY3M2VGaLpLO38aT.79QUfmsyvHlujyTZH/5HpwOTq7rdyqK', '', '', '2000-01-01', 'adminn@gmail.com', 'Male', '2', NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `ingredients`
+--
+ALTER TABLE `ingredients`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_ingre_cat` (`category`),
+  ADD KEY `FK_ingre_unit` (`measurement_unit`);
+
+--
+-- Indexes for table `ingredient_categories`
+--
+ALTER TABLE `ingredient_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ingredient_measurement_unit`
+--
+ALTER TABLE `ingredient_measurement_unit`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ingredient_nutritions`
+--
+ALTER TABLE `ingredient_nutritions`
+  ADD KEY `ingredient_id` (`ingredient_id`),
+  ADD KEY `nutrition_id` (`nutrition_id`);
+
+--
+-- Indexes for table `nutrition_types`
+--
+ALTER TABLE `nutrition_types`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recipes`
+--
+ALTER TABLE `recipes`
+  ADD PRIMARY KEY (`recipe_id`,`user_id`) USING BTREE,
+  ADD KEY `recipes_ibfk_2` (`meal`),
+  ADD KEY `recipes_ibfk_3` (`method`),
+  ADD KEY `recipes_ibfk_4` (`user_id`),
+  ADD KEY `recipes_ibfk_1` (`course`);
+
+--
+-- Indexes for table `recipe_course_categories`
+--
+ALTER TABLE `recipe_course_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recipe_ingredient`
+--
+ALTER TABLE `recipe_ingredient`
+  ADD KEY `ingredient_id` (`ingredient_id`),
+  ADD KEY `recipe_id` (`recipe_id`);
+
+--
+-- Indexes for table `recipe_meal_categories`
+--
+ALTER TABLE `recipe_meal_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recipe_method_categories`
+--
+ALTER TABLE `recipe_method_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recipe_ratings`
+--
+ALTER TABLE `recipe_ratings`
+  ADD PRIMARY KEY (`rating_id`),
+  ADD UNIQUE KEY `recipe_id` (`recipe_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `ingredients`
+--
+ALTER TABLE `ingredients`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=377;
+
+--
+-- AUTO_INCREMENT for table `recipes`
+--
+ALTER TABLE `recipes`
+  MODIFY `recipe_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- AUTO_INCREMENT for table `recipe_course_categories`
+--
+ALTER TABLE `recipe_course_categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `recipe_meal_categories`
+--
+ALTER TABLE `recipe_meal_categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `recipe_method_categories`
+--
+ALTER TABLE `recipe_method_categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `recipe_ratings`
+--
+ALTER TABLE `recipe_ratings`
+  MODIFY `rating_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

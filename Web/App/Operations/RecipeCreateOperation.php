@@ -124,7 +124,7 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
    * Executes the recipe creation operation.
    *
    * @param array $data The data required for creating the recipe.
-   * @return bool Returns true if the recipe is created successfully, false otherwise.
+   * @return bool Returns true if the recipe is created successfully, fa    lse otherwise.
    */
   static public function execute(array  $data) : void{
     try {
