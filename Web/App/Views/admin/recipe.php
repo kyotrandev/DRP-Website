@@ -15,11 +15,12 @@
                 <span>List user</span>
             </h4>   
 
+            <!-- Search -->
             <div class="row g-2">
                 <div class="col">
                     <form action="/manager/recipe" method="GET" class="row g-1 d-flex justify-content-between flex-fill">
                         <div class="col-2">
-                            <input type="text" class="form-control" id="id" name="id" placeholder="ID...">
+                            <input type="text" class="form-control" id="id" name="recipe_id" placeholder="ID...">
                         </div>
                         <div class="col-2">
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
