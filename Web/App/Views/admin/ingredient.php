@@ -21,6 +21,9 @@
                         <div class="col-1">
                             <input type="text" class="form-control" id="id" name="id" placeholder="ID...">
                         </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
+                        </div>
                         <div class="col-2">
                             <select class="form-select" id="category" name="category" aria-label="Select meal type">
                                 <option value="" selected disabled hidden>Select ingredient category</option>
@@ -36,9 +39,6 @@
                                 <option value="<?=$measurement_unit['id']?>"><?=$measurement_unit['detail']?></option>
                                 <? endforeach;?>
                             </select>                       
-                        </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-success" name="search" type="submit">Search</button>
