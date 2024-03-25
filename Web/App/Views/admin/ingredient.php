@@ -21,11 +21,21 @@
                         <div class="col-1">
                             <input type="text" class="form-control" id="id" name="id" placeholder="ID...">
                         </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" id="category" name="category" placeholder="Category...">
+                        <div class="col-2">
+                            <select class="form-select" id="category" name="category" aria-label="Select meal type">
+                                <option value="" selected disabled hidden>Select ingredient category</option>
+                                <? foreach($data['categories'] as $category):  ?>
+                                <option value="<?=$category['id']?>"><?=$category['detail']?></option>
+                                <? endforeach;?>
+                            </select>                       
                         </div>
                         <div class="col-2">
-                            <input type="text" class="form-control" id="measurement_desciption" name="measurement_desciption" placeholder="Measurement unit...">
+                            <select class="form-select" id="measurement_unit" name="measurement_unit" aria-label="Select meal type">
+                                <option value="" selected disabled hidden>Select unit</option>
+                                <? foreach($data['measurement_unit'] as $measurement_unit):  ?>
+                                <option value="<?=$measurement_unit['id']?>"><?=$measurement_unit['detail']?></option>
+                                <? endforeach;?>
+                            </select>                       
                         </div>
                         <div class="col-3">
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name...">

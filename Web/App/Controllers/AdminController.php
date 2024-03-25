@@ -119,22 +119,17 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $recipes = null;
-        var_dump($_GET);
+
         if (isset($_GET['recipe_id']) && !empty($_GET['recipe_id'])) {
             $recipes = RecipeReadOperation::getSingleObjectByIdWithoutIngre($_GET['recipe_id'], true);
-            echo '1';
         } else if (isset($_GET['name'])  && !empty($_GET['name'])) {
             $recipes = RecipeReadOperation::getObjectForSearchingWithoutIngre('recipes.name', $_GET['name'], true);
-            echo '2';
         } else if (isset($_GET['course'])  && !empty($_GET['course'])) {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_course_categories.id', $_GET['course'], true);
-            echo '3';
         } else if (isset($_GET['meal'])  && !empty($_GET['meal'])) {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_meal_categories.id', $_GET['meal'], true);
-            echo '4';
         } else if (isset($_GET['method'])  && !empty($_GET['method'])) {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_method_categories.id', $_GET['method'], true);
-            echo '5';
         } else $recipes = RecipeReadOperation::getAllObjectsWithoutIngre(true);
 
         $dataHolder['courses'] = RecipeReadOperation::getCat(1);
@@ -194,19 +189,27 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
+
+        $dataHolder['categories'] = IngredientReadOperation::getCat(1);
+        $dataHolder['measurement_unit'] = IngredientReadOperation::getCat(2);
+
         if (isset($_GET['id']) && !empty($_GET['id'])) {
             $ingredients = IngredientReadOperation::getSingleObjectByIdWithoutNutri($_GET['id'], true);
         } else if (isset($_GET['name']) && !empty($_GET['name'])) {
             $ingredients = IngredientReadOperation::getObjectForSearchingWithoutNutri('ingredients.name', $_GET['name'], true);
         } else if (isset($_GET['category']) && !empty($_GET['category'])) {
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_categories.id', $_GET['category'], true);
-        } else if (isset($_GET['measurement_desciption']) && !empty($_GET['measurement_desciption'])){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_measurement_unit.id', $_GET['measurement_desciption'], true);
+        } else if (isset($_GET['measurement_unit']) && !empty($_GET['measurement_unit'])){
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_measurement_unit.id', $_GET['measurement_unit'], true);
         } 
         if (!isset($ingredients)) $ingredients = IngredientReadOperation::getAllObjects(true);
-
+        echo "<pre>";
+        var_dump($ingredients);
+        echo"</pre>";
         
-        return $this->loadView('admin.ingredient', ['ingredients' => $ingredients]);
+        $dataHolder['ingredients'] = $ingredients;
+
+        return $this->loadView('admin.ingredient', $dataHolder);
     }
 
     public function setIngredientActive()
