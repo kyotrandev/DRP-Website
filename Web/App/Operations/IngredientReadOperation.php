@@ -326,6 +326,14 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
   }
  
+  /**
+   * Returns an array of objects for searching based on the specified field name and value.
+   *
+   * @param string $fieldName The name of the field to search.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of ingredients. Defaults to false.
+   * @return array|null An array of objects matching the search criteria, or null if an error occurs.
+   */
   static public function getObjectForSearching(string $fieldName, $value, $ignoreActiveStatus = false) {
     try {
       $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");
@@ -341,6 +349,16 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     return null;
   }
 
+
+
+  /**
+   * Retrieves objects for searching without considering nutritional information.
+   *
+   * @param string $fieldName The name of the field to search in.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of ingredients. Defaults to false.
+   * @return array|null An array of objects matching the search criteria, or null if an error occurred.
+   */
   static public function getObjectForSearchingWithoutNutri(string $fieldName, $value, $ignoreActiveStatus = false) {
     try {
       $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");

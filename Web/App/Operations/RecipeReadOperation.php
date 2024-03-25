@@ -76,13 +76,36 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   }
 
   /**
+   * Retrieves a single RecipeModel object by its ID without including ingredient information.
+   *
+   * @param int $id The ID of the recipe to retrieve.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of the recipe. Defaults to false.
+   * @return RecipeModel|null The retrieved RecipeModel object, or null if an error occurred.
+   */
+  static public function getSingleObjectByIdWithoutIngre($id, bool $ignoreActiveStatus = false) : ?RecipeModel{
+    try {
+      $sql = ($ignoreActiveStatus) ? self::getSingleObjectByIdIgnoreActiveMode : self::getSingleObjectById;
+      return self::getSingleObject($sql, false, [':id' => $id]);
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+      return null;
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+  /**
    * Retrieves all ingredients without nutri info from the database table based on a specified column name and value.
    *
    * @param string $fieldName The name of the column to search for.
    * @param mixed $value The value to match in the specified column.
    * @return array|null An array of objects matching the specified column name and value, or null if an error occurred.
    */
-  static public function getAllObjectsByFieldAndValueWithoutNutri(string $fieldName, $value, bool $ignoreActiveStatus = false) : ?array {
+  static public function getAllObjectsByFieldAndValueWithoutIngre(string $fieldName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
       $sql = self::BASE_SQL_QUERY . " WHERE $fieldName = :value " . (($ignoreActiveStatus) ? "" : " AND recipes.isActive = 1");
       return self::getMultipleObject($sql, false, [':value' => $value]);
@@ -136,7 +159,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   static public function getAllObjectsWithoutIngre(bool $ignoreActiveStatus = false): ?array {
    try {
 
-     $sql = self::BASE_SQL_QUERY . ($ignoreActiveStatus) ? "" : " WHERE recipes.isActive = 1";
+     $sql = self::BASE_SQL_QUERY . (($ignoreActiveStatus) ? "" : " WHERE recipes.isActive = 1");
 
      return self::getMultipleObject($sql, false);
 
@@ -177,7 +200,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   }
 
   /**
-   * Retrieves an array of objects with offset without including nutritional information.
+   * Retrieves an array of objects with offset without including ingredients information.
    *
    * @param int $offset The starting offset for retrieving objects.
    * @param int|null $limit The maximum number of objects to retrieve. If null, defaults to offset + 5.
@@ -257,6 +280,55 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   }
  
 
+
+  /**
+   * Returns an object for searching based on the specified field name and value.
+   *
+   * @param string $fieldName The name of the field to search.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of recipes. Defaults to false.
+   * @return mixed|null The object(s) matching the search criteria, or null if an error occurred.
+   */
+  static public function getObjectForSearching(string $fieldName, $value, $ignoreActiveStatus = false) {
+    try {
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND recipes.isActive = 1");
+      return self::getMultipleObject($sql, true, [':value' => "%$value%"]);
+    } catch (\PDOException $exception) {
+      handleException($exception);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+
+  /**
+   * Retrieves objects for searching without considering ingredients information.
+   *
+   * @param string $fieldName The name of the field to search in.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of recipes. Defaults to false.
+   * @return array|null An array of objects matching the search criteria, or null if an error occurred.
+   */
+  static public function getObjectForSearchingWithoutIngre(string $fieldName, $value, $ignoreActiveStatus = false) {
+    try {
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND recipes.isActive = 1");
+      return self::getMultipleObject($sql, false, [':value' => "%$value%"]);
+    } catch (\PDOException $exception) {
+      handleException($exception);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+
   /**
    * Retrieves the ID and name of all ingredients from the database with pagination.
    *
@@ -326,11 +398,11 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
     try {
       switch($mode){
         case 1: 
-          return self::query("SELECT `id`, `type_name` FROM `recipe_meal_categories`", 1);
-        case 2:
-          return self::query("SELECT `id`, `method_name` FROM `recipe_method_categories`", 1);
-        case 3: 
           return self::query("SELECT `id`, `type_name` FROM `recipe_course_categories`", 1);
+        case 2:
+          return self::query("SELECT `id`, `type_name` FROM `recipe_meal_categories`", 1);
+        case 3: 
+          return self::query("SELECT `id`, `method_name` FROM `recipe_method_categories`", 1);
       }
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);

@@ -27,29 +27,25 @@
                             <div class="col-2">
                                 <select class="form-select" id="course" name="course">
                                     <option value="" selected disabled hidden>Select meal recipe for</option>
-                                    <option value="Breakfast">Breakfast</option>
-                                    <option value="Lunch">Lunch</option>
-                                    <option value="Dinner">Dinner</option>
-                                </select>                        </div>
+                                    <? foreach($data['courses'] as $course) :?>
+                                    <option value="<?=$course['id']?>"><?=$course['type_name']?></option>
+                                    <? endforeach;?>
+                                </select>                        
+                            </div>
                             <div class="col-2">
                                 <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
                                     <option value="" selected disabled hidden>Select meal type</option>
-                                    <option value="Appetizer">Appetizer</option>
-                                    <option value="Main Dish">Main Dish</option>
-                                    <option value="Side Dish">Side Dish</option>
-                                    <option value="Dessert">Dessert</option>
+                                    <? foreach($data['meals'] as $meal) :?>
+                                    <option value="<?=$meal['id']?>"><?=$meal['type_name']?></option>
+                                    <? endforeach;?>
                                 </select>                        
                             </div>
                             <div class="col-2">
                                 <select class="form-select" id="method" name="method" aria-label="Select meal type">
                                     <option value="" selected disabled hidden>Select meal category</option>
-                                    <option value="Baked">Baked</option>
-                                    <option value="Beverage">Beverage</option>
-                                    <option value="Salad and Salad Dressing">Salad and Salad Dressing</option>
-                                    <option value="Soup">Soup</option>
-                                    <option value="Sauce and Condiment">Sauce and Condiment</option>
-                                    <option value="Snack">Snack</option>
-                                    <option value="Other">Other</option>
+                                    <? foreach($data['methods'] as $method):  ?>
+                                    <option value="<?=$method['id']?>"><?=$method['method_name']?></option>
+                                    <? endforeach;?>
                                 </select>                       
                             </div>
                             <div class="col-auto"> 
