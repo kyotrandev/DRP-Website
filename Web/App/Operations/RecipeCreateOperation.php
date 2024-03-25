@@ -5,9 +5,17 @@ use App\Utils\Dialog;
 class RecipeCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
 
-  static public function notify(string $message) : void {
-    Dialog::show($message);
+  static public function notify(bool $success, string $message) {
+    $response = [
+      'success' => $success,
+      'message' => $message,
+  ];
+
+  header('Content-Type: application/json');
+  // Trả về dữ liệu JSON
+  echo json_encode($response);
   }
+
 
 
   /**
@@ -118,24 +126,38 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
    * @param array $data The data required for creating the recipe.
    * @return bool Returns true if the recipe is created successfully, false otherwise.
    */
-  static public function execute(array $data) : bool {
+  static public function execute(array  $data) : void{
     try {
+      /**
+       * Validate the data before saving to the database
+       */
       self::validateData($data);
-    } catch (\InvalidArgumentException $InvalidArgumentException) {
-      handleException($InvalidArgumentException);
-      self::notify("Add recipe failed caused by: " . $InvalidArgumentException->getMessage());
-      return false;
-    }
-    try {
+
+      /**
+       * Saving data to the database process
+       */
       self::saveToDatabase($data);
+
+      // If everything goes well, set success to true and provide a success message
+      
+      self::notify(true, "Recipe create successfully!");
+    } catch (\InvalidArgumentException $InvalidArgumentException) {
+      // Handle validation errors
+      handleException($InvalidArgumentException);
+      self::notify(false, "Create recipe failed caused by: invalid input. Please check your input again!");
     } catch (\PDOException $PDOException) {
+      // Handle database errors
       handlePDOException($PDOException);
-      self::notify("Add recipe failed caused by: " . $PDOException->getMessage());
-    } catch (\Throwable $throwable) {
-      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-      self::notify("Add recipe failed caused by: " . $throwable->getMessage());
+      self::notify(false, "Create recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");
+    } catch (\Exception $Exception) {
+      // Handle other exceptions
+      handleException($Exception);
+      self::notify(false, "Create recipe failed caused by: invalid data!. Please check the data and try again!");
+    } catch (\Throwable $Throwable) {
+      // Handle other errors
+      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
+      self::notify(false, "Create recipe failed caused by an unknown error!. We are sorry for the inconvenience!");      
     }
-    self::notify("Add recipe successfully! ");
-    return true;
   }
+
 }

@@ -140,7 +140,7 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
 
-        $data = $_POST;
+        $data = $_POST; 
         RecipeUpdateOperation::setRecipeActive($data);
 
         header("Location: /manager/recipe");

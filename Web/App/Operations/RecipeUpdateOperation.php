@@ -7,9 +7,15 @@ use App\Utils\Dialog;
 class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
 
-  static public function notify(string $message): void
-  {
-    Dialog::show($message);
+  static public function notify(bool $success, string $message) {
+    $response = [
+      'success' => $success,
+      'message' => $message,
+  ];
+
+  header('Content-Type: application/json');
+  // Trả về dữ liệu JSON
+  echo json_encode($response);
   }
 
 
@@ -68,68 +74,85 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
 
-    if (isset($data['image_url'])) {
-      $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-              cooking_time = :cooking_time, directions = :directions, image_url = :image_url,
-              course = :course, meal = :meal, method = :method where id = :id";
-      self::query($sql, 1, [
-        'id' => $data['id'],
-        'name' => $data['name'],
-        'description' => $data['description'],
-        'preparation_time' => $data['preparation_time'],
-        'cooking_time' => $data['cooking_time'],
-        'image_url' => $data['image_url'],
-        'directions' => $data['directions'],
-        'course' => $data['course'],
-        'meal' => $data['meal'],
-        'method' => $data['method']
-      ]);
-    } else {
-      $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-              cooking_time = :cooking_time, directions = :directions, 
-              course = :course, meal = :meal, method = :method where id = :id";
 
-      self::query($sql,1, [
-        'id' => $data['id'],
-        'name' => $data['name'],
-        'description' => $data['description'],
-        'preparation_time' => $data['preparation_time'],
-        'cooking_time' => $data['cooking_time'],
-        'directions' => $data['directions'],
-        'course' => $data['course'],
-        'meal' => $data['meal'],
-        'method' => $data['method']
-      ]);
+    try {
+      if (isset($data['image_url'])) {
+        $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
+                cooking_time = :cooking_time, directions = :directions, image_url = :image_url,
+                course = :course, meal = :meal, method = :method where id = :id";
+        self::query($sql, 1, [
+          'id' => $data['id'],
+          'name' => $data['name'],
+          'description' => $data['description'],
+          'preparation_time' => $data['preparation_time'],
+          'cooking_time' => $data['cooking_time'],
+          'image_url' => $data['image_url'],
+          'directions' => $data['directions'],
+          'course' => $data['course'],
+          'meal' => $data['meal'],
+          'method' => $data['method']
+        ]);
+      } else {
+        $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
+                cooking_time = :cooking_time, directions = :directions, 
+                course = :course, meal = :meal, method = :method where id = :id";
+
+        self::query($sql,1, [
+          'id' => $data['id'],
+          'name' => $data['name'],
+          'description' => $data['description'],
+          'preparation_time' => $data['preparation_time'],
+          'cooking_time' => $data['cooking_time'],
+          'directions' => $data['directions'],
+          'course' => $data['course'],
+          'meal' => $data['meal'],
+          'method' => $data['method']
+        ]);
+      }
+    } catch (\PDOException $PDOException) {
+      throw $PDOException;
     }
   }
 
 
   /**
-   * Executes the recipe update operation.
+   * Execute the operation
    *
-   * This method validates the provided data, saves it to the database, and notifies the user about the result.
-   *
-   * @param array $data The data to update the recipe.
-   * @return bool Returns true if the recipe update was successful, false otherwise.
+   * @param array $data The data to be used in the operation
+   * @return bool True if the operation was successful, false otherwise
    */
-  static public function execute($data): bool {
+  static public function execute(array  $data) : void{
     try {
+      /**
+       * Validate the data before saving to the database
+       */
       self::validateData($data);
-    } catch (\InvalidArgumentException $InvalidArgumentException) {
-      handleException($InvalidArgumentException);
-      self::notify("Update recipe failed casued by: " . htmlspecialchars($InvalidArgumentException->getMessage()));
-      header("Location: /manager/recipe/update?id=" . $data['id']);
-    }
-    try {
-      self::saveToDatabase($data);
-    } catch (\PDOException $PDOException) {
-      handlePDOException($PDOException);
-      self::notify("Update recipe failed casued by: " . htmlspecialchars($PDOException->getMessage()));
-      header("Location: /manager/recipe/update?id=" . $data['id']);
-    }
 
-    self::notify("Update recipe successfully! ");
-    return true;
+      /**
+       * Saving data to the database process
+       */
+      self::saveToDatabase($data);
+
+      // If everything goes well, set success to true and provide a success message
+      
+      self::notify(true, "Recipe updated successfully!");
+    } catch (\InvalidArgumentException $InvalidArgumentException) {
+      // Handle validation errors
+      handleException($InvalidArgumentException);
+      self::notify(false, "Update recipe failed caused by: invalid input. Please check your input again!");
+    } catch (\PDOException $PDOException) {
+      // Handle database errors
+      handlePDOException($PDOException);
+      self::notify(false, "Update recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");
+    } catch (\Exception $Exception) {
+      // Handle other exceptions
+      handleException($Exception);
+      self::notify(false, "Update recipe failed caused by: invalid data!. Please check the data and try again!");
+    } catch (\Throwable $Throwable) {
+      // Handle other errors
+      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
+      self::notify(false, "Update recipe failed caused by an unknown error!. We are sorry for the inconvenience!");      
+    }
   }
 
   public static function setRecipeActive($data){

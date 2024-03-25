@@ -31,7 +31,8 @@
                                 <option value="Breakfast">Breakfast</option>
                                 <option value="Lunch">Lunch</option>
                                 <option value="Dinner">Dinner</option>
-                            </select>                        </div>
+                            </select>                        
+                        </div>
                         <div class="col-2">
                             <select class="form-select" id="meal" name="meal" aria-label="Select meal type">
                                 <option value="" selected disabled hidden>Select meal type</option>

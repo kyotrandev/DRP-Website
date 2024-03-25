@@ -153,7 +153,7 @@ class  IngredientUpdateOperation extends DatabaseRelatedOperation implements I_C
     } catch (\Throwable $Throwable) {
       // Handle other errors
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
+      self::notify(false, "Update ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
     }
   }
 
