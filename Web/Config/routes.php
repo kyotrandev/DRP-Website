@@ -43,7 +43,8 @@ $router->post('/manager/ingredient/update', 'AdminController@ingredientManagerUp
 
 // ingredient router
 $router->get('/ingredient','IngredientController@index');
-$router->get('/ingredients/{page}','PaginationController@getPagingIngredient');
+$router->get('/ingredients/{page}','PaginationController@getIngredients');
+$router->get('/ingredients-all/{page}','PaginationController@getAllIngredients');
 $router->get('/ingredient/find-by-id','IngredientController@findByID');
 $router->get('/ingredient/list-by-category','IngredientController@listByCategory');
 $router->get('/ingredient/add','IngredientController@addUI');
@@ -56,7 +57,7 @@ $router->get('/ingredient/delete','IngredientController@delete');
 // recipe router
 
 $router->get('/recipe','RecipeController@index');
-$router->get('/recipes/{page}','PaginationController@getPagingRecipe');
+$router->get('/recipes/{page}','PaginationController@getRecipes');
 $router->get('/recipe/find-by-id','RecipeController@findByID');
 $router->get('/recipe/list','RecipeController@listByName');
 $router->get('/recipe/list-by-category','RecipeController@listByCategory');

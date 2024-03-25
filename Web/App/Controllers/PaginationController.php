@@ -9,9 +9,7 @@ class PaginationController
 {
     private $config = [
         'total' => 0,
-        'limit' => 0,
-        'full' => true,
-        'querystring' => 'page'
+        'limit' => 0
     ];
 
     public function __construct($config = [])
@@ -38,39 +36,58 @@ class PaginationController
         return ceil($total / $limit);
     }
 
-    public function getPagingRecipe($page = 1)
+    /* Method Common for Get Data */
+    private function getData($operation, $limit = 15,$page, $ignoreActive = false)
     {
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         if ($page <= 0) {
             $page = 1;
         }
 
-        $this->config['$limit'] = 12;
-        $offset = ($page - 1) * $this->config['$limit'];
-        $recipes = RecipeReadOperation::getPaging($offset,$this->config['$limit']);
+        $this->config['limit'] = $limit; 
+        $offset = ($page - 1) * $this->config['limit'];
+
+        $data = $operation::getPaging($offset, $this->config['limit'], $ignoreActive);
+
+        $totalData = $operation::getAllObjects();
+        $this->config['total'] = count($totalData);
+
+        $totalPage = $this->getTotalPage();
+        
+        return ['data' => $data, 'totalPage' => $totalPage];
+    }
+
+
+
+    /* Get Recipes Actived Data for Ajax */
+    public function getRecipes($page = 1)
+    {
+        $limit = 12;
+        $recipes = $this->getData(RecipeReadOperation::class, $limit, $page);
 
         // Return Recipes as JSON to Ajax request
-        echo json_encode($recipes);
+        echo json_encode($recipes['data']);
     }
 
-    public function getPagingIngredient($page = 1)
+    /*Get Ingredients Actived Data for Ajax */
+    public function getIngredients($page = 1)
     {
-        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        if ($page <= 0) {
-            $page = 1;
-        }
+        $limit = 15;
+        $ingredients = $this->getData(IngredientReadOperation::class, $limit, $page);
 
-        $this->config['limit'] = 20;
-        $offset = ($page - 1) * $this->config['limit'];
-        $ingredient = IngredientReadOperation::getPaging( $offset, $this->config['limit']);
-
-        $totalIngredient = IngredientReadOperation::getAllObjects();
-        // Set Total to count Total Page  
-        $this->config['total'] = count($totalIngredient);
-        $totalPage = self::getTotalPage();
-        // Return ingredients and total page as JSON to Ajax request 
-        echo json_encode(['ingredients' => $ingredient, 'totalPage' => $totalPage]);
+        // Return Ingredients as JSON to Ajax request
+        echo json_encode(['ingredients' => $ingredients['data'], 'totalPage' => $ingredients['totalPage']]);
     }
 
+    /* Get All Ingredients Data for Ajax of Manager Ingredients */
+    public function getAllIngredients($page = 1)
+    {
+        $limit = 20;
+        $ignoreActice = true;
+        $allIngredients = $this->getData(IngredientReadOperation::class, $limit, $page, $ignoreActice);
+
+        // Return All Ingredients as JSON to Ajax request
+        echo json_encode(['ingredients' => $allIngredients['data'], 'totalPage' => $allIngredients['totalPage']]);
+    }
     
 }
