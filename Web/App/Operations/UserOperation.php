@@ -80,7 +80,7 @@ class UserOperation extends DatabaseRelatedOperation {
         $stmt->bindValue(':last_name', $data['last_name'] ?? "", \PDO::PARAM_STR);
         $stmt->bindValue(':date_of_birth', $data['date_of_birth'] ?? "2000-01-01", \PDO::PARAM_STR);
         $stmt->bindValue(':email', $data['email'] ?? "", \PDO::PARAM_STR);
-        $stmt->bindValue(':gender', $data['gender'] ?? "Other", \PDO::PARAM_STR);
+        $stmt->bindValue(':gender', $data['gender'] ?? "male ", \PDO::PARAM_STR);
         $stmt->bindValue(':level', 3, \PDO::PARAM_INT);
         return $stmt->execute();
     } catch(\Exception $e){
