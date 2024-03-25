@@ -43,7 +43,8 @@
                         <th scope="col">Last Name</th>
                         <th scope="col">Date of birth</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Gender</th>            
+                        <th scope="col">Gender</th>   
+                        <th scope="col">BMI</th>         
                         <th scope="col">Level</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -66,6 +67,7 @@
                             <td><?= $user->getDateOfBirth()?></td>
                             <td><?= $user->getEmail() ?></td>
                             <td><?= $user->getGender()?></td>
+                            <td><?= $user->getBMI_index() ?></td>
                             <td><?= $user->getLevel() ?></td>
                             <td>
                                 <!-- btn: Set Contribute, Unset Contribute and Is Ban -->

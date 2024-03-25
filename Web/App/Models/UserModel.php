@@ -15,6 +15,7 @@ class UserModel extends BaseModel {
     protected $date_of_birth;
     protected $email;
     protected $gender;
+    protected $BMI_index;
     protected $level;
 
     //Getter
@@ -41,6 +42,9 @@ class UserModel extends BaseModel {
     }
     public function getGender(){
         return $this->gender;
+    }
+    public function getBMI_index() {
+        return $this->BMI_index;
     }
     public function getLevel() {
         return $this->level;
@@ -71,17 +75,20 @@ class UserModel extends BaseModel {
     public function setGender($gender) {
         $this->gender = $gender;
     } 
+    public function setBMI_index($BMI_index) {
+        $this->BMI_index = $BMI_index;
+    }
     static public function createObjectByRawArray($data){
         $object = new self();
-        $object->setId($data['id']);
-        $object->setActive($data['isActive']) ?? 1;
-        $object->setUsername($data['username']);
-        $object->setPassword($data['password']);
-        $object->setFirstName($data['first_name']);
-        $object->setLastName($data['last_name']);
-        $object->setDateOfBirth($data['date_of_birth'] ?? "");
-        $object->setGender($data['gender'] ?? "");
-        $object->setEmail($data['email'] ?? "");
+        $object->setId($data['id'] ?? "UNKNOWN");
+        $object->setUsername($data['username'] ?? "UNKNOWN");
+        $object->setPassword($data['password'] ?? "UNKNOWN");
+        $object->setFirstName($data['first_name'] ?? "UNKNOWN");
+        $object->setLastName($data['last_name'] ?? "UNKNOWN");
+        $object->setDateOfBirth($data['date_of_birth'] ?? "UNKNOWN");
+        $object->setGender($data['gender' ]?? "UNKNOWN");
+        $object->setBMI_index($data['BMI_index'] ?? "UNKNOWN");
+        $object->setEmail($data['email'] ?? "UNKNOWN");
         return $object;
     }
 }
