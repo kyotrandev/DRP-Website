@@ -129,7 +129,11 @@ class AdminController extends BaseController
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal', $_GET['meal'], true);
         } else if (isset($_GET['method'])) {
             $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('method', $_GET['method'], true);
-        } else $recipes = RecipeReadOperation::getAllObjects(true);
+        }
+
+        if (!$recipes) {
+            $recipes = RecipeReadOperation::getAllObjects(true);
+        }
 
         return $this->loadView('admin.recipe', ['recipes' => $recipes]);
     }
