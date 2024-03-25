@@ -82,7 +82,7 @@ class PaginationController
     /* Get All Ingredients Data for Ajax of Manager Ingredients */
     public function getAllIngredients($page = 1)
     {
-        $limit = 20;
+        $limit = 15;
         $ignoreActice = true;
         $allIngredients = $this->getData(IngredientReadOperation::class, $limit, $page, $ignoreActice);
 

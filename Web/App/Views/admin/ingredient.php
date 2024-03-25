@@ -23,22 +23,24 @@
                             <input type="text" class="form-control" id="id" name="id" placeholder="ID...">
                         </div>
                         <div class="col-3">
-                            <input type="text" class="form-control" id="category" name="category"
-                                placeholder="Category...">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
                         </div>
                         <div class="col-2">
-                            <input type="text" class="form-control" id="measurement_desciption"
-                                name="measurement_desciption" placeholder="Measurement unit...">
+                            <input type="text" class="form-control" id="measurement_desciption" name="measurement_desciption" placeholder="Measurement unit...">
                         </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
+                        <div class="col-2">
+                            <select class="form-select" id="measurement_unit" name="measurement_unit" aria-label="Select meal type">
+                                <option value="" selected disabled hidden>Select unit</option>
+                                <? foreach($data['measurement_unit'] as $measurement_unit):  ?>
+                                <option value="<?=$measurement_unit['id']?>"><?=$measurement_unit['detail']?></option>
+                                <? endforeach;?>
+                            </select>                       
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-success" name="search" type="submit">Search</button>
                         </div>
                         <div class="col-auto">
-                            <a href="/ingredient/add" class="btn btn-success" tabindex="-1" role="button">Add new
-                                ingredient</a>
+                            <a href="/ingredient/add" class="btn btn-success" tabindex="-1" role="button">Add new ingredient</a>
                         </div>
                     </form>
                 </div>

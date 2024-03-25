@@ -1,6 +1,4 @@
 function viewIngredient(ingredients) {
-
-
   // Xóa dữ liệu cũ trong bảng
   $(".ingredientTableBody").empty();
 
@@ -9,18 +7,10 @@ function viewIngredient(ingredients) {
     // Xây dựng hàng của bảng
     var row =
       "<tr>" +
-      "<td>" +
-      ingredient.id +
-      "</td>" +
-      "<td>" +
-      ingredient.name +
-      "</td>" +
-      "<td>" +
-      ingredient.category +
-      "</td>" +
-      "<td>" +
-      ingredient.measurementUnit +
-      "</td>" +
+      "<td>" + ingredient.id + "</td>" +
+      "<td>" + ingredient.name + "</td>" +
+      "<td>" + ingredient.category + "</td>" +
+      "<td>" + ingredient.measurementUnit + "</td>" +
       // Các thuộc tính cho cột actions 
       "<td>" +
       "<form class='set-active-form d-inline-block'>" +
@@ -34,9 +24,9 @@ function viewIngredient(ingredients) {
       "<input type='hidden' name='id' value='" + ingredient.id + "'>" +
       "<button class='btn btn-danger me-1' type='submit'>Delete</button>" +
       "</form>" +
-      "<a href='/manager/ingredient/update?id=" + ingredient.id + "' class='btn btn-secondary d-inline-block me-1' role='button'>Edit</a>" +
-      "</td>" +
-      "</tr>";
+      "<a href='/manager/ingredient/update?id=" + ingredient.id + "' class='btn btn-secondary d-inline-block me-1 mt-1' role='button'>Edit</a>" +
+      "</td>"
+    "</tr>";
 
     // Thêm hàng vào tbody của bảng
     $(".ingredientTableBody").append(row);
