@@ -180,7 +180,6 @@ class AdminController extends BaseController
     public function ingredientManager()
     {
 
-        var_dump($_GET);
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
