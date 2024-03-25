@@ -1,6 +1,5 @@
 <? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php") ?>
 <body>
-    
     <div class="homepage">
         <div class="container minspace mb-3">
             <div class="content d-flex align-items-start mt-3">
@@ -29,7 +28,7 @@
                                 <div class="col-md-8">
                                     <div class="card-body">
                                         <h5 class="card-title"><? echo htmlspecialchars($recipe->getName()); ?></h5>
-                                        <p class="card-text"><? echo $recipe->getDescription() ?></p>
+                                        <p class="card-text limited-text"><? echo $recipe->getDescription() ?></p>
                                         <p class="card-text"><small class="text-muted">Date: <? echo $recipe->getTimestamp() ?></small></p>
                                     </div>
                                 </div>
