@@ -158,9 +158,14 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $recipe = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
-        return $this->loadView('admin.recipeUpdate', ['recipe' => $recipe]);
+        $dataHolder['courses'] = RecipeReadOperation::getCat(1);
+        $dataHolder['meals'] = RecipeReadOperation::getCat(2);
+        $dataHolder['methods'] = RecipeReadOperation::getCat(3);
+
+        $dataHolder['recipes'] = $recipe;
+
+        return $this->loadView('admin.recipeUpdate', $dataHolder);
     }
 
     public function recipeManagerUpdate()
@@ -203,10 +208,6 @@ class AdminController extends BaseController
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_measurement_unit.id', $_GET['measurement_unit'], true);
         } 
         if (!isset($ingredients)) $ingredients = IngredientReadOperation::getAllObjects(true);
-        echo "<pre>";
-        var_dump($ingredients);
-        echo"</pre>";
-        
         $dataHolder['ingredients'] = $ingredients;
 
         return $this->loadView('admin.ingredient', $dataHolder);

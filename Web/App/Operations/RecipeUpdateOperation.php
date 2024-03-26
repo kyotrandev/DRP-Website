@@ -1,12 +1,8 @@
 <?
-
 namespace App\Operations;
-
-use App\Utils\Dialog;
 
 class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
-
   static public function notify(bool $success, string $message) {
     $response = [
       'success' => $success,
@@ -27,34 +23,36 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
    * @throws \InvalidArgumentException If the data is invalid.
    * @throws \Exception If the data is missing or does not meet the validation rules.
    */
-  static public function validateData(array $data): void
+  static public function validateData(array $data) : void
   {
-    // Validate data2
+    // Validate data
     if ($data == null) {
       throw new \InvalidArgumentException("Invalid data provided in " . __METHOD__ . ".");
     }
 
-    $validCategories1 = ['Breakfast', 'Lunch', 'Dinner'];
-    $validCategories2 = ['Appetizer', 'Main Dish', 'Side Dish', 'Dessert'];
-    $validCategories3 = ['Baked', 'Salad and Salad Dressing', 'Sauce and Condiment', 'Snack', 'Beverage', 'Soup', 'Other'];
+    $validCategories1 = RecipeReadOperation::getCat(1);
+    $validCategories2 = RecipeReadOperation::getCat(2);
+    $validCategories3 = RecipeReadOperation::getCat(3);
+
 
     if (
-      empty($data['name']) || !preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
+      empty($data['name']) || 
+      !preg_match('/^[a-zA-Z0-9\s.,()]+$/', $data['name']) ||
       empty($data['cooking_time']) ||
       empty($data['preparation_time']) ||
       empty($data['course']) ||
       empty($data['meal']) ||
       empty($data['method']) ||
       empty($data['directions']) ||
-      empty($data['description'])
-    ) {
-      throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
+      empty($data['description'])) {
+      throw new \Exception("Invalid data provided in " . __METHOD__ . ". 1");
     }
-    if ((!in_array($data['course'], $validCategories1)) ||
-      (!in_array($data['meal'], $validCategories2)) ||
-      (!in_array($data['method'], $validCategories3))
+
+    if((!in_array($data['course'], array_column($validCategories1, 'id'))) ||
+      (!in_array($data['meal'], array_column($validCategories2, 'id'))) ||
+      (!in_array($data['method'],array_column($validCategories3, 'id')))
     ) {
-      throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
+      throw new \Exception("Invalid data provided in " . __METHOD__ . ". 2");
     }
   }
 
@@ -68,50 +66,26 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
    */
   static public function saveToDatabase(array $data): void
   {
-    $model = new static();
-    $conn = $model->DB_CONNECTION;
-    if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
+    var_dump($data);
+
+    $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
+            cooking_time = :cooking_time, directions = :directions, course = :course, meal = :meal, method = :method " 
+            . (isset($data['image_url']) && !empty($data['image_url']) ? ", image_url = :image_url" : "") . " where recipes.recipe_id = :id";
+    $params = [
+      ':id' => $data['id'],
+      ':name' => $data['name'],
+      ':cooking_time' => $data['cooking_time'],
+      ':preparation_time' => $data['preparation_time'],
+      ':description' => $data['description'],
+      ':directions' => $data['directions'],
+      ':course' => $data['course'],
+      ':meal' => $data['meal'],
+      ':method' => $data['method']
+    ];
+    if (isset($data['image_url']) && !empty($data['image_url'])) {
+      $params[':image_url'] = $data['image_url'];
     }
-
-
-    try {
-      if (isset($data['image_url'])) {
-        $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-                cooking_time = :cooking_time, directions = :directions, image_url = :image_url,
-                course = :course, meal = :meal, method = :method where id = :id";
-        self::query($sql, 1, [
-          'id' => $data['id'],
-          'name' => $data['name'],
-          'description' => $data['description'],
-          'preparation_time' => $data['preparation_time'],
-          'cooking_time' => $data['cooking_time'],
-          'image_url' => $data['image_url'],
-          'directions' => $data['directions'],
-          'course' => $data['course'],
-          'meal' => $data['meal'],
-          'method' => $data['method']
-        ]);
-      } else {
-        $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-                cooking_time = :cooking_time, directions = :directions, 
-                course = :course, meal = :meal, method = :method where id = :id";
-
-        self::query($sql,1, [
-          'id' => $data['id'],
-          'name' => $data['name'],
-          'description' => $data['description'],
-          'preparation_time' => $data['preparation_time'],
-          'cooking_time' => $data['cooking_time'],
-          'directions' => $data['directions'],
-          'course' => $data['course'],
-          'meal' => $data['meal'],
-          'method' => $data['method']
-        ]);
-      }
-    } catch (\PDOException $PDOException) {
-      throw $PDOException;
-    }
+    self::query($sql, 1, $params);
   }
 
 

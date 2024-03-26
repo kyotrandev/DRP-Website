@@ -21,7 +21,7 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli zip \
 
 # Grant permission to apache user to write to the uploads directory
 RUN mkdir -p /var/www/html/Public/uploads 
-RUN chown -R www-data:www-data /var/www/html/Public/uploads
+RUN chown -R www-data:www-data /var/www/html/Public/uploads && chmod -R +666 /var/www/html/Public/uploads
 
 
 # Using composer for autoloading 

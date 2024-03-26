@@ -9,9 +9,9 @@ class ValidataRecipeDataHolder {
   public $validIngredients;
 
   private function __construct(){
-    $this->validMeal = RecipeReadOperation::getCat(1);
-    $this->validMethod = RecipeReadOperation::getCat(2);
-    $this->validCourse = RecipeReadOperation::getCat(3);
+    $this->validCourse = RecipeReadOperation::getCat(1);
+    $this->validMeal = RecipeReadOperation::getCat(2);
+    $this->validMethod = RecipeReadOperation::getCat(3);
     $this->validIngredients = IngredientReadOperation::getIdAndNameAllObject();
   }
 

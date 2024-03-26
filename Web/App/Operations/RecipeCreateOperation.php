@@ -1,10 +1,8 @@
 <?
 namespace App\Operations;
-use App\Utils\Dialog;
 
 class RecipeCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
-
   static public function notify(bool $success, string $message) {
     $response = [
       'success' => $success,
@@ -33,9 +31,9 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
       throw new \InvalidArgumentException("Invalid data provided in " . __METHOD__ . ".");
     }
 
-    $validCategories1 = [1, 2, 3];
-    $validCategories2 = [1, 2, 3, 4];
-    $validCategories3 = [1, 2, 3, 4, 5, 6, 7];
+    $validCategories1 = RecipeReadOperation::getCat(1);
+    $validCategories2 = RecipeReadOperation::getCat(2);
+    $validCategories3 = RecipeReadOperation::getCat(3);
 
     if (
       empty($data['name']) || 
@@ -44,9 +42,9 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
       empty($data['preparation_time']) ||
       empty($data['course']) ||
       empty($data['meal']) ||
+      empty($data['method']) ||
       empty($data['directions']) ||
       empty($data['description']) ||
-      empty($data['method']) ||
       empty($data['ingredientComponents'])) {
       throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
     }
@@ -78,22 +76,22 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
     $conn->beginTransaction();
     try{
       // Prepare the SQL query for the recipes table
-      $sql = "INSERT INTO recipes (user_id , name, description, isActive, image_url, preparation_time, 
-                cooking_time, directions, course, meal, method) 
-              values (:name, :description, 1, :image_url, :preparation_time, 
-                :cooking_time, :directions, :course, :meal, :method);";
+      $sql = "INSERT INTO `recipes`(`user_id`, `name`, `description`, `image_url`, `preparation_time`, 
+                          `cooking_time`, `directions`, `course`, `meal`, `method`)
+              values (:user_id, :name , :description, :image_url, :preparation_time, 
+                     :cooking_time, :directions, :course, :meal, :method);";
       
       $params = [
-        'user_id' => $_SESSION['userId'],
-        'name' => $data['name'],
-        'description' => $data['description'],
-        'image_url' => $data['image_url'] ?? "",
-        'preparation_time' => $data['preparation_time'],
-        'cooking_time' => $data['cooking_time'],
-        'directions' => $data['directions'],
-        'course' => $data['course'],
-        'meal' => $data['meal'],
-        'method' => $data['method']
+        ':user_id' => $_SESSION['userId'],
+        ':name' => $data['name'],
+        ':description' => $data['description'],
+        ':image_url' => $data['image_url'],
+        ':preparation_time' => $data['preparation_time'],
+        ':cooking_time' => $data['cooking_time'],
+        ':directions' => $data['directions'],
+        ':course' => $data['course'],
+        ':meal' => $data['meal'],
+        ':method' => $data['method']
       ];
       self::query($sql, 1, $params);
 
@@ -101,18 +99,18 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
       // Prepare the SQL query for the ingredient_recipe table
       $recipeId = $conn->lastInsertId();
 
-      $sql2 = "INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity, measurement_unit) VALUES ";
+      $sql2 = "INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity) VALUES ";
       $values = [];
       foreach ($data['ingredientComponents'] as $component) {
-        $values[] = "($recipeId, {$component['ingredient_id']}, {$component['quantity']}, '{$component['unit']}')";
+        $values[] = "($recipeId, {$component['ingredient_id']}, {$component['quantity']})";
       }
 
 
-    $sql2 .= implode(',', $values); 
-    // execute the query to insert the ingredient_recipe data
-    $conn->exec($sql2);
-    $conn->commit();
-  
+      $sql2 .= implode(',', $values); 
+      // execute the query to insert the ingredient_recipe data
+      $conn->exec($sql2);
+      $conn->commit();
+    
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
