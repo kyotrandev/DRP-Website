@@ -18,13 +18,13 @@
                     <div class="row row-cols-3 text-top g-1 justify-content-center">
                         <div class="col">Menu</div>
                         <div class="col">
-                            <a href="/recipe/breakfast">Breakfast</a>
+                            <a href="/recipe/filter/breakfast">Breakfast</a>
                         </div>
                         <div class="col">
-                            <a href="/recipe/lunch">Lunch</a>
+                            <a href="/recipe/filter/lunch">Lunch</a>
                         </div>
                         <div class="col">
-                            <a href="/recipe/dinner">Dinner</a>
+                            <a href="/recipe/filter/dinner">Dinner</a>
                         </div>
                         <div class="col">Check BMI</div>
                         <div class="col">Ingredient</div>
