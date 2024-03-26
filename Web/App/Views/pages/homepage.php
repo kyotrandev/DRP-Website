@@ -4,7 +4,7 @@
         <div class="container minspace mb-3">
             <div class="content d-flex align-items-start mt-3">
                 <? $mainRecipe = $data[0]; ?>
-                <div class="main-content flex-fill" style="position: sticky; top: 1rem">
+                <div class="main-content flex-fill mb-3" style="position: sticky; top: 1rem">
                     <div class="card" style="width: 45vw;">
                         <a> 
                          <img src="<?php echo ($mainRecipe->getImgUrl()) ? '/Public/uploads/recipes/' . $mainRecipe->getImgUrl() : '/Public/images/image_not_found.png' ?>" 
@@ -42,7 +42,7 @@
 </body>
 <body>
     <div class="aboutus m-3">
-        <div class="container bg mb-3 mt-3">
+        <div class="container bg mb-3">
             <h3 class="p-2 pt-3" >ABOUT TEAM 3</h3>
             <div class="content d-flex flex-column text-center align-items-center flex-md-row text-center text-md-start justify-content-around py-0 px-4 px-xl-5">
                 <div class="mb-md-0 m-3 d-flex align-items-center flex-column">

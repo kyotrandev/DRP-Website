@@ -1,20 +1,7 @@
 <?
 namespace App\Operations;
 
-class IngredientCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation 
-{ 
-  const MSG_UNABLE_TO_VALIDATE_DATA = "Error: something went wrong during validate data - ";
-
-  static public function notify(bool $success, string $message) {
-      $response = [
-        'success' => $success,
-        'message' => $message
-    ];
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    }
-
+class IngredientCreateOperation extends CreateAndUpdateOperation { 
 
   /**
    * Validates the ingredient data with specific rules.
@@ -23,7 +10,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @return void
    * @throws \InvalidArgumentException If the data is invalid.
    */
-  static public function validateData(array $data): void  {
+  static protected function validateData(array $data): void  {
 
     /**
      * Validates the ingredient data and retrieves the valid categories, measurements, and nutrition.
@@ -43,7 +30,7 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 2');
 
     if ($validCategories == null || $validMeasurements == null)
-      throw new \PDOException(self::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". 1");
+      throw new \PDOException(parent::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". 1");
 
     
     // Check if the data is valid
@@ -72,8 +59,8 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
    * @param array $data The data to be saved
    * @throws \PDOException If the data cannot be saved
    */
-  static public function saveToDatabase(array $data) : void {
-    $model = new parent();
+  static protected function saveToDatabase(array $data) : void {
+    $model = new IngredientCreateOperation();
     $conn = $model->DB_CONNECTION;
     
     if ($conn == false) {
@@ -135,20 +122,18 @@ class IngredientCreateOperation extends DatabaseRelatedOperation implements I_Cr
 
 
       // If everything goes well, set success to true and provide a success message
-      self::notify(true, "Ingredient created successfully!");
+      parent::notify(true, "Ingredient created successfully!");
 
-    } catch (\InvalidArgumentException $InvalidArgumentException) {
-      // Handle validation errors
-      handleException($InvalidArgumentException);
-      self::notify(false, "Add ingredient failed caused by: invalid data! Please check your input again!");
+    } catch (\InvalidArgumentException) {
+      parent::notify(false, "Add ingredient failed caused by: invalid data! Please check your input again!");
     } catch (\PDOException $PDOException) {
       // Handle database errors
       handlePDOException($PDOException);
-      self::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
+      parent::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
     } catch (\Throwable $Throwable) {
       // Handle other errors
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
+      parent::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");      
     }
   }
 }

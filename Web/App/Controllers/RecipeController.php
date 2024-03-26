@@ -39,8 +39,6 @@ class RecipeController extends BaseController
     public function addUI()
     {
         $data[] = ValidataRecipeDataHolder::getInstance();
-        
-        $data[] = IngredientReadOperation::getIdAndNameAllObject();
         $this->loadView('recipe.add', $data);
     }
     public function add() {

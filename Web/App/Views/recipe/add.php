@@ -94,9 +94,6 @@
 
     <div id="ingredientComponents"></div>
 
-
-    <div id="ingredientComponents"></div>
-
     <div class="input-group mb-3">
       <label class="input-group-text" for="image">Upload your image</label>
       <input type="file" class="form-control" id="file" name="file">
@@ -173,59 +170,6 @@
         container.remove();
       });
 
-      var unitOptions = [{
-          value: 'tsp',
-          textContent: 'Teaspoon'
-        },
-        {
-          value: 'cup',
-          textContent: 'Cup'
-        },
-        {
-          value: 'tbsp',
-          textContent: 'Tablespoon'
-        },
-        {
-          value: 'g',
-          textContent: 'Gram'
-        },
-        {
-          value: 'lb',
-          textContent: 'Pound'
-        },
-        {
-          value: 'can',
-          textContent: 'Can'
-        },
-        {
-          value: 'oz',
-          textContent: 'Ounce'
-        },
-        {
-          value: 'unit',
-          textContent: 'Unit'
-        }
-      ];
-
-      var unitSelect = document.createElement('select');
-      unitSelect.classList.add('form-select');
-      unitSelect.name = 'unit[]';
-
-      // Add placeholder option
-      var unitPlaceholderOption = document.createElement('option');
-      unitPlaceholderOption.value = '';
-      unitPlaceholderOption.selected = true;
-      unitPlaceholderOption.disabled = true;
-      unitPlaceholderOption.hidden = true;
-      unitPlaceholderOption.textContent = 'Select measurement unit';
-      unitSelect.appendChild(unitPlaceholderOption);
-
-      unitOptions.forEach(function(option) {
-        var unitOption = document.createElement('option');
-        unitOption.value = option.value;
-        unitOption.textContent = option.textContent;
-        unitSelect.appendChild(unitOption);
-      });
 
       // Append select, span, quantity input, and remove button to container
       container.appendChild(legend);
