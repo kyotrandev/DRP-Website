@@ -43,6 +43,7 @@ use App\Controllers\UserController;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-height: 4.5em;
     }
 
     input[type="number"] {

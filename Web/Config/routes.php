@@ -64,6 +64,7 @@ $router->get('/recipe/list','RecipeController@listByName');
 $router->get('/recipe/list-by-category','RecipeController@listByCategory');
 $router->get('/recipe/add','RecipeController@addUI');
 $router->post('/recipe/add','RecipeController@add');
+$router->get('/recipe/filter/{course}', 'RecipeController@tempView');
 
 
 $router->get('/recipe/find-result','RecipeController@findResult');
