@@ -54,7 +54,6 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
    */
   static protected function saveToDatabase(array $data): void
   {
-    var_dump($data);
 
     $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
             cooking_time = :cooking_time, directions = :directions, course = :course, meal = :meal, method = :method " 

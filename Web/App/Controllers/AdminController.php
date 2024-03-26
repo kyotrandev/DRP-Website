@@ -178,12 +178,9 @@ class AdminController extends BaseController
         if ($_FILES['file']['name'] != null){
             $data['image_url'] = UploadImageOperation::process();
         }
-        if (RecipeUpdateOperation::execute($data)) {
-            echo '<script>
-            alert("Update recipes succesful!");
-            window.location.href = "/manager/recipe";
-            </script>';
-        }
+       RecipeUpdateOperation::execute($data);
+         
+        
     }
 
     /*
