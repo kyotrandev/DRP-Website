@@ -9,7 +9,7 @@ use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeUpdateOperation;
 use App\Operations\UploadImageOperation;
 use App\Operations\ValidateIngredientDataHolder;
-
+use App\Operations\ValidataRecipeDataHolder;
 class AdminController extends BaseController
 {
     public function index()
@@ -119,23 +119,26 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $recipes = null;
-        if (isset($_GET['id'])) {
-            $recipes = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
-        } else if (isset($_GET['name'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['name'], true);
-        } else if (isset($_GET['course'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $_GET['course'], true);
-        } else if (isset($_GET['meal'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('meal', $_GET['meal'], true);
-        } else if (isset($_GET['method'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('method', $_GET['method'], true);
-        }
 
-        if (!$recipes) {
-            $recipes = RecipeReadOperation::getAllObjects(true);
-        }
+        if (isset($_GET['recipe_id']) && !empty($_GET['recipe_id'])) {
+            $recipes = RecipeReadOperation::getSingleObjectByIdWithoutIngre($_GET['recipe_id'], true);
+        } else if (isset($_GET['name'])  && !empty($_GET['name'])) {
+            $recipes = RecipeReadOperation::getObjectForSearchingWithoutIngre('recipes.name', $_GET['name'], true);
+        } else if (isset($_GET['course'])  && !empty($_GET['course'])) {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_course_categories.id', $_GET['course'], true);
+        } else if (isset($_GET['meal'])  && !empty($_GET['meal'])) {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_meal_categories.id', $_GET['meal'], true);
+        } else if (isset($_GET['method'])  && !empty($_GET['method'])) {
+            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_method_categories.id', $_GET['method'], true);
+        } else $recipes = RecipeReadOperation::getAllObjectsWithoutIngre(true);
 
-        return $this->loadView('admin.recipe', ['recipes' => $recipes]);
+        $dataHolder['courses'] = RecipeReadOperation::getCat(1);
+        $dataHolder['meals'] = RecipeReadOperation::getCat(2);
+        $dataHolder['methods'] = RecipeReadOperation::getCat(3);
+
+        $dataHolder['recipes'] = $recipes;
+
+        return $this->loadView('admin.recipe', $dataHolder);
     }
 
     public function setRecipeActive()
@@ -144,7 +147,7 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
 
-        $data = $_POST;
+        $data = $_POST; 
         RecipeUpdateOperation::setRecipeActive($data);
 
         header("Location: /manager/recipe");
@@ -155,9 +158,14 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $recipe = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
-        return $this->loadView('admin.recipeUpdate', ['recipe' => $recipe]);
+        $dataHolder['courses'] = RecipeReadOperation::getCat(1);
+        $dataHolder['meals'] = RecipeReadOperation::getCat(2);
+        $dataHolder['methods'] = RecipeReadOperation::getCat(3);
+
+        $dataHolder['recipes'] = $recipe;
+
+        return $this->loadView('admin.recipeUpdate', $dataHolder);
     }
 
     public function recipeManagerUpdate()
@@ -186,22 +194,23 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-       
-        $ingredients = null;
-        
-        if (isset($_GET['s_id'])) {
-            $ingredients = IngredientReadOperation::getSingleObjectById($_GET['s_id'], true);
-        } else if (isset($_GET['s_name'])) {
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name'], true);
-        } else if (isset($_GET['s_category'])){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('category', $_GET['s_category'], true);
-        } else if (isset($_GET['s_measurement_desciption'])){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('measurement_unit', $_GET['s_measurement_desciption'], true);
-        } else if (isset($_GET['s_name'])){
-            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValue('name', $_GET['s_name'], true);
-        } else
-            $ingredients = IngredientReadOperation::getAllObjects(true);
-        return $this->loadView('admin.ingredient', ['ingredients' => $ingredients]);
+
+        $dataHolder['categories'] = IngredientReadOperation::getCat(1);
+        $dataHolder['measurement_unit'] = IngredientReadOperation::getCat(2);
+
+        if (isset($_GET['id']) && !empty($_GET['id'])) {
+            $ingredients = IngredientReadOperation::getSingleObjectByIdWithoutNutri($_GET['id'], true);
+        } else if (isset($_GET['name']) && !empty($_GET['name'])) {
+            $ingredients = IngredientReadOperation::getObjectForSearchingWithoutNutri('ingredients.name', $_GET['name'], true);
+        } else if (isset($_GET['category']) && !empty($_GET['category'])) {
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_categories.id', $_GET['category'], true);
+        } else if (isset($_GET['measurement_unit']) && !empty($_GET['measurement_unit'])){
+            $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_measurement_unit.id', $_GET['measurement_unit'], true);
+        } 
+        if (!isset($ingredients)) $ingredients = IngredientReadOperation::getAllObjects(true);
+        $dataHolder['ingredients'] = $ingredients;
+
+        return $this->loadView('admin.ingredient', $dataHolder);
     }
 
     public function setIngredientActive()

@@ -1,15 +1,17 @@
 <?
-
 namespace App\Operations;
-
-use App\Utils\Dialog;
 
 class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
 {
+  static public function notify(bool $success, string $message) {
+    $response = [
+      'success' => $success,
+      'message' => $message,
+  ];
 
-  static public function notify(string $message): void
-  {
-    Dialog::show($message);
+  header('Content-Type: application/json');
+  // Trả về dữ liệu JSON
+  echo json_encode($response);
   }
 
 
@@ -21,34 +23,36 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
    * @throws \InvalidArgumentException If the data is invalid.
    * @throws \Exception If the data is missing or does not meet the validation rules.
    */
-  static public function validateData(array $data): void
+  static public function validateData(array $data) : void
   {
-    // Validate data2
+    // Validate data
     if ($data == null) {
       throw new \InvalidArgumentException("Invalid data provided in " . __METHOD__ . ".");
     }
 
-    $validCategories1 = ['Breakfast', 'Lunch', 'Dinner'];
-    $validCategories2 = ['Appetizer', 'Main Dish', 'Side Dish', 'Dessert'];
-    $validCategories3 = ['Baked', 'Salad and Salad Dressing', 'Sauce and Condiment', 'Snack', 'Beverage', 'Soup', 'Other'];
+    $validCategories1 = RecipeReadOperation::getCat(1);
+    $validCategories2 = RecipeReadOperation::getCat(2);
+    $validCategories3 = RecipeReadOperation::getCat(3);
+
 
     if (
-      empty($data['name']) || !preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
+      empty($data['name']) || 
+      !preg_match('/^[a-zA-Z0-9\s.,()]+$/', $data['name']) ||
       empty($data['cooking_time']) ||
       empty($data['preparation_time']) ||
       empty($data['course']) ||
       empty($data['meal']) ||
       empty($data['method']) ||
       empty($data['directions']) ||
-      empty($data['description'])
-    ) {
-      throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
+      empty($data['description'])) {
+      throw new \Exception("Invalid data provided in " . __METHOD__ . ". 1");
     }
-    if ((!in_array($data['course'], $validCategories1)) ||
-      (!in_array($data['meal'], $validCategories2)) ||
-      (!in_array($data['method'], $validCategories3))
+
+    if((!in_array($data['course'], array_column($validCategories1, 'id'))) ||
+      (!in_array($data['meal'], array_column($validCategories2, 'id'))) ||
+      (!in_array($data['method'],array_column($validCategories3, 'id')))
     ) {
-      throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
+      throw new \Exception("Invalid data provided in " . __METHOD__ . ". 2");
     }
   }
 
@@ -62,74 +66,67 @@ class RecipeUpdateOperation extends DatabaseRelatedOperation implements I_Create
    */
   static public function saveToDatabase(array $data): void
   {
-    $model = new static();
-    $conn = $model->DB_CONNECTION;
-    if ($conn == false) {
-      throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
-    }
+    var_dump($data);
 
-    if (isset($data['image_url'])) {
-      $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-              cooking_time = :cooking_time, directions = :directions, image_url = :image_url,
-              course = :course, meal = :meal, method = :method where id = :id";
-      self::query($sql, 1, [
-        'id' => $data['id'],
-        'name' => $data['name'],
-        'description' => $data['description'],
-        'preparation_time' => $data['preparation_time'],
-        'cooking_time' => $data['cooking_time'],
-        'image_url' => $data['image_url'],
-        'directions' => $data['directions'],
-        'course' => $data['course'],
-        'meal' => $data['meal'],
-        'method' => $data['method']
-      ]);
-    } else {
-      $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
-              cooking_time = :cooking_time, directions = :directions, 
-              course = :course, meal = :meal, method = :method where id = :id";
-
-      self::query($sql,1, [
-        'id' => $data['id'],
-        'name' => $data['name'],
-        'description' => $data['description'],
-        'preparation_time' => $data['preparation_time'],
-        'cooking_time' => $data['cooking_time'],
-        'directions' => $data['directions'],
-        'course' => $data['course'],
-        'meal' => $data['meal'],
-        'method' => $data['method']
-      ]);
+    $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
+            cooking_time = :cooking_time, directions = :directions, course = :course, meal = :meal, method = :method " 
+            . (isset($data['image_url']) && !empty($data['image_url']) ? ", image_url = :image_url" : "") . " where recipes.recipe_id = :id";
+    $params = [
+      ':id' => $data['id'],
+      ':name' => $data['name'],
+      ':cooking_time' => $data['cooking_time'],
+      ':preparation_time' => $data['preparation_time'],
+      ':description' => $data['description'],
+      ':directions' => $data['directions'],
+      ':course' => $data['course'],
+      ':meal' => $data['meal'],
+      ':method' => $data['method']
+    ];
+    if (isset($data['image_url']) && !empty($data['image_url'])) {
+      $params[':image_url'] = $data['image_url'];
     }
+    self::query($sql, 1, $params);
   }
 
 
   /**
-   * Executes the recipe update operation.
+   * Execute the operation
    *
-   * This method validates the provided data, saves it to the database, and notifies the user about the result.
-   *
-   * @param array $data The data to update the recipe.
-   * @return bool Returns true if the recipe update was successful, false otherwise.
+   * @param array $data The data to be used in the operation
+   * @return bool True if the operation was successful, false otherwise
    */
-  static public function execute($data): bool {
+  static public function execute(array  $data) : void{
     try {
+      /**
+       * Validate the data before saving to the database
+       */
       self::validateData($data);
-    } catch (\InvalidArgumentException $InvalidArgumentException) {
-      handleException($InvalidArgumentException);
-      self::notify("Update recipe failed casued by: " . htmlspecialchars($InvalidArgumentException->getMessage()));
-      header("Location: /manager/recipe/update?id=" . $data['id']);
-    }
-    try {
-      self::saveToDatabase($data);
-    } catch (\PDOException $PDOException) {
-      handlePDOException($PDOException);
-      self::notify("Update recipe failed casued by: " . htmlspecialchars($PDOException->getMessage()));
-      header("Location: /manager/recipe/update?id=" . $data['id']);
-    }
 
-    self::notify("Update recipe successfully! ");
-    return true;
+      /**
+       * Saving data to the database process
+       */
+      self::saveToDatabase($data);
+
+      // If everything goes well, set success to true and provide a success message
+      
+      self::notify(true, "Recipe updated successfully!");
+    } catch (\InvalidArgumentException $InvalidArgumentException) {
+      // Handle validation errors
+      handleException($InvalidArgumentException);
+      self::notify(false, "Update recipe failed caused by: invalid input. Please check your input again!");
+    } catch (\PDOException $PDOException) {
+      // Handle database errors
+      handlePDOException($PDOException);
+      self::notify(false, "Update recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");
+    } catch (\Exception $Exception) {
+      // Handle other exceptions
+      handleException($Exception);
+      self::notify(false, "Update recipe failed caused by: invalid data!. Please check the data and try again!");
+    } catch (\Throwable $Throwable) {
+      // Handle other errors
+      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
+      self::notify(false, "Update recipe failed caused by an unknown error!. We are sorry for the inconvenience!");      
+    }
   }
 
   public static function setRecipeActive($data){

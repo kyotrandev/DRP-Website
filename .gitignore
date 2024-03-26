@@ -6,4 +6,5 @@
 /Web/Journal/errors.log
 /Web/Journal/exceptions.log
 /Web/Journal/fatal-errors.log
+/Web/Journal/mysql/*.log
 /Web/App/Views/test.php

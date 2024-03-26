@@ -36,14 +36,18 @@ class DatabaseRelatedOperation {
     
     $stmt = $conn->prepare($sql);
     
-    if (!empty($params))
-      foreach ($params as $key => $value)
-        if(is_numeric($value))
+    if (!empty($params)) 
+      foreach ($params as $key => $value) {
+        if (is_numeric($value)) 
           $stmt->bindValue($key, $value, \PDO::PARAM_INT);
-        else
+         else 
           $stmt->bindValue($key, $value, \PDO::PARAM_STR);
+      }
+      
 
-    $stmt->execute();
+    if (!$stmt->execute()) {
+      throw new \PDOException(self::MSG_EXECUTE_PDO_LOG . __METHOD__ . '. ');
+    }
 
     if ($stmt->rowCount() > 0){
       switch($fetchMode){
@@ -100,10 +104,7 @@ class DatabaseRelatedOperation {
 
     if (!empty($params))
       foreach ($params as $key => $value)
-        if(is_numeric($value))
-          $stmt->bindValue($key, $value, \PDO::PARAM_INT);
-        else
-          $stmt->bindValue($key, $value, \PDO::PARAM_STR);
+          $stmt->bindValue($key, $value);
 
     $stmt->execute();
     

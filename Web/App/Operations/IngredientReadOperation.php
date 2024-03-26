@@ -12,18 +12,14 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
                           LEFT JOIN ingredient_measurement_unit ON ingredients.measurement_unit = ingredient_measurement_unit.id ";
   const getSingleObjectById = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id AND ingredients.isActive = 1";
   const getSingleObjectByIdIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE ingredients.id = :id";
-  const getAllObjectsByFieldAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value AND ingredients.isActive = 1";
-  const getAllObjectsByFieldAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value";
   const getObjectsWithOffset = self::BASE_SQL_QUERY . "WHERE ingredients.isActive = 1 limit :limit offset :offset ";
   const getObjectsWithOffsetIgnoreActiveMode = self::BASE_SQL_QUERY . " limit :limit offset :offset";
-  const getObjectWithOffsetByFielAndValue = self::BASE_SQL_QUERY . " WHERE :name = :value AND ingredients.isActive = 1 limit :limit offset :offset ";
-  const getObjectWithOffsetByFielAndValueIgnoreActiveMode = self::BASE_SQL_QUERY . " WHERE :name = :value limit :limit offset :offset";
   
 
   /**
    * Retrieves the nutrition information for a specific ingredient.
    *
-   * @param int $id The ID of the ingredient.
+   * @param $id The ID of the ingredient.
    * @throws \PDOException If there is an error connecting to the database.
    * @throws \Exception If there is an error executing the SQL statement.
    */
@@ -64,12 +60,13 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves a single IngredientModel object by its ID.
    *
-   * @param int $id The ID of the ingredient to retrieve.
+   * @param $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurred.
    */
-  static public function getSingleObjectById(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
+  static public function getSingleObjectById($id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
       $sql = ($ignoreActiveStatus) ? self::getSingleObjectByIdIgnoreActiveMode : self::getSingleObjectById;
+
       return self::getSingleObject($sql, true, [':id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -86,10 +83,10 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves a single IngredientModel object by its ID without including nutritional information.
    *
-   * @param int $id The ID of the ingredient to retrieve.
+   * @param $id The ID of the ingredient to retrieve.
    * @return IngredientModel|null The retrieved IngredientModel object, or null if an error occurs.
    */
-  static public function getSingleObjectByIdWithoutNutri(int $id, bool $ignoreActiveStatus = false) : null|IngredientModel{
+  static public function getSingleObjectByIdWithoutNutri($id, bool $ignoreActiveStatus = false) : null|IngredientModel{
     try {
       $sql = ($ignoreActiveStatus) ? self::getSingleObjectByIdIgnoreActiveMode : self::getSingleObjectById;
       return self::getSingleObject($sql, false, [':id' => $id]);
@@ -225,15 +222,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves all objects from the database table based on a specified column name and value.
    *
-   * @param string $columnName The name of the column to search for.
+   * @param string $fieldName The name of the column to search for.
    * @param mixed $value The value to match in the specified column.
    * @return array|null An array of objects matching the specified column name and value, or null if an error occurred.
    */
-  static public function getAllObjectsByFieldAndValue(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
+  static public function getAllObjectsByFieldAndValue(string $fieldName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName = :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");
 
-      $sql = ($ignoreActiveStatus) ? self::getAllObjectsByFieldAndValueIgnoreActiveMode : self::getAllObjectsByFieldAndValue;
-      return self::getMultipleObject($sql, true, [':name' => $columnName, ':value' => $value]);
+      return self::getMultipleObject($sql, true, [':value' => $value]);
 
     } catch (\PDOException $exception) {
       handleException($exception);
@@ -250,14 +247,15 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves all ingredients without nutri info from the database table based on a specified column name and value.
    *
-   * @param string $columnName The name of the column to search for.
+   * @param string $fieldName The name of the column to search for.
    * @param mixed $value The value to match in the specified column.
    * @return array|null An array of objects matching the specified column name and value, or null if an error occurred.
    */
-  static public function getAllObjectsByFieldAndValueWithoutNutri(string $columnName, $value, bool $ignoreActiveStatus = false) : ?array {
+  static public function getAllObjectsByFieldAndValueWithoutNutri(string $fieldName, $value, bool $ignoreActiveStatus = false) : ?array {
     try {
-      $sql = ($ignoreActiveStatus) ? self::getAllObjectsByFieldAndValueIgnoreActiveMode : self::getAllObjectsByFieldAndValue;
-      return self::getMultipleObject($sql, false, [':name' => $columnName, ':value' => $value]);
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName = :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");
+
+      return self::getMultipleObject($sql, false, [':value' => $value]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -273,19 +271,21 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves an array of objects with a specified offset, field, and value.
    *
-   * @param string $name The name of the field to search for.
+   * @param string $fieldName The name of the field to search for.
    * @param mixed $value The value to search for in the specified field.
    * @param int $offset The starting offset for retrieving the objects. Default is 0.
    * @param int|null $limit The maximum number of objects to retrieve. Default is null, which retrieves 5 objects.
    * @return array|null An array of objects matching the specified field and value, or null if an error occurs.
    */
-  static public function getObjectWithOffsetByFielAndValue(string $name, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus= false) : ?array{
+  static public function getObjectWithOffsetByFielAndValue(string $fieldName, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus= false) : ?array{
    try{
       if ($limit === null) {
         $limit = $offset + 5;
       }
-      $sql = ($ignoreActiveStatus) ? self::getObjectWithOffsetByFielAndValueIgnoreActiveMode : self::getObjectWithOffsetByFielAndValue;
-      return self::getMultipleObject($sql, true, [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName = :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1 ") . " limit :limit offset :offset ";
+ 
+      return self::getMultipleObject($sql, true, [':value' => $value, ':offset' => $offset, ':limit' => $limit]);
     } catch (\PDOException $exception) {
       handleException($exception);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -301,19 +301,19 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
   /**
    * Retrieves an array of ingredient without nutri info with a specified offset, field, and value.
    *
-   * @param string $name The name of the field to search for.
+   * @param string $fieldName The name of the field to search for.
    * @param mixed $value The value to search for in the specified field.
    * @param int $offset The starting offset for retrieving the objects. Default is 0.
    * @param int|null $limit The maximum number of objects to retrieve. Default is null, which retrieves 5 objects.
    * @return array|null An array of objects matching the specified field and value, or null if an error occurs.
    */
-  static public function getObjectWithOffsetByFielAndValueWithoutNutri(string $name, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus=false) : ?array{
+  static public function getObjectWithOffsetByFielAndValueWithoutNutri(string $fieldName, $value, int $offset = 0, int $limit = null, bool $ignoreActiveStatus=false) : ?array{
     try{
       if ($limit === null) 
         $limit = $offset + 5;
 
-      $sql = ($ignoreActiveStatus) ? self::getObjectWithOffsetByFielAndValueIgnoreActiveMode : self::getObjectWithOffsetByFielAndValue;
-      return self::getMultipleObject($sql, false, [':name' => $name, ':value' => $value, ':offset' => $offset, ':limit' => $limit]);
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName = :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1 ") . " limit :limit offset :offset ";
+      return self::getMultipleObject($sql, false, [':value' => $value, ':offset' => $offset, ':limit' => $limit]);
 
     } catch (\PDOException $exception) {
       handleException($exception);
@@ -326,6 +326,53 @@ class IngredientReadOperation extends DatabaseRelatedOperation implements I_Read
     }
   }
  
+  /**
+   * Returns an array of objects for searching based on the specified field name and value.
+   *
+   * @param string $fieldName The name of the field to search.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of ingredients. Defaults to false.
+   * @return array|null An array of objects matching the search criteria, or null if an error occurs.
+   */
+  static public function getObjectForSearching(string $fieldName, $value, $ignoreActiveStatus = false) {
+    try {
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");
+      return self::getMultipleObject($sql, true, [':value' => "%$value%"]);
+    } catch (\PDOException $exception) {
+      handleException($exception);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
+
+
+
+  /**
+   * Retrieves objects for searching without considering nutritional information.
+   *
+   * @param string $fieldName The name of the field to search in.
+   * @param mixed $value The value to search for.
+   * @param bool $ignoreActiveStatus (optional) Whether to ignore the active status of ingredients. Defaults to false.
+   * @return array|null An array of objects matching the search criteria, or null if an error occurred.
+   */
+  static public function getObjectForSearchingWithoutNutri(string $fieldName, $value, $ignoreActiveStatus = false) {
+    try {
+      $sql = self::BASE_SQL_QUERY . " WHERE $fieldName LIKE :value " . (($ignoreActiveStatus) ? "" : " AND ingredients.isActive = 1");
+      return self::getMultipleObject($sql, false, [':value' => "%$value%"]);
+    } catch (\PDOException $exception) {
+      handleException($exception);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
+  }
 
   /**
    * Retrieves the ID and name of all ingredients from the database.

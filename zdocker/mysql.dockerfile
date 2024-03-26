@@ -9,11 +9,18 @@ ENV MYSQL_DATABASE=ct07_db \
     MYSQL_ALLOW_EMPTY_PASSWORD=yes \
     TZ=Asia/Ho_Chi_Minh  
 
+RUN microdnf install -y vim
+
+
+# Configure MySQL to log to a specific directory
+RUN mkdir -p /var/log/mysql
+RUN touch /var/log/mysql/mysql.log
+RUN chown -R mysql:mysql /var/log/mysql && chmod -R 666 /var/log/mysql
+
 # # Copy the data.sql file to the Docker container
 COPY ./Data/dump/*.sql /docker-entrypoint-initdb.d/
+# Set permissions to make sure the script is executable
+RUN chmod +x /docker-entrypoint-initdb.d/*.sql
 
 # Expose MySQL port
 EXPOSE 3306
-
-# Set permissions to make sure the script is executable
-RUN chmod +x /docker-entrypoint-initdb.d/*.sql
