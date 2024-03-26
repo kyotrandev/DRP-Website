@@ -169,10 +169,10 @@ use App\Controllers\UserController;
           // Nếu đã đăng nhập, hiển thị nút logout và account
         ?>
           <div class="d-flex align-items-center">
-            <div class="btn-group dropstart">
               <div class="btn-group dropstart">
-                <img src="/Public/images/account.png" id="user" class="rounded-circle me-3 account hide"  data-bs-toggle="dropdown" aria-expanded="false" height="30" alt="account" style="cursor: pointer;" />
-                <ul class="dropdown-menu">
+                <img src="/Public/images/account.png" id="user" class="rounded-circle me-3 account"  data-bs-toggle="dropdown" 
+                  aria-expanded="false" height="30" alt="account" style="cursor: pointer;" />
+                <ul class="dropdown-menu dropdown-menu-start">
                 <?php 
                     if (UserController::isContributer()) :
                   ?>

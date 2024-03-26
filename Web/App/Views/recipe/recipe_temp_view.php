@@ -16,7 +16,7 @@
     <div class="header-space"></div>
     <div class="container">
         <h3 class="row justify-content-center">Recipe for <?= $recipes[0]->getCourse() ?></h3>
-        <div class="row justify-content-start row-cols-4 mb-5">
+        <div class="row justify-content-start row-cols-4 mb-5" id="recipeContainer">
             <?foreach($recipes as $recipe):?>
             <div class="card col" style="width: 22.5%; margin: 1rem 1.25%; cursor: pointer; padding: 0">
                 <img src="<?=$recipe->getImgUrl() ? "/Public/uploads/recipes/" . $recipe->getImgUrl() : "/Public/images/image_not_found.png"; ?>" 
@@ -39,6 +39,16 @@
     </div>
     <script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>
     <script src="/Public/js/ajax-recipes.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#recipeContainer').on('click', '.card', function() {
+                // Lấy dữ liệu từ thuộc tính data-details của thẻ card được bấm vào
+                var recipeId = <?= json_encode($recipe->getId()) ?>;
+
+                window.location.href = "/recipe/detail?id=" + recipeId;
+            }); 
+        });
+    </script>
 </html>
 
 

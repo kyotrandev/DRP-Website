@@ -1,6 +1,6 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/header.php'); ?>
 
-<div class="recipe_detail">
+<div class="recipe_detail mb-3">
     <div class="container mt-3" style="width:50%">
         <div class="row p-3 mb-3" style="background-color: white; border-radius: 4px;">
             <div class="d-flex flex-wrap flex-column justify-content-center" style="width: 100%;">
