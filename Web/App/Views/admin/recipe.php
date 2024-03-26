@@ -67,13 +67,13 @@
                     <td>
                         <div class="row g-1">
                             <? if ($recipe->getActive()): ?>
-                                <form class="col-auto" action="/manager/recipe" method="POST">
+                                <form class="set-active-form col-auto">
                                     <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
                                     <input type="hidden" name="isActive" value="0">
                                     <button class="btn btn-danger" type="submit">Not Active</button>
                                 </form>
                             <? else: ?>
-                                <form class="col-auto" action="/manager/recipe" method="POST">
+                                <form class="set-active-form col-auto">
                                     <input type="hidden" name="id" value="<?= $recipe->getId() ?>">
                                     <input type="hidden" name="isActive" value="1">
                                     <button class="btn btn-success" type="submit">Active</button>
@@ -91,9 +91,12 @@
         <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button" style="width: 10%;">Back</a>
     </div>
 </div>
-</div>
+
 <? require ($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php") ?>
+
 <!-- Import Lib for DataTable -->
 <script src="/Public/js/libs/jquery/jquery-1.11.1.js"></script>
 <script src="/Public/js/libs/jquery/dataTables.min.js"></script>
-<script src="/Public/js/recipes-manager.js"></script>
+<script src="/Public/js/recipes-manager.js"></script> 
+
+

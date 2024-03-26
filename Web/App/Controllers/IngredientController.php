@@ -61,7 +61,6 @@ class IngredientController extends BaseController
     public function edit() {
         $data = $_POST;
         IngredientUpdateOperation::execute($data);
-        header("Location: /ingredient/edit");
     }
 
     public function test() {

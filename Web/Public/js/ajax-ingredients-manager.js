@@ -60,6 +60,7 @@ function changePage(page) {
   getIngredient(page);
 }
 
+// Đổi trang thái cho active button
 $(document).on('submit', '.set-active-form', function (event) {
   event.preventDefault();
 

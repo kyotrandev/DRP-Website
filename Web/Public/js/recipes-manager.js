@@ -32,30 +32,33 @@ $(document).ready(function () {
 });
 
 
+// Đổi trang thái cho active button
 $(document).on('submit', '.set-active-form', function (event) {
     event.preventDefault();
-
+  
     var formData = $(this).serialize();
+  
     var button = $(this).find('button[type="submit"]'); // Get the button element
-
+  
     $.ajax({
-        type: 'POST',
-        url: '/manager/recipe',
-        data: formData,
-        dataType: 'json',
-        success: function (response) {
-            if (response.success) {
-                alert(response.message);
-                button.toggleClass('btn-danger btn-success');
-
-                var buttonText = button.hasClass('btn-danger') ? 'Deactivate' : 'Activate';
-                button.text(buttonText);
-            } else {
-                alert(response.message);
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error(error);
+      type: 'POST',
+      url: '/manager/recipe',
+      data: formData,
+      dataType: 'json',
+      success: function (response) {
+        if (response.success) {
+          alert(response.message);
+          button.toggleClass('btn-danger btn-success');
+  
+          var buttonText = button.hasClass('btn-danger') ? 'Deactivate' : 'Activate';
+          button.text(buttonText);
+        } else {
+          alert(response.message);
         }
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+      }
     });
-});
+  });
+  

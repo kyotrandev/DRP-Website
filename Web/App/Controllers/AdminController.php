@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientUpdateOperation;
+use App\Operations\IngredientDeleteOperation;
 use App\Operations\UserOperation;
 use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeUpdateOperation;
@@ -146,11 +147,9 @@ class AdminController extends BaseController
         if (!$this->isAdmin()) {
             return parent::loadError('404');
         }
-
         $data = $_POST; 
         RecipeUpdateOperation::setRecipeActive($data);
-
-        header("Location: /manager/recipe");
+        
     }
 
     public function recipeManagerUpdateUI()
@@ -235,5 +234,11 @@ class AdminController extends BaseController
         }
         $data = $_POST;
         IngredientUpdateOperation::execute($data);
+    }
+
+    public function ingredientManagerDelete() {
+        $data = $_POST;
+        IngredientDeleteOperation::deleteById($data);
+
     }
 }

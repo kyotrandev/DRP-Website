@@ -40,6 +40,7 @@ $router->get('/manager/ingredient', 'AdminController@ingredientManager');
 $router->post('/manager/ingredient', 'AdminController@setIngredientActive');
 $router->get('/manager/ingredient/update', 'AdminController@ingredientManagerUpdateUI');
 $router->post('/manager/ingredient/update', 'AdminController@ingredientManagerUpdate');
+$router->post('/manager/ingredient/delete', 'AdminController@ingredientManagerDelete');
 
 // ingredient router
 $router->get('/ingredient','IngredientController@index');
