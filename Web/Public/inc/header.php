@@ -43,6 +43,7 @@ use App\Controllers\UserController;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-height: 4.5em;
     }
 
     input[type="number"] {
@@ -168,10 +169,10 @@ use App\Controllers\UserController;
           // Nếu đã đăng nhập, hiển thị nút logout và account
         ?>
           <div class="d-flex align-items-center">
-            <div class="btn-group dropstart">
               <div class="btn-group dropstart">
-                <img src="/Public/images/account.png" id="user" class="rounded-circle me-3 account hide"  data-bs-toggle="dropdown" aria-expanded="false" height="30" alt="account" style="cursor: pointer;" />
-                <ul class="dropdown-menu">
+                <img src="/Public/images/account.png" id="user" class="rounded-circle me-3 account"  data-bs-toggle="dropdown" 
+                  aria-expanded="false" height="30" alt="account" style="cursor: pointer;" />
+                <ul class="dropdown-menu dropdown-menu-start">
                 <?php 
                     if (UserController::isContributer()) :
                   ?>
@@ -181,7 +182,7 @@ use App\Controllers\UserController;
                     <li><a class="dropdown-item" href="/manager/ingredient">Manage ingredient<i class="fa-regular fa-plus"></i></a></li>
                     <?elseif (UserController::isAdmin()) : 
                   ?>
-                    <li><a class="dropdown-item" href="/manager/recipe">Manage user<i class="fa-regular fa-plus"></i></a></li>
+                    <li><a class="dropdown-item" href="/manager/user">Manage user<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager/recipe">Manage recipe<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager/ingredient">Manage ingredient<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager">Admin page<i class="fa-regular fa-plus"></i></a></li>

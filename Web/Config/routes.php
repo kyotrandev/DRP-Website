@@ -40,6 +40,7 @@ $router->get('/manager/ingredient', 'AdminController@ingredientManager');
 $router->post('/manager/ingredient', 'AdminController@setIngredientActive');
 $router->get('/manager/ingredient/update', 'AdminController@ingredientManagerUpdateUI');
 $router->post('/manager/ingredient/update', 'AdminController@ingredientManagerUpdate');
+$router->post('/manager/ingredient/delete', 'AdminController@ingredientManagerDelete');
 
 // ingredient router
 $router->get('/ingredient','IngredientController@index');
@@ -58,11 +59,13 @@ $router->get('/ingredient/delete','IngredientController@delete');
 
 $router->get('/recipe','RecipeController@index');
 $router->get('/recipes/{page}','PaginationController@getRecipes');
+$router->get('/recipes-all/{page}','PaginationController@getAllRecipes');
 $router->get('/recipe/find-by-id','RecipeController@findByID');
 $router->get('/recipe/list','RecipeController@listByName');
 $router->get('/recipe/list-by-category','RecipeController@listByCategory');
 $router->get('/recipe/add','RecipeController@addUI');
 $router->post('/recipe/add','RecipeController@add');
+$router->get('/recipe/filter/{course}', 'RecipeController@tempView');
 
 
 $router->get('/recipe/find-result','RecipeController@findResult');
