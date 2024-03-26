@@ -1,8 +1,10 @@
 <?
 namespace App\Operations;
+use App\Utils\RedisCache;
 
 class RecipeUpdateOperation extends CreateAndUpdateOperation {
 
+  static private RedisCache $RedisCache;
   /**
    * Validates the recipe data with specific rules.
    *
@@ -54,8 +56,6 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
    */
   static protected function saveToDatabase(array $data): void
   {
-    var_dump($data);
-
     $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
             cooking_time = :cooking_time, directions = :directions, course = :course, meal = :meal, method = :method " 
             . (isset($data['image_url']) && !empty($data['image_url']) ? ", image_url = :image_url" : "") . " where recipes.recipe_id = :id";
@@ -74,6 +74,10 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
       $params[':image_url'] = $data['image_url'];
     }
     self::query($sql, 1, $params);
+    if (!isset(self::$RedisCache)) {
+      self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+    }
+    self::$RedisCache->delete('recipe_' . $data['id']. '_with_ingre');
   }
 
 

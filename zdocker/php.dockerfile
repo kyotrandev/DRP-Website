@@ -10,14 +10,15 @@ RUN a2enmod rewrite
 # Install necessary system dependencies
 RUN apt-get update \
     && apt-get install -y \
+        unzip \
         libzip-dev \
         vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mysqli zip \
+RUN docker-php-ext-install pdo pdo_mysql zip \
     && pecl install redis \
-    && docker-php-ext-enable redis pdo pdo_mysql mysqli
+    && docker-php-ext-enable redis pdo pdo_mysql
 
 # Grant permission to apache user to write to the uploads directory
 RUN mkdir -p /var/www/html/Public/uploads 

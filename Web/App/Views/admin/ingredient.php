@@ -26,7 +26,12 @@
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
                         </div>
                         <div class="col-2">
-                            <input type="text" class="form-control" id="measurement_desciption" name="measurement_desciption" placeholder="Measurement unit...">
+                            <select class="form-select" id="category" name="category" aria-label="Select meal type">
+                                <option value="" selected disabled hidden>Select category</option>
+                                <? foreach($data['categories'] as $category):  ?>
+                                <option value="<?=$category['id']?>"><?=$category['detail']?></option>
+                                <? endforeach;?>
+                            </select>                       
                         </div>
                         <div class="col-2">
                             <select class="form-select" id="measurement_unit" name="measurement_unit" aria-label="Select meal type">
