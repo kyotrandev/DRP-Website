@@ -2,13 +2,16 @@
 namespace App\Controllers;
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientCreateOperation;
+use App\Operations\IngredientDeleteOperation;
 use App\Operations\IngredientUpdateOperation;
 use App\Operations\ValidateIngredientDataHolder;
 
 class IngredientController extends BaseController
 {
     public function index() {
-        return $this->loadView('ingredient.index');
+        IngredientDeleteOperation::deleteById(378);
+        die();
+        // return $this->loadView('ingredient.index');
     }
     public function listByCategory() {
         $category = $_GET['category'];

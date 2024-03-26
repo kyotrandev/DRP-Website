@@ -10,8 +10,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/Config/general_config.php");
 
 set_error_handler('handleError');
 set_exception_handler('handleException');
-register_shutdown_function('handleFatalError');
-
 function handleError(int $errno, string $errstr, string $errfile, int $errline)
 {
   $errorType = getErrorType($errno);
@@ -49,19 +47,6 @@ function handlePDOException($exception)
   Logger::logError(DB_RELATED_LOG, "Uncaught Exception: " . $exception->getMessage() . "\nCall Stack:\n$backtrace");
 
   // Don't halt the script execution
-  return true;
-}
-function handleFatalError()
-{
-  $lastError = error_get_last();
-  if ($lastError && $lastError['type'] === E_ERROR) {
-    $errno = $lastError['type'] ?? 'UNKNOWN';
-    $errstr = $lastError['message'] ?? 'UNKNOWN';
-    $errfile = $lastError['file'] ?? 'UNKNOWN';
-    $errline = $lastError['line'] ?? 'UNKNOWN';
-    $errorType = getErrorType($errno);
-    Logger::logError(FATAL_ERROR_LOG, "$errorType: [$errno] $errstr - $errfile:$errline");
-  }
   return true;
 }
 function getErrorType($errno)
