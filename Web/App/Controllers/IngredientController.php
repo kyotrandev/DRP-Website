@@ -9,9 +9,7 @@ use App\Operations\ValidateIngredientDataHolder;
 class IngredientController extends BaseController
 {
     public function index() {
-        IngredientDeleteOperation::deleteById(378);
-        die();
-        // return $this->loadView('ingredient.index');
+        return $this->loadView('ingredient.index');
     }
     public function listByCategory() {
         $category = $_GET['category'];
