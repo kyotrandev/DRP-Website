@@ -26,8 +26,12 @@
                         <div class="col">
                             <a href="/recipe/filter/dinner">Dinner</a>
                         </div>
-                        <div class="col">Check BMI</div>
-                        <div class="col">Ingredient</div>
+                        <div class="col">
+                            <a href="/check-bmi" target="blank">Check BMI</a>
+                        </div>
+                        <div class="col">
+                           <a href="/ingredient">Ingredient</a>
+                        </div>
                     </div>
                 </div>
 
