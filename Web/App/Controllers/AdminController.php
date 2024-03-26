@@ -238,7 +238,6 @@ class AdminController extends BaseController
 
     public function ingredientManagerDelete() {
         $data = $_POST;
-        IngredientDeleteOperation::deleteById($data);
-
+        IngredientDeleteOperation::deleteById($data['id']);
     }
 }
