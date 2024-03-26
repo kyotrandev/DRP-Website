@@ -1,4 +1,5 @@
-<? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php")?>
+<?php require ($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/header.php") ?>
+
 
 <div class="container-fluid py-5" style="width: 100%;">
     <div class="text-center">
@@ -25,12 +26,7 @@
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name...">
                         </div>
                         <div class="col-2">
-                            <select class="form-select" id="category" name="category" aria-label="Select meal type">
-                                <option value="" selected disabled hidden>Select ingredient category</option>
-                                <? foreach($data['categories'] as $category):  ?>
-                                <option value="<?=$category['id']?>"><?=$category['detail']?></option>
-                                <? endforeach;?>
-                            </select>                       
+                            <input type="text" class="form-control" id="measurement_desciption" name="measurement_desciption" placeholder="Measurement unit...">
                         </div>
                         <div class="col-2">
                             <select class="form-select" id="measurement_unit" name="measurement_unit" aria-label="Select meal type">
@@ -43,8 +39,8 @@
                         <div class="col-auto">
                             <button class="btn btn-success" name="search" type="submit">Search</button>
                         </div>
-                        <div class="col-auto"> 
-                            <a href="/ingredient/add" class="btn btn-success" tabindex="-1" role="button">Add new ingredient</a>                        
+                        <div class="col-auto">
+                            <a href="/ingredient/add" class="btn btn-success" tabindex="-1" role="button">Add new ingredient</a>
                         </div>
                     </form>
                 </div>
@@ -61,85 +57,22 @@
                             <th scope="col" class="col-2">Measurement unit</th>
                             <th scope="col" class="col-3">Actions</th>
                         </tr>
-                        <?php $count = 0; 
-                        if(!is_array($ingredients)){
-                            $ingredients = [$ingredients];
-                        }
-                        foreach ($ingredients as $ingredient): 
-                            $count++;
-                            if ($count > 10):
-                                break;
-                            endif;?>
-                            <tr>
-                                <td><?= $ingredient->getId()?></td>
-                                <td><?= $ingredient->getName()?></td>
-                                <td><?= $ingredient->getCategory()?></td>
-                                <td><?= $ingredient->getMeasurementUnit()?></td>
-                                <!-- <td style="display: flex; justify-content: space-between;"> -->
-                                <td>
-                                    <form class="set-active-form d-inline-block">
-                                        <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
-                                        <input type="hidden" name="isActive" value="<?= $ingredient->getActive() ^ 1?>">
-                                        <button class="btn <?=$ingredient->getActive() ? 'btn-danger' : 'btn-success' ?>" style="width: 120px" type="submit">
-                                            <?= $ingredient->getActive() ? 'Deactivate' : 'Activate' ?>
-                                        </button>
-                                    </form>
-
-                                    <form class="d-inline-block" action="">
-                                            <input type="hidden" name="id" value="<?= $ingredient->getId() ?>">
-                                            <button class="btn btn-danger" type="submid">Delete</button>
-                                    </form>
-                                    <a href="/manager/ingredient/update?id=<?= $ingredient->getId() ?>" class="btn btn-secondary d-inline-block" role="button">Edit</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                        <tbody class="ingredientTableBody">
+                            <!-- Dữ liệu được load trong file ajax-ingredients -->
+                        </tbody>
                     </table>
+                    <div class="row">
+                        <div id="pagination" class="row justify-content-center mt-3"></div>
+                    </div>
                 </div>
-
             </div>
-
- 
         </div>
     </div>
-    <div class="d-md-flex justify-content-center py-3" >
-        <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button" style="width: 10%;">Back</a>
-    </div>
+
 </div>
-
-<script src="/Public/js/validate-signup.js"></script>
-<script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>    
-<script>
-$(document).ready(function() {
-$('.set-active-form').submit(function(event) {
-    event.preventDefault();
-
-    var formData = $(this).serialize();
-
-    var button = $(this).find('button[type="submit"]'); // Get the button element
-
-    $.ajax({
-    type: 'POST',
-    url: '/manager/ingredient',
-    data: formData,
-    dataType: 'json',
-    success: function(response) {
-        if (response.success) {
-        alert(response.message);
-        button.toggleClass('btn-danger btn-success');
-        
-        var buttonText = button.hasClass('btn-danger') ? 'Deactivate' : 'Activate';
-        button.text(buttonText);
-        } else {
-        alert(response.message);
-        }
-    },
-    error: function(xhr, status, error) {
-        console.error(error);
-    }
-    });
-});
-});
-</script> 
+<script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>
+<script src="/Public/js/ajax-ingredients-manager.js"></script>
+<script src="/Public/js/show-pagination.js"></script>
 
 
-<? require($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php")?>     
+<? require ($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php") ?>
