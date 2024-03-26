@@ -70,10 +70,12 @@
 
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary">Primary</button>
+    <button type="submit" class="btn btn-primary">Add</button>
   </div>
-
 </form>
+<div class="d-md-flex justify-content-center py-3 mb-5">
+        <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button" style="width: 10%;">Back</a>
+    </div>
 <!-- Include jQuery library -->
 <script src="/Public/js/libs/jquery/jquery-3.5.1.min.js"></script>
  <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script> 

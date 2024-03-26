@@ -117,6 +117,9 @@
     </div>
   </form>
 
+  <div class="d-md-flex justify-content-center py-3 mb-5">
+    <a href="/manager" class="btn btn-secondary me-md-2" tabindex="-1" role="button" style="width: 10%;">Back</a>
+  </div>
 
   <? require_once ($_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php"); ?>
 

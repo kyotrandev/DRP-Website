@@ -7,9 +7,17 @@
     <div class="text-center">
         <h1>Manager recipe</h1>
     </div>
-    <div class="col-auto">
-        <a href="/recipe/add" class="btn btn-success" tabindex="-1" role="button">Add new recipe</a>
+
+    <div class="row">
+        <div class="col"></div> <!-- Empty column to push content to the right -->
+        <div class="col-auto">
+            <a href="/recipe/add" class="btn btn-success" tabindex="-1" role="button">Add new recipe</a>
+        </div>
     </div>
+
+
+
+
     <table class="table table-bordered" id="recipe-table">
         <thead>
             <tr>
@@ -97,6 +105,4 @@
 <!-- Import Lib for DataTable -->
 <script src="/Public/js/libs/jquery/jquery-1.11.1.js"></script>
 <script src="/Public/js/libs/jquery/dataTables.min.js"></script>
-<script src="/Public/js/recipes-manager.js"></script> 
-
-
+<script src="/Public/js/recipes-manager.js"></script>
