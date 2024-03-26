@@ -82,4 +82,22 @@ class RecipeController extends BaseController
         $recipe = RecipeReadOperation::getSingleObjectById($id);
         $this->loadView('recipe.recipe', $recipe);
     }
+
+    public function tempView($course){
+        switch ($course) {
+            case 'breakfast':
+                $data = 1;
+                break;
+            
+            case 'lunch':
+                $data = 2;
+                break;
+            case 'dinner':
+                $data = 3;
+                break;
+        }
+        $recipes = RecipeReadOperation::getObjectWithOffsetByFielAndValue('course', $data);
+
+        $this->loadView('recipe.recipe_temp_view', ['recipes' => $recipes]);
+    }
 }

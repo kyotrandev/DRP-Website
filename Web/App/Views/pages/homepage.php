@@ -5,15 +5,23 @@
             <div class="content d-flex align-items-start mt-3">
                 <? $mainRecipe = $data[0]; ?>
                 <div class="main-content flex-fill mb-3" style="position: sticky; top: 1rem">
-                    <div class="card" style="width: 45vw;">
+                    <div class="card" style="width: 45vw; height: 50rem">
                         <a> 
                          <img src="<?php echo ($mainRecipe->getImgUrl()) ? '/Public/uploads/recipes/' . $mainRecipe->getImgUrl() : '/Public/images/image_not_found.png' ?>" 
-                            alt="Recipe Image" class="card-img-top" alt="Picture of meal" style="object-fit: cover; height:30rem">
+                            alt="Recipe Image" class="card-img-top" alt="Picture of meal" style="object-fit: cover; height: 32rem">
                         </a>
                         <div class="card-body">
                             <h4 class="card-title"><? echo $mainRecipe->getName() ?></h4>
-                            <p class="card-text" style="height:5rem; overflow: hidden"><? echo $mainRecipe->getDescription() ?></p>
-                            <a href="/recipe" class="btn btn-primary">Get recipe</a>
+                            <p class="card-text limited-text" style="height:4rem; overflow: hidden"><? echo $mainRecipe->getDescription() ?></p>
+                            <div class="author-info d-flex align-items-center">
+                                <img src="https://i.pinimg.com/564x/8f/1a/b1/8f1ab1e2ef48c2a26de7df6e977930bd.jpg" alt="">
+                                <div class="des">
+                                    <h5>By Mary Maris</h5>
+                                    <span>Updated March 13, 2024</span>
+                                </div>
+                            </div>
+                            <p class="card-text"><small class="text-muted">Date: <? echo $mainRecipe->getTimestamp() ?></small></p>
+                            <a href="/recipe" class="btn btn-primary mb-1">Get recipe</a>
                         </div>
                     </div>
                 </div>
