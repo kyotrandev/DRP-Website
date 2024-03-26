@@ -1,20 +1,7 @@
 <?
 namespace App\Operations;
 
-class RecipeCreateOperation extends DatabaseRelatedOperation implements I_CreateAndUpdateOperation
-{
-  static public function notify(bool $success, string $message) {
-    $response = [
-      'success' => $success,
-      'message' => $message,
-  ];
-
-  header('Content-Type: application/json');
-  // Trả về dữ liệu JSON
-  echo json_encode($response);
-  }
-
-
+class RecipeCreateOperation extends CreateAndUpdateOperation {
 
   /**
    * Validates the recipe data with specific rules.
@@ -24,7 +11,7 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
    * @throws \InvalidArgumentException If the data is invalid.
    * @throws \Exception If the data is missing or does not meet the validation rules.
    */
-  static public function validateData(array $data) : void
+  static protected function validateData(array $data) : void
   {
     // Validate data
     if ($data == null) {
@@ -64,7 +51,7 @@ class RecipeCreateOperation extends DatabaseRelatedOperation implements I_Create
    * @return void
    * @throws \PDOException If there is an error connecting to the database.
    */
-  static public function saveToDatabase(array $data) : void {
+  static protected function saveToDatabase(array $data) : void {
     $model = new static();
     $conn = $model->DB_CONNECTION;
 

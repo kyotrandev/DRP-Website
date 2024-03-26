@@ -58,6 +58,7 @@ $router->get('/ingredient/delete','IngredientController@delete');
 
 $router->get('/recipe','RecipeController@index');
 $router->get('/recipes/{page}','PaginationController@getRecipes');
+$router->get('/recipes-all/{page}','PaginationController@getAllRecipes');
 $router->get('/recipe/find-by-id','RecipeController@findByID');
 $router->get('/recipe/list','RecipeController@listByName');
 $router->get('/recipe/list-by-category','RecipeController@listByCategory');

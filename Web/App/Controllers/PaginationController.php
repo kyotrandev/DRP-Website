@@ -69,6 +69,18 @@ class PaginationController
         echo json_encode($recipes['data']);
     }
 
+    /* Get All Recipes Data for Ajax of Manager Recipe */
+    public function getAllRecipes($page = 1)
+    {
+        $limit = 15;
+        $ignoreActice = true;
+        $allRecipes = $this->getData(RecipeReadOperation::class, $limit, $page, $ignoreActice);
+
+        // Return All Recipes as JSON to Ajax request
+        echo json_encode(['recipes' => $allRecipes['data'], 'totalPage' => $allRecipes['totalPage']]);
+    }
+    
+
     /*Get Ingredients Actived Data for Ajax */
     public function getIngredients($page = 1)
     {

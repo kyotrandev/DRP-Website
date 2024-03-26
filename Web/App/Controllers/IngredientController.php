@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientCreateOperation;
+use App\Operations\IngredientDeleteOperation;
 use App\Operations\IngredientUpdateOperation;
 use App\Operations\ValidateIngredientDataHolder;
 

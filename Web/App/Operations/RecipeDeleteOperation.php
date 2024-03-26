@@ -2,7 +2,7 @@
 
 namespace App\Operations;
 
-class RecipeDeleteOperation extends DatabaseRelatedOperation implements I_DeleteOperation {
+class RecipeDeleteOperation extends DeleteOperation {
   static public function deleteById($id) {
     try {
       $model = new static();
@@ -10,9 +10,12 @@ class RecipeDeleteOperation extends DatabaseRelatedOperation implements I_Delete
       if ($conn == false) {
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
+       
+      $sql = "DELETE FORM recipes WHERE id = :id";
+      $model->querySingle($sql, 1, [':id' => $id]);
+      parent::notify(true, "Recipe deleted successfully!");
+      return true;
 
-      $sql = "delete from ingredient_recipe where recipe_id = :id; delete from recipes where id = :id";
-      return self::query($sql, 1, ['id' => $id]);
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
@@ -31,30 +34,30 @@ class RecipeDeleteOperation extends DatabaseRelatedOperation implements I_Delete
       if ($conn == false) {
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
-      $sql = "delete from ingredient_recipe where recipe_id = (select id from recipes where {$fieldName} = :value); delete from recipes where {$fieldName} = :value";
+
+      $sql = "DELETE FROM recipes WHERE $fieldName = :value";
       return self::query($sql, 1, ['value' => $value]);
+
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
-      echo \App\Views\ViewRender::errorViewRender('500');
-    } catch (\Exception $exception) {
-      handleException($exception);
+      parent::notify(false, "Delete ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
     } catch (\Throwable $throwable) {
       handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
     return false;
   }
 
-  static public function deleteByIngredientComponent($ingredientName) {
+  static public function deleteByIngredientComponent($ingredientId) {
     try {
       $model = new static();
       $conn = $model->DB_CONNECTION;
       if ($conn == false) {
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
       }
-      $sql = "delete from ingredient_recipe where ingredient_id = (select id from ingredients where name = :ingredientName); 
-        delete from recipes where id in (select recipe_id from ingredient_recipe 
-        where ingredient_id = (select id from ingredients where name = :ingredientName))";
-      return self::query($sql, 1, ['ingredientName' => $ingredientName]);
+      $sql = " DELETE FROM recipes WHERE `recipes`.`recipe_id` IN (SELECT `recipe_id` FROM `recipe_ingredient` WHERE `recipe_ingredient`.`ingredient_id` = :ingredientId)";
+      self::query($sql, 1, ['ingredientId' => $ingredientId]);
+      parent::notify(true, "Recipe deleted successfully!");
+      return true;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       echo \App\Views\ViewRender::errorViewRender('500');
