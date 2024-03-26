@@ -7,6 +7,7 @@ if (!isset($_SESSION)) {
 }
 require_once($_SERVER['DOCUMENT_ROOT'] . "/vendor/autoload.php");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/Config/general_config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/Config/env.php");
 
 set_error_handler('handleError');
 set_exception_handler('handleException');
