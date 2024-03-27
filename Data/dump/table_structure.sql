@@ -3407,10 +3407,11 @@ INSERT INTO `users` (`id`, `username`, `password`, `first_Name`, `last_Name`, `d
 --
 -- Indexes for table `ingredients`
 --
+
 ALTER TABLE `ingredients`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_ingre_cat` (`category`),
-  ADD KEY `FK_ingre_unit` (`measurement_unit`);
+  ADD CONSTRAINT `FK_ingre_cat` FOREIGN KEY (`category`) REFERENCES `ingredient_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_ingre_unit` FOREIGN KEY (`measurement_unit`) REFERENCES `ingredient_measurement_unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 --
 -- Indexes for table `ingredient_categories`
@@ -3555,10 +3556,11 @@ ALTER TABLE `ingredient_nutritions`
 -- Constraints for table `recipes`
 --
 ALTER TABLE `recipes`
-  ADD CONSTRAINT `recipes_ibfk_1` FOREIGN KEY (`course`) REFERENCES `recipe_course_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `recipes_ibfk_2` FOREIGN KEY (`meal`) REFERENCES `recipe_meal_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `recipes_ibfk_3` FOREIGN KEY (`method`) REFERENCES `recipe_method_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `recipes_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `recipes_ibfk_1` FOREIGN KEY (`course`) REFERENCES `recipe_course_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `recipes_ibfk_2` FOREIGN KEY (`meal`) REFERENCES `recipe_meal_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `recipes_ibfk_3` FOREIGN KEY (`method`) REFERENCES `recipe_method_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `recipes_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 --
 -- Constraints for table `recipe_ingredient`
