@@ -109,8 +109,7 @@ class RecipeController extends BaseController
                 $data = 3;
                 break;
         }
-        $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $data);
-
+        $recipes = RecipeReadOperation::getObjectForSearching('course', $data);
         $this->loadView('recipe.recipe_temp_view', ['recipes' => $recipes]);
     }
 }
