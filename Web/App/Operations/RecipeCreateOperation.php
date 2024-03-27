@@ -17,7 +17,6 @@ class RecipeCreateOperation extends CreateAndUpdateOperation {
     if ($data == null) {
       throw new \InvalidArgumentException("Invalid data provided in " . __METHOD__ . ".");
     }
-
     $validCategories1 = RecipeReadOperation::getCat(1);
     $validCategories2 = RecipeReadOperation::getCat(2);
     $validCategories3 = RecipeReadOperation::getCat(3);
@@ -35,9 +34,9 @@ class RecipeCreateOperation extends CreateAndUpdateOperation {
       empty($data['ingredientComponents'])) {
       throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
     }
-    if(  (!in_array($data['course'], $validCategories1)) ||
-      (!in_array($data['meal'], $validCategories2)) ||
-      (!in_array($data['method'], $validCategories3))
+    if((!in_array($data['course'], array_column($validCategories1, 'id'))) ||
+      (!in_array($data['meal'], array_column($validCategories2, 'id'))) ||
+      (!in_array($data['method'], array_column($validCategories3, 'id')))
     ) {
       throw new \Exception("Invalid data provided in " . __METHOD__ . ".");
     }
@@ -80,13 +79,14 @@ class RecipeCreateOperation extends CreateAndUpdateOperation {
         ':meal' => $data['meal'],
         ':method' => $data['method']
       ];
-      self::query($sql, 1, $params);
+      $recipeStmt = $conn->prepare($sql);
+      $recipeStmt->execute($params);
 
 
       // Prepare the SQL query for the ingredient_recipe table
       $recipeId = $conn->lastInsertId();
 
-      $sql2 = "INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity) VALUES ";
+      $sql2 = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity) VALUES ";
       $values = [];
       foreach ($data['ingredientComponents'] as $component) {
         $values[] = "($recipeId, {$component['ingredient_id']}, {$component['quantity']})";
