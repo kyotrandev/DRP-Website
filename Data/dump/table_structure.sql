@@ -497,7 +497,7 @@ CREATE TABLE `recipes` (
   `isActive` tinyint(1) DEFAULT '1',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `preparation_time` int DEFAULT NULL,
   `cooking_time` int DEFAULT NULL,
   `directions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
