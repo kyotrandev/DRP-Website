@@ -11,6 +11,7 @@ use App\Operations\RecipeUpdateOperation;
 use App\Operations\UploadImageOperation;
 use App\Operations\ValidateIngredientDataHolder;
 use App\Operations\ValidataRecipeDataHolder;
+
 class AdminController extends BaseController
 {
     public function index()
@@ -114,23 +115,8 @@ class AdminController extends BaseController
         if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
-        $recipes = null;
 
-        if (isset($_GET['recipe_id']) && !empty($_GET['recipe_id'])) {
-            $recipes = RecipeReadOperation::getSingleObjectByIdWithoutIngre($_GET['recipe_id'], true);
-        } else if (isset($_GET['name'])  && !empty($_GET['name'])) {
-            $recipes = RecipeReadOperation::getObjectForSearchingWithoutIngre('recipes.name', $_GET['name'], true);
-        } else if (isset($_GET['course'])  && !empty($_GET['course'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_course_categories.id', $_GET['course'], true);
-        } else if (isset($_GET['meal'])  && !empty($_GET['meal'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_meal_categories.id', $_GET['meal'], true);
-        } else if (isset($_GET['method'])  && !empty($_GET['method'])) {
-            $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('recipe_method_categories.id', $_GET['method'], true);
-        } else $recipes = RecipeReadOperation::getAllObjectsWithoutIngre(true);
-
-        $dataHolder['courses'] = RecipeReadOperation::getCat(1);
-        $dataHolder['meals'] = RecipeReadOperation::getCat(2);
-        $dataHolder['methods'] = RecipeReadOperation::getCat(3);
+        $recipes = RecipeReadOperation::getAllObjectsWithoutIngre(true);
 
         $dataHolder['recipes'] = $recipes;
 
@@ -142,9 +128,9 @@ class AdminController extends BaseController
         if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
-        $data = $_POST; 
+        $data = $_POST;
         RecipeUpdateOperation::setRecipeActive($data);
-        
+
     }
 
     public function recipeManagerUpdateUI()
@@ -169,12 +155,12 @@ class AdminController extends BaseController
         }
         $data = $_POST;
 
-        if ($_FILES['file']['name'] != null){
+        if ($_FILES['file']['name'] != null) {
             $data['image_url'] = UploadImageOperation::process();
         }
-       RecipeUpdateOperation::execute($data);
-         
-        
+        RecipeUpdateOperation::execute($data);
+
+
     }
 
     /*
@@ -195,10 +181,11 @@ class AdminController extends BaseController
             $ingredients = IngredientReadOperation::getObjectForSearchingWithoutNutri('ingredients.name', $_GET['name'], true);
         } else if (isset($_GET['category']) && !empty($_GET['category'])) {
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_categories.id', $_GET['category'], true);
-        } else if (isset($_GET['measurement_unit']) && !empty($_GET['measurement_unit'])){
+        } else if (isset($_GET['measurement_unit']) && !empty($_GET['measurement_unit'])) {
             $ingredients = IngredientReadOperation::getAllObjectsByFieldAndValueWithoutNutri('ingredient_measurement_unit.id', $_GET['measurement_unit'], true);
-        } 
-        if (!isset($ingredients)) $ingredients = IngredientReadOperation::getAllObjects(true);
+        }
+        if (!isset($ingredients))
+            $ingredients = IngredientReadOperation::getAllObjects(true);
         $dataHolder['ingredients'] = $ingredients;
 
         return $this->loadView('admin.ingredient', $dataHolder);
@@ -210,10 +197,10 @@ class AdminController extends BaseController
             return parent::loadError('404');
         }
         $data = $_POST;
-        IngredientUpdateOperation::setIngredientActive($data); 
+        IngredientUpdateOperation::setIngredientActive($data);
     }
 
-    public function ingredientManagerUpdateUI() 
+    public function ingredientManagerUpdateUI()
     {
         if (!UserController::isAdmin()) {
             return parent::loadError('404');
@@ -226,7 +213,8 @@ class AdminController extends BaseController
         return $this->loadView('admin.ingredientUpdate', ['ingredient' => $ingredient, 'opts' => $ingredientOpt]);
     }
 
-    public function ingredientManagerUpdate() {
+    public function ingredientManagerUpdate()
+    {
         if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
@@ -234,7 +222,8 @@ class AdminController extends BaseController
         IngredientUpdateOperation::execute($data);
     }
 
-    public function ingredientManagerDelete() {
+    public function ingredientManagerDelete()
+    {
         $data = $_POST;
         IngredientDeleteOperation::deleteById($data['id']);
     }

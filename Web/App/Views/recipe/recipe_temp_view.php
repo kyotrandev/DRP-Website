@@ -15,9 +15,9 @@
 <body>
     <div class="header-space"></div>
     <div class="container">
-        <h3 class="row justify-content-center">Recipe for <?= $recipes[0]->getCourse() ?></h3>
+        <h3 class="row justify-content-center">Recipe for <?= $data[0]->getCourse() ?></h3>
         <div class="row justify-content-start row-cols-4 mb-5" id="recipeContainer">
-            <?foreach($recipes as $recipe):?>
+            <?foreach($data as $recipe):?>
             <div class="card col" style="width: 22.5%; margin: 1rem 1.25%; cursor: pointer; padding: 0">
                 <img src="<?=$recipe->getImgUrl() ? "/Public/uploads/recipes/" . $recipe->getImgUrl() : "/Public/images/image_not_found.png"; ?>" 
                                          alt="<?php echo $recipe->getName(); ?>" class="card-img-top" style="object-fit: cover; height:12rem; width: 100%">

@@ -19,15 +19,20 @@ class RecipeController extends BaseController
     {
         $id = $_GET['id'];
         $recipe = RecipeReadOperation::getSingleObjectById($id);
+
         $this->loadViewWithOtherExtract('recipe.recipe_detail', $recipe);
     }
 
-    public function findByID()
+    public function findByName()
     {
-        $id = $_GET['id'];
-        $recipe = RecipeReadOperation::getSingleObjectById($id);
-        $this->loadView('recipe.recipe_view', $recipe);
+        $value = $_GET['value'];
+        $recipe = RecipeReadOperation::getObjectForSearching('recipes.name', $value);
+
+        $data = ['value' => $value, 'recipe' => $recipe];
+        $this->loadView('recipe.view_by_name', $data);
     }
+
+
 
     public function listByCategory()
     {
@@ -43,7 +48,8 @@ class RecipeController extends BaseController
         $data[] = ValidataRecipeDataHolder::getInstance();
         $this->loadView('recipe.add', $data);
     }
-    public function add() {
+    public function add()
+    {
         if (!UserController::isContributer()) {
             return parent::loadError('404');
         }
@@ -58,7 +64,7 @@ class RecipeController extends BaseController
             ];
             $ingredientComponents[] = $component;
         }
-        
+
         $data['ingredientComponents'] = $ingredientComponents;
         unset($data['ingredient_id']);
         unset($data['unit']);
@@ -67,15 +73,16 @@ class RecipeController extends BaseController
         if ($data['image_url'] == null) {
             echo "<script>alert('Failed to upload image.');</script>";
         }
-        
-        if(RecipeCreateOperation::execute($data)){
+
+        if (RecipeCreateOperation::execute($data)) {
             header("Location: /recipe");
-        }
-        else header("Location: /recipe/add");
+        } else
+            header("Location: /recipe/add");
 
     }
 
-    public function find() {
+    public function find()
+    {
         RecipeReadOperation::getAllObjectsByFieldAndValue('name', $_GET['search']);
         $this->loadView('recipe.find');
     }
@@ -88,12 +95,13 @@ class RecipeController extends BaseController
         $this->loadView('recipe.recipe', $recipe);
     }
 
-    public function tempView($course){
+    public function tempView($course)
+    {
         switch ($course) {
             case 'breakfast':
                 $data = 1;
                 break;
-            
+
             case 'lunch':
                 $data = 2;
                 break;
@@ -101,7 +109,7 @@ class RecipeController extends BaseController
                 $data = 3;
                 break;
         }
-        $recipes = RecipeReadOperation::getObjectForSearching('course', $data);
+        $recipes = RecipeReadOperation::getAllObjectsByFieldAndValue('course', $data);
 
         $this->loadView('recipe.recipe_temp_view', ['recipes' => $recipes]);
     }

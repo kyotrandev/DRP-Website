@@ -76,6 +76,8 @@ class RecipeReadOperation extends ReadOperation {
     }
     $cacheKey = 'recipe_' . $params[':id'] . ($getIngreOrNot ? '_with_ingre' : '_without_ingre');
     
+    self::$RedisCache->clear();
+
     $cachedResult = self::$RedisCache->get($cacheKey);
     if ($cachedResult !== null) {
       return unserialize($cachedResult);  
@@ -175,6 +177,7 @@ class RecipeReadOperation extends ReadOperation {
       }
     }
     return $recipes;
+    
   }
 
 

@@ -102,4 +102,5 @@ class PaginationController
         echo json_encode(['ingredients' => $allIngredients['data'], 'totalPage' => $allIngredients['totalPage']]);
     }
     
+    
 }

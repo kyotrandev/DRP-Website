@@ -1,16 +1,12 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/header.php'); ?>
+<?php require_once ($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/header.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipes</title>
 <style>
-        .header-space {
-            height: 40px;
-        }
-    </style>
+    .header-space {
+        height: 40px;
+    }
+</style>
 
 <body>
     <div class="header-space"></div>
@@ -27,8 +23,8 @@
     <script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>
     <script src="/Public/js/ajax-recipes.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#recipeContainer').on('click', '.card', function() {
+        $(document).ready(function () {
+            $('#recipeContainer').on('click', '.card', function () {
                 // Lấy dữ liệu từ thuộc tính data-details của thẻ card được bấm vào
                 var idDetails = $(this).find('.card-details').data('details');
 
@@ -40,4 +36,4 @@
 </html>
 
 
-<?php require_once($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/footer.php'); ?>
+<?php require_once ($_SERVER['DOCUMENT_ROOT'] . '/Public/inc/footer.php'); ?>
