@@ -9,7 +9,7 @@
     </div>
 
     <div class="row">
-        <div class="col"></div> <!-- Empty column to push content to the right -->
+        <div class="col"></div> 
         <div class="col-auto">
             <a href="/recipe/add" class="btn btn-success" tabindex="-1" role="button">Add new recipe</a>
         </div>
