@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Operations\IngredientReadOperation;
 use App\Operations\IngredientUpdateOperation;
+use App\Operations\IngredientDeleteOperation;
 use App\Operations\UserOperation;
 use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeUpdateOperation;
@@ -141,11 +142,9 @@ class AdminController extends BaseController
         if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
-
         $data = $_POST; 
         RecipeUpdateOperation::setRecipeActive($data);
-
-        header("Location: /manager/recipe");
+        
     }
 
     public function recipeManagerUpdateUI()
@@ -173,12 +172,9 @@ class AdminController extends BaseController
         if ($_FILES['file']['name'] != null){
             $data['image_url'] = UploadImageOperation::process();
         }
-        if (RecipeUpdateOperation::execute($data)) {
-            echo '<script>
-            alert("Update recipes succesful!");
-            window.location.href = "/manager/recipe";
-            </script>';
-        }
+       RecipeUpdateOperation::execute($data);
+         
+        
     }
 
     /*
@@ -236,5 +232,10 @@ class AdminController extends BaseController
         }
         $data = $_POST;
         IngredientUpdateOperation::execute($data);
+    }
+
+    public function ingredientManagerDelete() {
+        $data = $_POST;
+        IngredientDeleteOperation::deleteById($data['id']);
     }
 }

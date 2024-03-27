@@ -20,7 +20,7 @@ function viewIngredient(ingredients) {
       (ingredient.isActive ? 'Deactivate' : 'Activate') +
       "</button>" +
       "</form>" +
-      "<form class='d-inline-block' action=''>" +
+      "<form class='delete-form d-inline-block' >" +
       "<input type='hidden' name='id' value='" + ingredient.id + "'>" +
       "<button class='btn btn-danger me-1' type='submit'>Delete</button>" +
       "</form>" +
@@ -60,12 +60,13 @@ function changePage(page) {
   getIngredient(page);
 }
 
+// Đổi trang thái cho active button
 $(document).on('submit', '.set-active-form', function (event) {
   event.preventDefault();
 
   var formData = $(this).serialize();
 
-  var button = $(this).find('button[type="submit"]'); // Get the button element
+  var button = $(this).find('button[type="submit"]'); 
 
   $.ajax({
     type: 'POST',
@@ -87,4 +88,34 @@ $(document).on('submit', '.set-active-form', function (event) {
       console.error(error);
     }
   });
+});
+
+// Thông báo khi xoá ingredient
+$(document).on('submit', '.delete-form', function (event) {
+  event.preventDefault();
+
+  var formData = $(this).serialize();
+  var button = $(this).find('button[type="submit"]'); 
+
+  // Hiển thị cảnh báo trước khi xóa
+  if (confirm("Are you sure to delete this ingredient?")) {
+    $.ajax({
+      type: 'POST',
+      url: '/manager/ingredient/delete',
+      data: formData,
+      dataType: 'json',
+      success: function (response) {
+        if (response.success) {
+          alert(response.message);
+          // Tải lại trang sau khi xóa thành công
+          location.reload();
+        } else {
+          alert(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+      }
+    });
+  }
 });

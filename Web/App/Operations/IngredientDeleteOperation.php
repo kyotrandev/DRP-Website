@@ -1,9 +1,11 @@
 <? 
 namespace App\Operations;
+use App\Utils\RedisCache;
 class IngredientDeleteOperation extends DeleteOperation {
-  
-  static public function deleteById($id) : bool  {
-    try {
+  private static RedisCache $RedisCache;  
+
+  static public function deleteById($id){
+    try{
       $model = new IngredientDeleteOperation();
       $conn = $model->DB_CONNECTION;
       
@@ -13,8 +15,20 @@ class IngredientDeleteOperation extends DeleteOperation {
 
       $sql = "DELETE FROM ingredients WHERE id = :id";
 
+      /**
+       * Execute the query
+       */
       $model->querySingle($sql, 1, [':id' => $id]);
-      return true;
+
+      /**
+       * Notify succes to the user
+       */
+      self::notify(true, "Ingredient status deleted successfully!");
+
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->deleteKeysStartingWith('ingre_' . $id. '_with_nutri');
 
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
@@ -23,7 +37,6 @@ class IngredientDeleteOperation extends DeleteOperation {
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
       parent::notify(false, "Delete ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");      
     }
-    return false;
   }
 
   static public function deleteByFieldAndValue(string $fieldName, $value) : bool {

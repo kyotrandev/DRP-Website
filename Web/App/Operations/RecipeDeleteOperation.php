@@ -1,8 +1,9 @@
 <?
-
 namespace App\Operations;
+use App\Utils\RedisCache;
 
 class RecipeDeleteOperation extends DeleteOperation {
+  private static RedisCache $RedisCache;
   static public function deleteById($id) {
     try {
       $model = new static();
@@ -14,6 +15,11 @@ class RecipeDeleteOperation extends DeleteOperation {
       $sql = "DELETE FORM recipes WHERE id = :id";
       $model->querySingle($sql, 1, [':id' => $id]);
       parent::notify(true, "Recipe deleted successfully!");
+
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->deleteKeysStartingWith('recipe_' . $id . '_with_nutri');
       return true;
 
     } catch (\PDOException $PDOException) {
@@ -36,6 +42,11 @@ class RecipeDeleteOperation extends DeleteOperation {
       }
 
       $sql = "DELETE FROM recipes WHERE $fieldName = :value";
+      
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->clear();
       return self::query($sql, 1, ['value' => $value]);
 
     } catch (\PDOException $PDOException) {
@@ -57,6 +68,10 @@ class RecipeDeleteOperation extends DeleteOperation {
       $sql = " DELETE FROM recipes WHERE `recipes`.`recipe_id` IN (SELECT `recipe_id` FROM `recipe_ingredient` WHERE `recipe_ingredient`.`ingredient_id` = :ingredientId)";
       self::query($sql, 1, ['ingredientId' => $ingredientId]);
       parent::notify(true, "Recipe deleted successfully!");
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->clear();
       return true;
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);

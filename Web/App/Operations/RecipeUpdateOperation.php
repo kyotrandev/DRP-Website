@@ -1,8 +1,10 @@
 <?
 namespace App\Operations;
+use App\Utils\RedisCache;
 
 class RecipeUpdateOperation extends CreateAndUpdateOperation {
 
+  static private RedisCache $RedisCache;
   /**
    * Validates the recipe data with specific rules.
    *
@@ -54,8 +56,6 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
    */
   static protected function saveToDatabase(array $data): void
   {
-    var_dump($data);
-
     $sql = "UPDATE recipes set name = :name, description = :description, preparation_time = :preparation_time, 
             cooking_time = :cooking_time, directions = :directions, course = :course, meal = :meal, method = :method " 
             . (isset($data['image_url']) && !empty($data['image_url']) ? ", image_url = :image_url" : "") . " where recipes.recipe_id = :id";
@@ -74,6 +74,10 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
       $params[':image_url'] = $data['image_url'];
     }
     self::query($sql, 1, $params);
+    if (!isset(self::$RedisCache)) {
+      self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+    }
+    self::$RedisCache->deleteKeysStartingWith('recipe_' . $data['id']. '_with_nutri');
   }
 
 
@@ -118,12 +122,29 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
   }
 
   public static function setRecipeActive($data){
-    $models = new static;
-    $conn = $models->DB_CONNECTION;
-    $sql = "UPDATE recipes SET isActive =:isActive WHERE id=:id";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':isActive', $data['isActive'], \PDO::PARAM_INT);
-    $stmt->bindValue(':id', $data['id'], \PDO::PARAM_INT);
-    $stmt->execute();
+    try{
+
+      /** 
+       * Update the recipe status to active or inactive
+       */
+      $sql = "UPDATE recipes SET isActive =:isActive WHERE recipe_id=:id";
+
+      /**
+       * Execute the query
+       */
+      self::querySingle($sql, 1, ['id' => $data['id'], 'isActive' => $data['isActive'] ]);
+
+      /**
+       * Notify succes to the user
+       */
+      self::notify(true, "Recipe status updated successfully!");
+      
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      self::notify(false, "Update Recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");
+    } catch (\Throwable $Throwable) {
+      handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
+      self::notify(false, "Add Recipe failed caused by an unknown error!. We are sorry for the inconvenience!");      
+    }
   }
 }

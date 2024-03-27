@@ -6,7 +6,7 @@
         </div>
 
         <div class="row g-5 py-4">
-            <form action="/manager/recipe/update" method="POST" enctype="multipart/form-data" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
+            <form id= "recipe-form" style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
                 <input type="hidden" class="form-control" id="id" name="id" value="<?= $data['recipes']->getId() ?>">
                 <div class="mb-3">
                     <label for="name" class="col-sm-5 col-form-label">Name</label>
@@ -83,5 +83,33 @@
         </div>      
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <?php require $_SERVER['DOCUMENT_ROOT'] . "/Public/inc/footer.php"; ?>
+<!-- Import bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Import Jquery Ajax -->
+<script src="/Public/js/libs/jquery/jquery-3.6.0.min.js">
+</script>
+<script>
+  $(document).ready(function() {
+    $('#recipe-form').submit(function(event) {
+      event.preventDefault();
+
+      var formData = $(this).serialize();
+
+      $.ajax({
+        type: 'POST',
+        url: '/manager/recipe/update',
+        data: formData,
+        dataType: 'json', 
+        success: function(response) {
+     
+          alert(response.message);
+          
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>

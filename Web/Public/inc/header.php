@@ -191,7 +191,7 @@ use App\Controllers\UserController;
                     <li><a class="dropdown-item" href="/manager/ingredient">Manage ingredient<i class="fa-regular fa-plus"></i></a></li>
                     <?elseif (UserController::isAdmin()) : 
                   ?>
-                    <li><a class="dropdown-item" href="/manager/recipe">Manage user<i class="fa-regular fa-plus"></i></a></li>
+                    <li><a class="dropdown-item" href="/manager/user">Manage user<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager/recipe">Manage recipe<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager/ingredient">Manage ingredient<i class="fa-regular fa-plus"></i></a></li>
                     <li><a class="dropdown-item" href="/manager">Admin page<i class="fa-regular fa-plus"></i></a></li>

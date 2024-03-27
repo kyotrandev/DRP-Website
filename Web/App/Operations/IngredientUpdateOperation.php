@@ -1,8 +1,9 @@
 <?
 namespace App\Operations;
-use App\Utils\Dialog;
+use App\Utils\RedisCache;
 
 class  IngredientUpdateOperation extends CreateAndUpdateOperation {
+  static private RedisCache $RedisCache;
 
   /**
    * Validates the ingredient data with specific rules.
@@ -95,6 +96,10 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       }
   
       $conn->commit();
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->deleteKeysStartingWith('ingre_' . $data['id']. '_with_nutri');
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
