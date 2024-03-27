@@ -193,7 +193,7 @@ use App\Controllers\UserController;
         if (UserController::isLoggedIn()):
           // Nếu đã đăng nhập, hiển thị nút logout và account
           ?>
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center ms-auto">
             <div class="btn-group dropstart">
               <img src="/Public/images/account.png" id="user" class="rounded-circle me-3 account"
                 data-bs-toggle="dropdown" aria-expanded="false" height="30" alt="account" style="cursor: pointer;" />

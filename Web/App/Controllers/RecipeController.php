@@ -53,6 +53,26 @@ class RecipeController extends BaseController
         if (!UserController::isContributer()) {
             return parent::loadError('404');
         }
+
+        // Check if an image is uploaded
+        if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            // Process image upload
+            $data['image_url'] = UploadImageOperation::process();
+            if (!$data['image_url']) {
+                $message = 'Failed to upload image.';
+                $success = false;
+
+                $response = [
+                    'success' => $success,
+                    'message' => $message,
+                ];
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                die();
+            }
+        }
+
+        // Process other form data
         $data = $_POST;
 
         $ingredientComponents = [];
@@ -69,17 +89,11 @@ class RecipeController extends BaseController
         unset($data['ingredient_id']);
         unset($data['unit']);
         unset($data['quantity']);
-        $data['image_url'] = UploadImageOperation::process();
-        if ($data['image_url'] == null) {
-            echo "<script>alert('Failed to upload image.');</script>";
-        }
-
-        if (RecipeCreateOperation::execute($data)) {
-            header("Location: /recipe");
-        } else
-            header("Location: /recipe/add");
-
+        
+        // Execute operation
+        RecipeCreateOperation::execute($data);
     }
+
 
     public function find()
     {

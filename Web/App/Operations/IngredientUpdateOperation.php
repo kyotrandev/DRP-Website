@@ -24,9 +24,6 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
     $validCategories = $validateData->validCategories;
     $validMeasurements = $validateData->validMeasurements;
     $requiredFields = ['name', 'category', 'measurement_unit'];
-    if (empty(array_filter($data['nutritionComponents']))) {
-      throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 1');
-    }
 
     if ($data == null)
       throw new \InvalidArgumentException(parent::MSG_DATA_ERROR . __METHOD__ . '. 2');
@@ -37,7 +34,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
     
     // Check if the data is valid
     if (
-      !preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
+      !preg_match('/^[\p{L}0-9\s.,()]+$/u', $data['name']) ||
       !in_array($data['category'], array_column($validCategories, 'id')) ||
       !in_array($data['measurement_unit'], array_column($validMeasurements, 'id'))
     ) {

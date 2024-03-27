@@ -38,7 +38,7 @@
 <body>
   <h2 style="text-align: center; margin-top: 50px;">Add Your Creative Recipe</h2>
 
-  <form id="recipe-form" action="/recipe/add" method="post" enctype="multipart/form-data"
+  <form id="recipe-form"
     style="width: 50vw; margin: 0 auto; padding: 20px; border: 1px solid #e1ebfa; border-radius: 10px; box-shadow: 0 0 10px 0 #e1ebfa; margin-top: 50px; margin-bottom: 50px;">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" id="name" name="name" placeholder="Enter name of recipe">
@@ -129,7 +129,6 @@
   <script src="/Public/js/libs/jquery/jquery-1.19.2.min.js"></script>
   <script src="/Public/js/validate-recipes.js"></script>
 
-
   <script>
     // Function to add select element with options and input for quantity
     function addIngredientSelect() {
@@ -179,7 +178,7 @@
       var unitSelect = document.createElement('select');
       unitSelect.classList.add('form-select', 'form-select');
       unitSelect.name = 'unit[]';
-      
+
       var unitPlaceholderOption = document.createElement('option');
       unitPlaceholderOption.value = '';
       unitPlaceholderOption.selected = true;
@@ -222,5 +221,37 @@
     // Event listener for button click
     document.getElementById('addIngredientBtn').addEventListener('click', function () {
       addIngredientSelect();
+    });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $('#recipe-form').submit(function (event) {
+        // Ngăn chặn hành vi mặc định của form
+        event.preventDefault();
+
+        // Lấy dữ liệu form
+        var formData = $(this).serialize();
+
+        // Gửi dữ liệu form đi bằng AJAX
+        $.ajax({
+          type: 'POST',
+          url: '/recipe/add',
+          data: formData,
+          dataType: 'json',
+          success: function (response) {
+            if (response.success) {
+              alert(response.message);
+
+            } else {
+              alert(response.message);
+            }
+          },
+          error: function (xhr, status, error) {
+            // Xử lý lỗi AJAX nếu có
+            console.error(error);
+          }
+        });
+      });
     });
   </script>
