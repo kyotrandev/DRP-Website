@@ -77,7 +77,7 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
     if (!isset(self::$RedisCache)) {
       self::$RedisCache = new RedisCache($_ENV['REDIS'],);
     }
-    self::$RedisCache->deleteKeysStartingWith('recipe_' . $data['id']. '_with_nutri');
+    self::$RedisCache->delete('recipe_' . $data['id']. '_with_nutri');
   }
 
 

@@ -28,7 +28,7 @@ class IngredientDeleteOperation extends DeleteOperation {
       if (!isset(self::$RedisCache)) {
         self::$RedisCache = new RedisCache($_ENV['REDIS'],);
       }
-      self::$RedisCache->deleteKeysStartingWith('ingre_' . $id. '_with_nutri');
+      self::$RedisCache->delete('ingre_' . $id. '_with_nutri');
 
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
