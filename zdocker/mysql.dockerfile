@@ -15,7 +15,7 @@ RUN microdnf install -y vim
 # Configure MySQL to log to a specific directory
 RUN mkdir -p /var/log/mysql
 RUN touch /var/log/mysql/mysql.log
-RUN chown -R mysql:mysql /var/log/mysql && chmod -R 666 /var/log/mysql
+RUN chown -R mysql:mysql /var/log/mysql/mysql.log && chmod -R 666 /var/log/mysql/mysql.log
 
 # # Copy the data.sql file to the Docker container
 COPY ./Data/dump/*.sql /docker-entrypoint-initdb.d/
