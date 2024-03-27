@@ -54,6 +54,26 @@ class RedisCache {
       return $this->client->del($key) === 1;
   }
 
+  public function deleteKeysStartingWith(string $prefix): int {
+    $cursor = null;
+    $deletedCount = 0;
+
+    do {
+      $result = $this->client->scan($cursor, ['MATCH' => $prefix . '*']);
+
+      $keys = $result[1];
+
+      // Delete each key
+      foreach ($keys as $key) {
+        if ($this->client->del($key) === 1) {
+          $deletedCount++;
+        }
+      }
+    } while ($cursor !== "0");
+
+    return $deletedCount;
+  }
+
   public function clear() {
     $this->client->flushdb();
   }

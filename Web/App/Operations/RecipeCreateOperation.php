@@ -92,7 +92,6 @@ class RecipeCreateOperation extends CreateAndUpdateOperation {
         $values[] = "($recipeId, {$component['ingredient_id']}, {$component['quantity']})";
       }
 
-
       $sql2 .= implode(',', $values); 
       // execute the query to insert the ingredient_recipe data
       $conn->exec($sql2);

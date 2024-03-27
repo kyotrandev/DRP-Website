@@ -77,7 +77,7 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
     if (!isset(self::$RedisCache)) {
       self::$RedisCache = new RedisCache($_ENV['REDIS'],);
     }
-    self::$RedisCache->delete('recipe_' . $data['id']. '_with_ingre');
+    self::$RedisCache->deleteKeysStartingWith('recipe_' . $data['id']. '_with_nutri');
   }
 
 
@@ -138,6 +138,7 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation {
        * Notify succes to the user
        */
       self::notify(true, "Recipe status updated successfully!");
+      
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       self::notify(false, "Update Recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");

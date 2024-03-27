@@ -99,7 +99,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       if (!isset(self::$RedisCache)) {
         self::$RedisCache = new RedisCache($_ENV['REDIS'],);
       }
-      self::$RedisCache->delete('ingre_' . $data['id']. '_with_nutri');
+      self::$RedisCache->deleteKeysStartingWith('ingre_' . $data['id']. '_with_nutri');
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
