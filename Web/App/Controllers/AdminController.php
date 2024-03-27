@@ -15,7 +15,7 @@ class AdminController extends BaseController
 {
     public function index()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         return $this->loadView('admin.index');
@@ -24,7 +24,7 @@ class AdminController extends BaseController
     // User
     public function userManager()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
 
@@ -43,7 +43,7 @@ class AdminController extends BaseController
 
     public function userManagerUpdateUI()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $users = UserOperation::getUserById($_GET['id']);
@@ -52,7 +52,7 @@ class AdminController extends BaseController
 
     public function userManagerUpdate()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $data = $_POST;
@@ -62,7 +62,7 @@ class AdminController extends BaseController
 
     public function userManagerAdd()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $data = $_POST;
@@ -96,7 +96,7 @@ class AdminController extends BaseController
 
     public function setUserLevel()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
@@ -106,17 +106,12 @@ class AdminController extends BaseController
         }
     }
 
-    private function isAdmin()
-    {
-        return isset($_SESSION['level']) && $_SESSION['level'] == 1;
-    }
-
     /*
         Quản lý recipe
     */
     public function recipeManager()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $recipes = null;
@@ -144,7 +139,7 @@ class AdminController extends BaseController
 
     public function setRecipeActive()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $data = $_POST; 
@@ -154,7 +149,7 @@ class AdminController extends BaseController
 
     public function recipeManagerUpdateUI()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $recipe = RecipeReadOperation::getSingleObjectById($_GET['id'], true);
@@ -169,7 +164,7 @@ class AdminController extends BaseController
 
     public function recipeManagerUpdate()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $data = $_POST;
@@ -187,7 +182,7 @@ class AdminController extends BaseController
     */
     public function ingredientManager()
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
 
@@ -211,13 +206,16 @@ class AdminController extends BaseController
 
     public function setIngredientActive()
     {
+        if (!UserController::isAdmin()) {
+            return parent::loadError('404');
+        }
         $data = $_POST;
         IngredientUpdateOperation::setIngredientActive($data); 
     }
 
     public function ingredientManagerUpdateUI() 
     {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
 
@@ -229,7 +227,7 @@ class AdminController extends BaseController
     }
 
     public function ingredientManagerUpdate() {
-        if (!$this->isAdmin()) {
+        if (!UserController::isAdmin()) {
             return parent::loadError('404');
         }
         $data = $_POST;

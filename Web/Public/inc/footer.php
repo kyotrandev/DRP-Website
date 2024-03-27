@@ -16,7 +16,9 @@
                 <!-- 6 tab dieu huong -->
                 <div class="col-md-3 mt-3">
                     <div class="row row-cols-3 text-top g-1 justify-content-center">
-                        <div class="col">Menu</div>
+                        <div class="col">
+                            <a href="/recipe">Menu</a>
+                        </div>
                         <div class="col">
                             <a href="/recipe/filter/breakfast">Breakfast</a>
                         </div>

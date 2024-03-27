@@ -21,8 +21,8 @@
             </div>
         </div>
     </div>
-    <div div class="form d-md-flex justify-content-center py-3 mb-5">
-        <button id="show" class="btn btn-primary" style="width: 5%">Load more</button>
+    <div class="form d-flex justify-content-center py-3 mb-5">
+        <button id="show" class="btn btn-primary" style="width: 100px">Load more</button>
     </div>
     <script src="/Public/js/libs/jquery/jquery-3.6.0.min.js"></script>
     <script src="/Public/js/ajax-recipes.js"></script>
