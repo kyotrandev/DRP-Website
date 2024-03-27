@@ -1,7 +1,9 @@
 <? 
 namespace App\Operations;
+use App\Utils\RedisCache;
 class IngredientDeleteOperation extends DeleteOperation {
-  
+  private static RedisCache $RedisCache;  
+
   static public function deleteById($id){
     try{
       $model = new IngredientDeleteOperation();
@@ -22,6 +24,12 @@ class IngredientDeleteOperation extends DeleteOperation {
        * Notify succes to the user
        */
       self::notify(true, "Ingredient status deleted successfully!");
+
+      if (!isset(self::$RedisCache)) {
+        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      }
+      self::$RedisCache->deleteKeysStartingWith('ingre_' . $id. '_with_nutri');
+
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       parent::notify(false, "Delete ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");

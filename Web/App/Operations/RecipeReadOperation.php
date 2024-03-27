@@ -3,8 +3,9 @@
 namespace App\Operations;
 
 use App\Models\RecipeModel;
+use App\Utils\RedisCache;
 
-class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOperation {
+class RecipeReadOperation extends ReadOperation {
 
   const BASE_SQL_QUERY = "SELECT  
                             `user_id`, `recipe_id`, `isActive`, `name`, `preparation_time`, `cooking_time`, 
@@ -30,6 +31,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
   const getObjectsWithOffsetIgnoreActiveMode = self::BASE_SQL_QUERY . " limit :limit offset :offset";
 
 
+  static private RedisCache $RedisCache;
 
   /**
    * Retrieves the ingredients of a recipe based on the recipe ID.
@@ -38,20 +40,65 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
    * @return array|null An array of ingredients or null if no ingredients found.
    */
   static public function getIngredients($id) :?array {
-    $sql = self::getIngredientDetailsByRecipeId;
-    return self::query($sql,1, ['id' => $id]);
+    if (!isset(self::$RedisCache)) {
+      self::$RedisCache = new RedisCache($_ENV['REDIS']);
+    }
+    
+
+    $cacheKey = 'ingre_compon_' . $id;
+
+    // Retrieve cached result
+    $cachedResult = self::$RedisCache->get($cacheKey);
+
+    if ($cachedResult !== null) {
+      return unserialize($cachedResult);
+    }
+    try {
+
+      $sql = self::getIngredientDetailsByRecipeId;
+      $ingredients = self::query($sql,1, ['id' => $id]);
+      self::$RedisCache->set($cacheKey, serialize($ingredients), 2*3600);
+      return $ingredients;
+    } catch (\PDOException $PDOException) {
+      handlePDOException($PDOException);
+      echo \App\Views\ViewRender::errorViewRender('500');
+    } catch (\Exception $exception) {
+      handleException($exception);
+    } catch (\Throwable $throwable) {
+      handleError($throwable->getCode(), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+    }
+    return null;
   }
 
-  static protected function getSingleObject($sql, bool $getIngreOrNot = true, $params = [])  : null|RecipeModel{ 
-    $Recipe = self::querySingle($sql, 4, $params, "RecipeModel");
+  static public function getSingleObject($sql, bool $getIngreOrNot = true, $params = [])  : null|RecipeModel{ 
+    if (!isset(self::$RedisCache)) {
+      self::$RedisCache = new RedisCache($_ENV['REDIS']);
+    }
+    $cacheKey = 'recipe_' . $params[':id'] . ($getIngreOrNot ? '_with_ingre' : '_without_ingre');
+    
+    $cachedResult = self::$RedisCache->get($cacheKey);
+    if ($cachedResult !== null) {
+      return unserialize($cachedResult);  
+    }
+    
+    $recipe = self::querySingle($sql, 4, $params, "RecipeModel");
+  
     if ($getIngreOrNot == true){
-      if (!is_object($Recipe)) {
+
+      if (!is_object($recipe)) {
         return null;
       }
-      $Recipe->setIngredientComponents(self::getIngredients($Recipe->getId()));
+
+      $recipe->setIngredientComponents(self::getIngredients($recipe->getId()));
+      
     }
-    return $Recipe;
+
+ 
+    self::$RedisCache->set($cacheKey, serialize($recipe), 10*3600);
+    return $recipe;
   }
+
+
 
   /**
    * Retrieves a single RecipeModel object by its ID.
@@ -369,7 +416,7 @@ class RecipeReadOperation extends DatabaseRelatedOperation implements I_ReadOper
    */
   static public function getRecipeByIngredientFieldAndValue(string $field, $value) : ?array{
     try {
-      $model = new parent();
+      $model = new RecipeReadOperation();
       $conn = $model->DB_CONNECTION;
       if ($conn == false) {
         throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');

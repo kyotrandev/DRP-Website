@@ -131,9 +131,6 @@
 
 
   <script>
-    // Data extracted from PHP
-    var data = <?php echo json_encode($data); ?>;
-
     // Function to add select element with options and input for quantity
     function addIngredientSelect() {
 
@@ -162,7 +159,8 @@
       select.appendChild(placeholderOption);
 
       // Add options from data
-      data.forEach(function (ingredient) {
+      var ingredients = <?php echo json_encode($data[0]->validIngredients); ?>;
+      ingredients.forEach(function (ingredient) {
         var option = document.createElement('option');
         option.value = ingredient.id;
         option.textContent = ingredient.name;
@@ -176,17 +174,26 @@
       quantityInput.placeholder = 'Quantity';
       quantityInput.name = 'quantity[]';
 
+
       // Create select element for unit
       var unitSelect = document.createElement('select');
       unitSelect.classList.add('form-select', 'form-select');
       unitSelect.name = 'unit[]';
+      
+      var unitPlaceholderOption = document.createElement('option');
+      unitPlaceholderOption.value = '';
+      unitPlaceholderOption.selected = true;
+      unitPlaceholderOption.disabled = true;
+      unitPlaceholderOption.hidden = true;
+      unitPlaceholderOption.textContent = 'Select unit';
+      unitSelect.appendChild(unitPlaceholderOption);
 
       // Add options for units
-      var units = ['kg', 'g', 'ml', 'oz', 'tbsp', 'tsp'];
+      var units = <?php echo json_encode($data[0]->validMeasurementUnit); ?>;
       units.forEach(function (unit) {
         var option = document.createElement('option');
-        option.value = unit;
-        option.textContent = unit;
+        option.value = unit.id;
+        option.textContent = unit.detail;
         unitSelect.appendChild(option);
       });
 

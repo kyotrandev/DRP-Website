@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Operations\RecipeReadOperation;
 use App\Operations\RecipeCreateOperation;
-use App\Operations\IngredientReadOperation;
 use App\Operations\UploadImageOperation;
 use App\Operations\ValidataRecipeDataHolder;
 
