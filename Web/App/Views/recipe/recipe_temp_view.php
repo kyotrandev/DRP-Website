@@ -23,7 +23,7 @@
                                          alt="<?php echo $recipe->getName(); ?>" class="card-img-top" style="object-fit: cover; height:12rem; width: 100%">
                 <div class="card-content" style="height:10rem">
                     <div class="card-body"  style="height:9rem; overflow: hidden">
-                        <h5 class="card-title"> <?= $recipe->getName()?> </h5>
+                        <h5 class="card-title limited-title"> <?= $recipe->getName()?> </h5>
                         <p class="card-text limited-text"><?= $recipe->getDescription() ?></p>
                         <div class="card-details" style="display: none;" ></div>
                             <div class="card-footer d-flex align-items-center" style="border: none; background-color: white; padding: 0;">

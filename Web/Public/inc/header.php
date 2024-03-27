@@ -46,6 +46,15 @@ use App\Controllers\UserController;
       min-height: 4.5em;
     }
 
+    .limited-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      /* min-height: 4.5em; */
+    }
+
     input[type="number"] {
       -moz-appearance: textfield;
       -webkit-appearance: textfield;

@@ -38,10 +38,16 @@ class RecipeController extends BaseController
     }
     public function addUI()
     {
+        if (!UserController::isContributer()) {
+            return parent::loadError('404');
+        }
         $data[] = ValidataRecipeDataHolder::getInstance();
         $this->loadView('recipe.add', $data);
     }
     public function add() {
+        if (!UserController::isContributer()) {
+            return parent::loadError('404');
+        }
         $data = $_POST;
 
         $ingredientComponents = [];
