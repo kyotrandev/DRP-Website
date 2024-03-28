@@ -33,11 +33,12 @@ class PaginationController
     {
         $total = $this->config['total'];
         $limit = $this->config['limit'];
+        
         return ceil($total / $limit);
     }
 
     /* Method Common for Get Data */
-    private function getData($operation, $limit = 15,$page, $ignoreActive = false)
+    private function getData($operation, $limit = 15,$page, $ignoreActive = true)
     {
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         if ($page <= 0) {
@@ -49,11 +50,11 @@ class PaginationController
 
         $data = $operation::getPaging($offset, $this->config['limit'], $ignoreActive);
 
-        $totalData = $operation::getAllObjects();
+        $totalData = $operation::getAllObjects($ignoreActive);
         $this->config['total'] = count($totalData);
 
         $totalPage = $this->getTotalPage();
-        
+      
         return ['data' => $data, 'totalPage' => $totalPage];
     }
 
@@ -62,7 +63,7 @@ class PaginationController
     /* Get Recipes Actived Data for Ajax */
     public function getRecipes($page = 1)
     {
-        $limit = 12;
+        $limit = 10;
         $recipes = $this->getData(RecipeReadOperation::class, $limit, $page);
 
         // Return Recipes as JSON to Ajax request
@@ -72,7 +73,7 @@ class PaginationController
     /* Get All Recipes Data for Ajax of Manager Recipe */
     public function getAllRecipes($page = 1)
     {
-        $limit = 15;
+        $limit = 10;
         $ignoreActice = true;
         $allRecipes = $this->getData(RecipeReadOperation::class, $limit, $page, $ignoreActice);
 
@@ -92,7 +93,7 @@ class PaginationController
     }
 
     /* Get All Ingredients Data for Ajax of Manager Ingredients */
-    public function getAllIngredients($page = 1)
+    public function getAllIngredients($page = 19)
     {
         $limit = 15;
         $ignoreActice = true;
