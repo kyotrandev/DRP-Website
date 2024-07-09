@@ -25,4 +25,4 @@
 We did containerize our web, all you have to do is start docker and run this command ```docker-compose up -d``` if 
 you're already installed docker, or else go install docker and run that command, simply enough. 
 
-[![web demo](https://youtu.be/GMnn82IMSHM)]
+[![web demo](showcase/img.png)](https://youtu.be/GMnn82IMSHM)
