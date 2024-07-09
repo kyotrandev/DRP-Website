@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Operations;
 
-class NutritionCalculatorOperation extends DatabaseRelatedOperation {
+class NutritionCalculatorOperation extends DatabaseRelatedOperation
+{
 
-  public static function calculateNutritionForRecipe($recipeId) {
+  public static function calculateNutritionForRecipe($recipeId)
+  {
     try {
-      $dbconn = new parent();
-      $conn = $dbconn->DB_CONNECTION;
+      $conn = self::getDBConnection();
 
       $sql = "SELECT ir.ingredient_id, ir.quantity,ir.measurement_unit
                 FROM ingredient_recipe ir
@@ -52,9 +54,11 @@ class NutritionCalculatorOperation extends DatabaseRelatedOperation {
 
         foreach ($totalNutrition as $key => $value) {
           if ($ingredient[$key] !== null && $row['quantity'] !== null) {
-              if ($row['measurement_unit'] == 'g') {
-                  $totalNutrition[$key] += $ingredient[$key] * $row['quantity'] / 100;         
-          }else{ $totalNutrition[$key] += $ingredient[$key] * $row['quantity'];}
+            if ($row['measurement_unit'] == 'g') {
+              $totalNutrition[$key] += $ingredient[$key] * $row['quantity'] / 100;
+            } else {
+              $totalNutrition[$key] += $ingredient[$key] * $row['quantity'];
+            }
           }
         }
       }

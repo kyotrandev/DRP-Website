@@ -1,4 +1,5 @@
 <?
+
 namespace App\Operations;
 
 class RecipeCreateOperation extends CreateAndUpdateOperation
@@ -63,8 +64,8 @@ class RecipeCreateOperation extends CreateAndUpdateOperation
    */
   static protected function saveToDatabase(array $data): void
   {
-    $model = new static();
-    $conn = $model->DB_CONNECTION;
+    $conn = self::getDBConnection();
+
 
     // check the connection is okey? 
     if ($conn == false) {
@@ -106,12 +107,11 @@ class RecipeCreateOperation extends CreateAndUpdateOperation
       foreach ($data['ingredientComponents'] as $component) {
         $values[] = "($recipeId, {$component['ingredient_id']}, {$component['quantity']})";
       }
-      
+
       $sql2 .= implode(',', $values);
       // execute the query to insert the ingredient_recipe data
       $conn->exec($sql2);
       $conn->commit();
-
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
@@ -159,5 +159,4 @@ class RecipeCreateOperation extends CreateAndUpdateOperation
       self::notify(false, "Create recipe failed caused by an unknown error!. We are sorry for the inconvenience!");
     }
   }
-
 }

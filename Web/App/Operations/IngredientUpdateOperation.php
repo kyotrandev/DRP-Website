@@ -1,8 +1,11 @@
 <?
+
 namespace App\Operations;
+
 use App\Utils\RedisCache;
 
-class  IngredientUpdateOperation extends CreateAndUpdateOperation {
+class  IngredientUpdateOperation extends CreateAndUpdateOperation
+{
   static private RedisCache $RedisCache;
 
   /**
@@ -12,7 +15,8 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
    * @return void
    * @throws \InvalidArgumentException If the data is invalid.
    */
-  static protected function validateData(array $data): void  {
+  static protected function validateData(array $data): void
+  {
 
     /**
      * Validates the ingredient data and retrieves the valid categories, measurements, and nutrition.
@@ -31,7 +35,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
     if ($validCategories == null || $validMeasurements == null)
       throw new \PDOException(parent::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". 1");
 
-    
+
     // Check if the data is valid
     if (
       !preg_match('/^[\p{L}0-9\s.,()]+$/u', $data['name']) ||
@@ -58,9 +62,10 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
    * @param array $data The data to be saved
    * @throws \PDOException If the data cannot be saved
    */
-  static protected function saveToDatabase(array $data) : void {
-    $model = new static();
-    $conn = $model->DB_CONNECTION;
+  static protected function saveToDatabase(array $data): void
+  {
+    $conn = self::getDBConnection();
+
 
     if ($conn == false) {
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
@@ -68,7 +73,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
 
     try {
       $conn->beginTransaction();
-      
+
       // Update the ingredients table
       $insertIngredientSql = "UPDATE ingredients SET name = :name, category = :category, measurement_unit = :measurement_unit
                               WHERE id = :id";
@@ -79,29 +84,32 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
         'category' => $data['category'],
         'measurement_unit' => $data['measurement_unit']
       ]);
-      
+
       // Update the ingredient_nutritions table
       $insertNutritionSql = "UPDATE ingredient_nutritions SET quantity = :quantity  
                              WHERE ingredient_id = :ingredient_id AND nutrition_id = :nutrition_id";
       $stmt = $conn->prepare($insertNutritionSql);
-  
+
       foreach ($data['nutritionComponents'] as $nutritionType => $nutritionValue) {
         $stmt->bindValue(':ingredient_id', $data['id'], \PDO::PARAM_INT);
         $stmt->bindValue(':nutrition_id', $nutritionType, \PDO::PARAM_STR);
         $stmt->bindValue(':quantity', $nutritionValue, \PDO::PARAM_INT);
         $stmt->execute();
       }
-  
+
       $conn->commit();
-      if (!isset(self::$RedisCache)) {
-        self::$RedisCache = new RedisCache($_ENV['REDIS'],);
+      if (!isset(
+        $RedisCache
+      )) {
+        $RedisCache
+          = new RedisCache($_ENV['REDIS'],);
       }
-      self::$RedisCache->delete('ingre_' . $data['id']. '_with_nutri');
+      $RedisCache
+        ->delete('ingre_' . $data['id'] . '_with_nutri');
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
       throw $PDOException;
     }
-    
   }
 
   /**
@@ -110,7 +118,8 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
    * @param array $data The data to be used in the operation
    * @return bool True if the operation was successful, false otherwise
    */
-  static public function execute(array  $data) : void{
+  static public function execute(array  $data): void
+  {
     try {
       /**
        * Validate the data before saving to the database
@@ -123,9 +132,8 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       self::saveToDatabase($data);
 
       // If everything goes well, set success to true and provide a success message
-      
+
       self::notify(true, "Ingredient updated successfully!");
-      
     } catch (\InvalidArgumentException $InvalidArgumentException) {
       self::notify(false, "Update ingredient failed caused by: invalid input. Please check your input again!");
     } catch (\PDOException $PDOException) {
@@ -136,12 +144,13 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       self::notify(false, "Update ingredient failed caused by: invalid data!. Please check the data and try again!");
     } catch (\Throwable $Throwable) {
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify(false, "Update ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
+      self::notify(false, "Update ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");
     }
   }
 
-  public static function setIngredientActive($data){
-    try{
+  public static function setIngredientActive($data)
+  {
+    try {
 
       /** 
        * Update the ingredient status to active or inactive
@@ -151,7 +160,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       /**
        * Execute the query
        */
-      self::querySingle($sql, 1, ['id' => $data['id'], 'isActive' => $data['isActive'] ]);
+      self::querySingle($sql, 1, ['id' => $data['id'], 'isActive' => $data['isActive']]);
 
       /**
        * Notify succes to the user
@@ -162,7 +171,7 @@ class  IngredientUpdateOperation extends CreateAndUpdateOperation {
       self::notify(false, "Update ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
     } catch (\Throwable $Throwable) {
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");      
+      self::notify(false, "Add ingredient failed caused by an unknown error!. We are sorry for the inconvenience!");
     }
   }
 }

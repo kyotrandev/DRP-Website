@@ -1,4 +1,5 @@
 <?
+
 namespace App\Operations;
 
 use App\Utils\RedisCache;
@@ -78,10 +79,14 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation
       $params[':image_url'] = $data['image_url'];
     }
     self::query($sql, 1, $params);
-    if (!isset(self::$RedisCache)) {
-      self::$RedisCache = new RedisCache($_ENV['REDIS'], );
+    if (!isset(
+      $RedisCache
+    )) {
+      $RedisCache
+        = new RedisCache($_ENV['REDIS'],);
     }
-    self::$RedisCache->delete('recipe_' . $data['id'] . '_with_nutri');
+    $RedisCache
+      ->delete('recipe_' . $data['id'] . '_with_nutri');
   }
 
 
@@ -144,7 +149,6 @@ class RecipeUpdateOperation extends CreateAndUpdateOperation
        * Notify succes to the user
        */
       self::notify(true, "Recipe status updated successfully!");
-
     } catch (\PDOException $PDOException) {
       handlePDOException($PDOException);
       self::notify(false, "Update Recipe failed caused by: Unknown errors! We are sorry for the inconvenience!");

@@ -1,7 +1,9 @@
 <?
+
 namespace App\Operations;
 
-class IngredientCreateOperation extends CreateAndUpdateOperation { 
+class IngredientCreateOperation extends CreateAndUpdateOperation
+{
 
   /**
    * Validates the ingredient data with specific rules.
@@ -10,7 +12,8 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
    * @return void
    * @throws \InvalidArgumentException If the data is invalid.
    */
-  static protected function validateData(array $data): void  {
+  static protected function validateData(array $data): void
+  {
 
     /**
      * Validates the ingredient data and retrieves the valid categories, measurements, and nutrition.
@@ -32,7 +35,7 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
     if ($validCategories == null || $validMeasurements == null)
       throw new \PDOException(parent::MSG_UNABLE_TO_VALIDATE_DATA . __METHOD__ . ". 1");
 
-    
+
     // Check if the data is valid
     if (
       !preg_match('/^[a-zA-Z0-9\s.,]+$/', $data['name']) ||
@@ -59,14 +62,13 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
    * @param array $data The data to be saved
    * @throws \PDOException If the data cannot be saved
    */
-  static protected function saveToDatabase(array $data) : void {
-    $model = new IngredientCreateOperation();
-    $conn = $model->DB_CONNECTION;
-    
+  static protected function saveToDatabase(array $data): void
+  {
+    $conn = parent::getDBConnection();
     if ($conn == false) {
       throw new \PDOException(parent::MSG_CONNECT_PDO_EXCEPTION . __METHOD__ . '. ');
     }
- 
+
     try {
       $conn->beginTransaction();
       $insertIngredientSql = "INSERT INTO ingredients (`name`, `category`, `measurement_unit`)
@@ -78,7 +80,7 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
         'category' => $data['category'],
         'measurement_unit' => $data['measurement_unit']
       ]);
-            
+
       $ingredientId = $conn->lastInsertId();
 
       $insertNutritionSql = "INSERT INTO `ingredient_nutritions`(`ingredient_id`, `nutrition_id`, `quantity`) VALUES ";
@@ -93,8 +95,8 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
 
 
       // execute the query to insert the ingredient_recipe data
-    if ($conn->exec($insertNutritionSql) === false) 
-      throw new \Exception("Error: Unable to insert ingredient nutrition data - " . __METHOD__ . '. 1');
+      if ($conn->exec($insertNutritionSql) === false)
+        throw new \Exception("Error: Unable to insert ingredient nutrition data - " . __METHOD__ . '. 1');
       $conn->commit();
     } catch (\PDOException $PDOException) {
       $conn->rollBack();
@@ -108,7 +110,8 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
    * @param array $data The data to be executed
    * @return bool True if the operation is successful, false otherwise
    */
-  static public function execute(array $data): void {
+  static public function execute(array $data): void
+  {
     try {
       /**
        * Validate the data before saving to the database
@@ -123,7 +126,6 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
 
       // If everything goes well, set success to true and provide a success message
       parent::notify(true, "Ingredient created successfully!");
-
     } catch (\InvalidArgumentException) {
       parent::notify(false, "Add ingredient failed caused by: invalid data! Please check your input again!");
     } catch (\PDOException $PDOException) {
@@ -133,7 +135,7 @@ class IngredientCreateOperation extends CreateAndUpdateOperation {
     } catch (\Throwable $Throwable) {
       // Handle other errors
       handleError($Throwable->getCode(), $Throwable->getMessage(), $Throwable->getFile(), $Throwable->getLine());
-      parent::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");      
+      parent::notify(false, "Add ingredient failed caused by: Unknown errors! We are sorry for the inconvenience!");
     }
   }
 }
