@@ -1,10 +1,34 @@
+# Database data
 /Data/mysql
+/Data/postgres
+
+# Configuration files 
+Web/Config/db_config.php
+**/db_config.php
+
+
+# IDE and OS files
 .DS_Store
 .vscode
+
+# Project specific
+/Code_Diagram 
 /Web/App/test.php
+
+# Logs
 /Web/Journal/database-related.log
 /Web/Journal/errors.log
 /Web/Journal/exceptions.log
+/Web/Journal/debug.log
 /Web/Journal/fatal-errors.log
-/Web/Journal/mysql/*.log
-/Web/App/Views/test.php
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+
+
+# Dependencies
+node_modules/
+vendor/
