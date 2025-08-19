@@ -4,15 +4,14 @@
 
 ## 🌟 Project Overview
 
-Daily Recipes Provider (DRP) is a comprehensive web application designed to deliver personalized nutritious recipes to users based on their individual health profiles. The application analyzes user information including age, health conditions, dietary preferences, and nutritional requirements to provide tailored recipe recommendations that promote balanced nutrition and healthy living.
+Daily Recipes Provider (DRP) is a simple but useful web application for discovering and sharing recipes.
+It allows users to:
 
-## 🏗️ Architecture & Design Patterns
+- Browse and search for recipes with full ingredient lists.
+- See nutrition info and calories for each dish.
+- Share their own recipes with others in the community.
 
-### MVC Architecture
-The application follows the **Model-View-Controller (MVC)** design pattern for clean separation of concerns:
-- **Models**: Handle data logic and database interactions
-- **Views**: Manage user interface and presentation layer
-- **Controllers**: Process user input and coordinate between Models and Views
+The app is designed with a clean MVC architecture in PHP and MySQL, making it easy to manage users, recipes, and ingredients. It also includes an admin dashboard for managing content and user accounts.
 
 ### Project Structure
 ```
@@ -35,7 +34,7 @@ DRP-Website/
 - **PHP 8.2**: Core server-side programming language
 - **MySQL 8.3**: Relational database management system
 - **Redis 7.2**: In-memory caching for improved performance
-- **PDO**: Database abstraction layer for secure database operations
+
 
 ### Frontend Technologies
 - **HTML5 & CSS3**: Modern web standards for structure and styling
@@ -61,12 +60,11 @@ DRP-Website/
 - **Admin Dashboard**: Complete administrative interface for system management
 - **Content Moderation**: Create, update, delete, and moderate user-generated content
 - **User Administration**: Activate/deactivate user accounts and manage permissions
-- **Data Analytics**: View and manage system-wide statistics
+
 
 ### Technical Features
 - **Security**: Input validation, SQL injection prevention, and secure file uploads
 - **Performance**: Redis caching implementation for optimized database queries
-- **Responsive Design**: Mobile-friendly user interface
 - **Pagination**: Efficient data browsing with paginated results
 - **Error Handling**: Comprehensive error logging and user-friendly error pages
 - **Search System**: Intuitive search interface with real-time filtering and category-based browsing
@@ -95,22 +93,6 @@ DRP-Website/
    - Database: `localhost:3306` 
    - Redis: `localhost:6379` 
 
-### Services Overview
-- **Web Server**: PHP 8.2 with Apache (Port 8000)
-- **Database**: MySQL 8.3 (Port 3306)
-- **Cache**: Redis 7.2 (Port 6379)
-- **Database Admin**: phpMyAdmin (Port 8080)
-
-## 🎯 Learning Outcomes
-
-This project demonstrates proficiency in:
-- **Full-stack web development** using modern PHP practices
-- **Database design** and optimization with MySQL
-- **Containerization** and DevOps practices with Docker
-- **Security best practices** in web application development
-- **Team collaboration** and version control with Git
-- **MVC architecture** implementation and design patterns
-
 ## 👥 Development Team
 
 - **Mạch Tiến Duy** - [GitHub](https://github.com/john-naeder)
@@ -118,5 +100,4 @@ This project demonstrates proficiency in:
 - **Lê Thanh Yên** - [GitHub](https://github.com/YenLethanh129)
 
 ---
-
-*This project was developed as part of our academic coursework, demonstrating practical application of web development principles and modern software engineering practices.*
+*This project was built as part of our university coursework, focusing on applying modern web development practices in a real-world style application.*
