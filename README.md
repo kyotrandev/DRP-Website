@@ -50,13 +50,14 @@ DRP-Website/
 ## ✨ Key Features
 
 ### Core Functionality
+![DashboardManager](./Web/Public/screenshot/DashboardManager.png)
 - **User Management**: Complete user registration, authentication, and profile management
 - **Recipe Management**: CRUD operations for recipes with image upload capabilities
 - **Ingredient Database**: Comprehensive ingredient management with nutritional information
-- **Nutrition Calculator**: Advanced BMI calculator and nutritional analysis tools
 - **Search Functionality**: Powerful search capabilities for finding recipes by name and filtering by categories
 
 ### Administrative Features
+![Homepage](./Web/Public/screenshot/AdminPage.png)
 - **Admin Dashboard**: Complete administrative interface for system management
 - **Content Moderation**: Create, update, delete, and moderate user-generated content
 - **User Administration**: Activate/deactivate user accounts and manage permissions
