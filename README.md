@@ -72,9 +72,25 @@ DRP-Website/
 
 ### Prerequisites
 - Docker Desktop installed on your system
-- Git for version control
 
-### Quick Start
+### Option 1: Using Docker Image (Recommended)
+1. **Pull the Docker image**
+   ```bash
+   docker pull kyotran/drp-web-app:latest
+   ```
+
+2. **Run the application**
+   ```bash
+   docker compose -f docker-compose.yml up -d
+   ```
+
+3. **Access the application**
+   - Main application: `http://localhost:8000`
+   - phpMyAdmin: `http://localhost:8080`
+   - Database: `localhost:3306`
+   - Redis: `localhost:6379`
+
+### Option 2: Building from Source
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
@@ -87,13 +103,13 @@ DRP-Website/
    ```
 
 3. **Access the application**
-   - Main application: `http://localhost`
+   - Main application: `http://localhost:8000`
    - phpMyAdmin: `http://localhost:8080`
    - Database: `localhost:3306`
    - Redis: `localhost:6379`
 
 ### Services Overview
-- **Web Server**: PHP 8.2 with Apache (Port 80)
+- **Web Server**: PHP 8.2 with Apache (Port 8000)
 - **Database**: MySQL 8.3 (Port 3306)
 - **Cache**: Redis 7.2 (Port 6379)
 - **Database Admin**: phpMyAdmin (Port 8080)
@@ -103,7 +119,6 @@ DRP-Website/
 This project demonstrates proficiency in:
 - **Full-stack web development** using modern PHP practices
 - **Database design** and optimization with MySQL
-- **Caching strategies** implementation with Redis
 - **Containerization** and DevOps practices with Docker
 - **Security best practices** in web application development
 - **Team collaboration** and version control with Git
@@ -114,16 +129,6 @@ This project demonstrates proficiency in:
 - **Mạch Tiến Duy** - [GitHub](https://github.com/john-naeder)
 - **Trần Quang Diệu** - [GitHub](https://github.com/KyoTranKMA)
 - **Lê Thanh Yên** - [GitHub](https://github.com/YenLethanh129)
-
-
-## 📋 Future Enhancements
-
-- Integration with external nutrition APIs
-- Mobile application development
-- Machine learning-based recipe recommendations
-- Social features and recipe sharing
-- Multi-language support
-- Advanced meal planning capabilities
 
 ---
 
