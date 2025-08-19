@@ -1,4 +1,6 @@
 # Daily Recipes Provider (DRP) - Web Application
+![Homepage](./Web/Public/screenshot/HomePage.png)
+
 
 ## 🌟 Project Overview
 
