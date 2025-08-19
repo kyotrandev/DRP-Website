@@ -71,26 +71,10 @@ DRP-Website/
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Docker Desktop installed on your system
+- Docker Desktop installed on your device
 
-### Option 1: Using Docker Image (Recommended)
-1. **Pull the Docker image**
-   ```bash
-   docker pull kyotran/drp-web-app:latest
-   ```
 
-2. **Run the application**
-   ```bash
-   docker compose -f docker-compose.yml up -d
-   ```
 
-3. **Access the application**
-   - Main application: `http://localhost:8000`
-   - phpMyAdmin: `http://localhost:8080`
-   - Database: `localhost:3306`
-   - Redis: `localhost:6379`
-
-### Option 2: Building from Source
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
@@ -104,9 +88,9 @@ DRP-Website/
 
 3. **Access the application**
    - Main application: `http://localhost:8000`
-   - phpMyAdmin: `http://localhost:8080`
-   - Database: `localhost:3306`
-   - Redis: `localhost:6379`
+   - phpMyAdmin: `http://localhost:8080` 
+   - Database: `localhost:3306` 
+   - Redis: `localhost:6379` 
 
 ### Services Overview
 - **Web Server**: PHP 8.2 with Apache (Port 8000)
